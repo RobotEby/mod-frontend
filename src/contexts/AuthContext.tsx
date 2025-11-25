@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { api } from "@/integrations/api/client";
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export interface User {
   id: string;
@@ -34,7 +33,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchSessionData = async () => {
     try {
-      const token = api.auth.getSession();
+      const token = localStorage.getItem('token');
 
       if (!token) {
         setSession(null);
@@ -43,7 +42,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return;
       }
 
-      const userData = await api.get<User>("/auth/me");
+      const userData = JSON.parse(localStorage.getItem('user') || 'null');
 
       const newSession: Session = {
         access_token: token,
@@ -53,8 +52,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(newSession);
       setUser(userData);
     } catch (error) {
-      console.error("Erro ao validar sessão:", error);
-      api.auth.clearSession();
+      console.error('Erro ao validar sessão:', error);
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
       setSession(null);
       setUser(null);
     } finally {
@@ -70,27 +70,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       fetchSessionData();
     };
 
-    window.addEventListener("auth-change", handleAuthChange);
+    window.addEventListener('auth-change', handleAuthChange);
 
-    window.addEventListener("storage", handleAuthChange);
+    window.addEventListener('storage', handleAuthChange);
 
     return () => {
-      window.removeEventListener("auth-change", handleAuthChange);
-      window.removeEventListener("storage", handleAuthChange);
+      window.removeEventListener('auth-change', handleAuthChange);
+      window.removeEventListener('storage', handleAuthChange);
     };
   }, []);
 
-  return (
-    <AuthContext.Provider value={{ user, session, loading }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ user, session, loading }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within AuthProvider");
+    throw new Error('useAuth must be used within AuthProvider');
   }
   return context;
 };
