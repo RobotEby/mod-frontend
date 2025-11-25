@@ -1,134 +1,132 @@
-import React, { useMemo, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ShoppingCart, Clock } from 'lucide-react';
-import { toast } from 'sonner';
-
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { useState } from 'react';
+import { ProductCard } from '@/components/ProductCard';
+import { useQuery } from '@tanstack/react-query';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { useCart } from '@/contexts/CartContext';
-import { MockProducts } from '@/mock/products';
+import { Slider } from '@/components/ui/slider';
+import { mockProducts, mockCategories } from '@/lib/mockData';
 
-const FALLBACK_IMAGE_URL = 'https://placehold.co/600x450/e0e0e0/555555?text=Sem+Imagem';
+const Catalog = () => {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [priceRange, setPriceRange] = useState([0, 50000]);
 
-interface ProductCardProps {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  leadTime?: string;
-}
-
-export const ProductCard: React.FC<ProductCardProps> = ({ id, name, price, image, leadTime }) => {
-  const { addItem } = useCart();
-  const navigate = useNavigate();
-
-  const formattedPrice = useMemo(() => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-      minimumFractionDigits: 2,
-    }).format(price);
-  }, [price]);
-
-  const handleAddToCart = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-
-      addItem({
-        id,
-        name,
-        price,
-        image,
-        quantity: 1,
-      });
-
-      toast.success(`${name} adicionado ao carrinho!`);
+  const { data: categories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      return mockCategories;
     },
-    [addItem, id, name, price, image],
-  );
+  });
 
-  const handleNavigate = useCallback(() => {
-    navigate(`/produto/${id}`);
-  }, [navigate, id]);
+  const { data: products, isLoading } = useQuery({
+    queryKey: ['products', selectedCategory, priceRange],
+    queryFn: async () => {
+      await new Promise((resolve) => setTimeout(resolve, 300));
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        handleNavigate();
+      let filtered = [...mockProducts];
+
+      if (selectedCategory) {
+        filtered = filtered.filter((p) => p.category_id === selectedCategory);
       }
+
+      filtered = filtered.filter((p) => p.price >= priceRange[0] && p.price <= priceRange[1]);
+
+      return filtered.sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      );
     },
-    [handleNavigate],
-  );
+  });
 
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = FALLBACK_IMAGE_URL;
-    e.currentTarget.onerror = null;
-  };
-
-  return (
-    <Card
-      className="group flex flex-col h-full overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer focus:ring-2 focus:ring-primary focus:outline-none"
-      onClick={handleNavigate}
-      onKeyDown={handleKeyDown}
-      role="button"
-      tabIndex={0}
-      aria-label={`Ver detalhes de ${name}`}
-    >
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
-        <img
-          src={image}
-          alt={name}
-          loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          onError={handleImageError}
-        />
-      </div>
-
-      <CardContent className="p-4 flex-grow space-y-2">
-        <h3 className="text-lg font-semibold line-clamp-2 group-hover:text-primary transition-colors">
-          {name}
-        </h3>
-
-        {leadTime && (
-          <div className="flex items-center text-sm text-muted-foreground">
-            <Clock className="w-4 h-4 mr-1.5 flex-shrink-0" />
-            <span>Entrega em {leadTime}</span>
-          </div>
-        )}
-      </CardContent>
-
-      <CardFooter className="p-4 pt-0 flex justify-between items-end">
-        <p className="text-2xl font-bold text-primary">{formattedPrice}</p>
-
-        <Button size="sm" onClick={handleAddToCart} aria-label={`Adicionar ${name} ao carrinho`}>
-          <ShoppingCart className="w-4 h-4 mr-2" />
-          Comprar
-        </Button>
-      </CardFooter>
-    </Card>
-  );
-};
-
-export const Catalog = () => {
   return (
     <div className="min-h-screen py-12">
-      <div className="container max-w-4xl">
-        <h1 className="text-4xl font-bold mb-8">Catálogo de Produtos</h1>
+      <div className="container">
+        <div className="mb-12">
+          <h1 className="text-4xl font-bold mb-4">Catálogo de Móveis</h1>
+          <p className="text-lg text-muted-foreground">
+            Explore nossa coleção completa de móveis de luxo
+          </p>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {MockProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              id={product.id}
-              name={product.name}
-              price={product.price}
-              image={product.main_image_url}
-              leadTime={product.lead_time}
-            />
-          ))}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <aside className="lg:col-span-1 space-y-6">
+            <div className="bg-card p-6 rounded-lg border">
+              <h3 className="font-semibold text-lg mb-4">Categorias</h3>
+              <div className="space-y-2">
+                <Button
+                  variant={selectedCategory === null ? 'default' : 'ghost'}
+                  className="w-full justify-start"
+                  onClick={() => setSelectedCategory(null)}
+                >
+                  Todas
+                </Button>
+                {categories?.map((category) => (
+                  <Button
+                    key={category.id}
+                    variant={selectedCategory === category.id ? 'default' : 'ghost'}
+                    className="w-full justify-start"
+                    onClick={() => setSelectedCategory(category.id)}
+                  >
+                    {category.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-card p-6 rounded-lg border">
+              <h3 className="font-semibold text-lg mb-4">Faixa de Preço</h3>
+              <div className="space-y-4">
+                <Slider
+                  min={0}
+                  max={50000}
+                  step={500}
+                  value={priceRange}
+                  onValueChange={setPriceRange}
+                  className="my-4"
+                />
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>R$ {priceRange[0].toLocaleString('pt-BR')}</span>
+                  <span>R$ {priceRange[1].toLocaleString('pt-BR')}</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <div className="lg:col-span-3">
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(9)].map((_, i) => (
+                  <div key={i} className="space-y-4">
+                    <Skeleton className="aspect-square w-full" />
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-8 w-1/2" />
+                  </div>
+                ))}
+              </div>
+            ) : products && products.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {products.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    id={product.id}
+                    name={product.name}
+                    price={Number(product.price)}
+                    image={product.main_image_url || ''}
+                    leadTime={product.lead_time || undefined}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground text-lg">
+                  Nenhum produto encontrado com os filtros selecionados.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 };
+
+export default Catalog;

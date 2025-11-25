@@ -1,17 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export interface User {
+interface User {
   id: string;
-  email?: string;
-  role?: string;
-  user_metadata?: Record<string, any>;
-  created_at?: string;
+  email: string;
+  full_name?: string;
 }
 
-export interface Session {
+interface Session {
+  user: User;
   access_token: string;
-  refresh_token?: string;
-  user: User | null;
 }
 
 interface AuthContextType {
@@ -31,7 +28,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchSessionData = async () => {
+  const fetchSessionData = () => {
     try {
       const token = localStorage.getItem('token');
 
@@ -71,7 +68,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     window.addEventListener('auth-change', handleAuthChange);
-
     window.addEventListener('storage', handleAuthChange);
 
     return () => {

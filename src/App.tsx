@@ -7,7 +7,7 @@ import { Navbar } from '@/components/Navbar';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { CartProvider } from '@/contexts/CartContext';
 import Home from './pages/Home';
-import { Catalog } from './pages/Catalog';
+import Catalog from './pages/Catalog';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
