@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { ProductCard } from "@/components/ProductCard";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/skeleton";
-import heroImage from "@/assets/hero-furniture.jpg";
+import { Button } from '@/components/ui/button';
+import { ProductCard } from '@/components/ProductCard';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { Skeleton } from '@/components/ui/skeleton';
+import { MockProducts } from '@/mock/products';
 
 interface Product {
   id: string;
@@ -14,63 +14,12 @@ interface Product {
   lead_time: string;
 }
 
-const MOCK_PRODUCTS: Product[] = [
-  {
-    id: "1",
-    name: "Poltrona Eames Lounge",
-    price: 4500.0,
-    main_image_url:
-      "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=1000&auto=format&fit=crop",
-    lead_time: "15 dias úteis",
-  },
-  {
-    id: "2",
-    name: "Sofá Modular Velvet",
-    price: 3200.0,
-    main_image_url:
-      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1000&auto=format&fit=crop",
-    lead_time: "20 dias úteis",
-  },
-  {
-    id: "3",
-    name: "Mesa de Jantar Oak",
-    price: 2800.0,
-    main_image_url:
-      "https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?q=80&w=1000&auto=format&fit=crop",
-    lead_time: "18 dias úteis",
-  },
-  {
-    id: "4",
-    name: "Luminária de Piso Arc",
-    price: 890.0,
-    main_image_url:
-      "https://images.unsplash.com/photo-1513506003011-3b644ab495e9?q=80&w=1000&auto=format&fit=crop",
-    lead_time: "5 dias úteis",
-  },
-  {
-    id: "5",
-    name: "Buffet Minimalista",
-    price: 1950.0,
-    main_image_url:
-      "https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=1000&auto=format&fit=crop",
-    lead_time: "12 dias úteis",
-  },
-  {
-    id: "6",
-    name: "Cadeira de Jantar Shell",
-    price: 450.0,
-    main_image_url:
-      "https://images.unsplash.com/photo-1503602642458-2321114458c9?q=80&w=1000&auto=format&fit=crop",
-    lead_time: "7 dias úteis",
-  },
-];
-
 const Home = () => {
   const { data: products, isLoading } = useQuery({
-    queryKey: ["featured-products"],
+    queryKey: ['featured-products'],
     queryFn: async () => {
       await new Promise((resolve) => setTimeout(resolve, 800));
-      return MOCK_PRODUCTS;
+      return MockProducts.slice(0, 6);
     },
   });
 
@@ -79,7 +28,7 @@ const Home = () => {
       <section className="relative h-[600px] flex items-center">
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-700"
-          style={{ backgroundImage: `url(${heroImage})` }}
+          style={{ backgroundImage: `url()` }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-transparent" />
         </div>
@@ -89,15 +38,11 @@ const Home = () => {
               Móveis de Luxo <span className="text-primary">Sob Medida</span>
             </h1>
             <p className="text-xl text-muted-foreground">
-              Móveis high-end com a qualidade de marcenaria sob medida. Designs
-              exclusivos, fabricados especialmente para você.
+              Móveis high-end com a qualidade de marcenaria sob medida. Designs exclusivos,
+              fabricados especialmente para você.
             </p>
             <div className="flex gap-4">
-              <Button
-                size="lg"
-                asChild
-                className="shadow-lg hover:shadow-xl transition-all"
-              >
+              <Button size="lg" asChild className="shadow-lg hover:shadow-xl transition-all">
                 <Link to="/catalogo">
                   Ver Catálogo
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -121,8 +66,7 @@ const Home = () => {
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">Produtos em Destaque</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Conheça nossa seleção de móveis exclusivos, perfeitos para
-              transformar seu ambiente.
+              Conheça nossa seleção de móveis exclusivos, perfeitos para transformar seu ambiente.
             </p>
           </div>
 
@@ -179,25 +123,22 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
             {[
               {
-                step: "1",
-                title: "Escolha seu Móvel",
-                desc: "Navegue pelo nosso catálogo e selecione o móvel perfeito para seu espaço.",
+                step: '1',
+                title: 'Escolha seu Móvel',
+                desc: 'Navegue pelo nosso catálogo e selecione o móvel perfeito para seu espaço.',
               },
               {
-                step: "2",
-                title: "Enviamos à Marcenaria",
-                desc: "Seu pedido é enviado para nossa parceira Marcenaria Diferente para fabricação.",
+                step: '2',
+                title: 'Enviamos à Marcenaria',
+                desc: 'Seu pedido é enviado para nossa parceira Marcenaria Diferente para fabricação.',
               },
               {
-                step: "3",
-                title: "Receba em Casa",
-                desc: "Acompanhe o status do pedido e receba seu móvel com entrega garantida.",
+                step: '3',
+                title: 'Receba em Casa',
+                desc: 'Acompanhe o status do pedido e receba seu móvel com entrega garantida.',
               },
             ].map((item) => (
-              <div
-                key={item.step}
-                className="text-center space-y-4 group cursor-default"
-              >
+              <div key={item.step} className="text-center space-y-4 group cursor-default">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto group-hover:bg-primary group-hover:text-white transition-colors duration-300">
                   <span className="text-3xl font-bold text-primary group-hover:text-white">
                     {item.step}
@@ -216,10 +157,10 @@ const Home = () => {
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
                 {[
-                  "Qualidade de marcenaria sob medida",
-                  "Designs exclusivos e modernos",
-                  "Fabricação especializada",
-                  "Acompanhamento em tempo real",
+                  'Qualidade de marcenaria sob medida',
+                  'Designs exclusivos e modernos',
+                  'Fabricação especializada',
+                  'Acompanhamento em tempo real',
                 ].map((benefit) => (
                   <div
                     key={benefit}

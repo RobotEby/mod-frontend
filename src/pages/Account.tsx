@@ -1,20 +1,14 @@
-import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from '@/contexts/AuthContext';
 
 const Auth = () => {
   const [loading, setLoading] = useState(false);
@@ -23,7 +17,7 @@ const Auth = () => {
 
   useEffect(() => {
     if (user) {
-      navigate("/");
+      navigate('/');
     }
   }, [user, navigate]);
 
@@ -33,24 +27,22 @@ const Auth = () => {
       setLoading(true);
 
       const formData = new FormData(e.currentTarget);
-      const email = formData.get("signup-email") as string;
-      const password = formData.get("signup-password") as string;
-      const fullName = formData.get("signup-name") as string;
+      const email = formData.get('signup-email') as string;
+      const password = formData.get('signup-password') as string;
+      const fullName = formData.get('signup-name') as string;
 
       try {
         await signUp(email, password, { full_name: fullName });
 
-        toast.success(
-          "Conta criada com sucesso! Verifique seu email para confirmar."
-        );
+        toast.success('Conta criada com sucesso! Verifique seu email para confirmar.');
         e.currentTarget.reset();
       } catch (error: any) {
-        toast.error(error.message || "Erro ao criar conta");
+        toast.error(error.message || 'Erro ao criar conta');
       } finally {
         setLoading(false);
       }
     },
-    [signUp]
+    [signUp],
   );
 
   const handleSignIn = useCallback(
@@ -59,23 +51,21 @@ const Auth = () => {
       setLoading(true);
 
       const formData = new FormData(e.currentTarget);
-      const email = formData.get("signin-email") as string;
-      const password = formData.get("signin-password") as string;
+      const email = formData.get('signin-email') as string;
+      const password = formData.get('signin-password') as string;
 
       try {
         await signIn(email, password);
 
-        toast.success("Login realizado com sucesso!");
-        navigate("/");
+        toast.success('Login realizado com sucesso!');
+        navigate('/');
       } catch (error: any) {
-        toast.error(
-          error.message || "Credenciais inválidas ou erro ao fazer login"
-        );
+        toast.error(error.message || 'Credenciais inválidas ou erro ao fazer login');
       } finally {
         setLoading(false);
       }
     },
-    [signIn, navigate]
+    [signIn, navigate],
   );
 
   return (
@@ -84,9 +74,7 @@ const Auth = () => {
         <Card>
           <CardHeader className="text-center">
             <CardTitle className="text-3xl">Bem-vindo</CardTitle>
-            <CardDescription>
-              Entre ou crie sua conta para continuar
-            </CardDescription>
+            <CardDescription>Entre ou crie sua conta para continuar</CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="signin">
@@ -118,7 +106,7 @@ const Auth = () => {
                     />
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Entrando..." : "Entrar"}
+                    {loading ? 'Entrando...' : 'Entrar'}
                   </Button>
                 </form>
               </TabsContent>
@@ -157,7 +145,7 @@ const Auth = () => {
                     />
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Criando conta..." : "Criar Conta"}
+                    {loading ? 'Criando conta...' : 'Criar Conta'}
                   </Button>
                 </form>
               </TabsContent>
