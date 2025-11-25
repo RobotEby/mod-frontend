@@ -1,17 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { mockAuthService } from '@/lib/mockAuth';
 
-export interface User {
+interface User {
   id: string;
-  email?: string;
-  role?: string;
-  user_metadata?: Record<string, any>;
-  created_at?: string;
+  email: string;
+  full_name?: string;
 }
 
-export interface Session {
+interface Session {
+  user: User;
   access_token: string;
-  refresh_token?: string;
-  user: User | null;
 }
 
 interface AuthContextType {
@@ -31,53 +29,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchSessionData = async () => {
-    try {
-      const token = localStorage.getItem('token');
-
-      if (!token) {
-        setSession(null);
-        setUser(null);
-        setLoading(false);
-        return;
-      }
-
-      const userData = JSON.parse(localStorage.getItem('user') || 'null');
-
-      const newSession: Session = {
-        access_token: token,
-        user: userData,
-      };
-
-      setSession(newSession);
-      setUser(userData);
-    } catch (error) {
-      console.error('Erro ao validar sessão:', error);
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      setSession(null);
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchSessionData();
+    const {
+      data: { subscription },
+    } = mockAuthService.onAuthStateChange((event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
 
-    const handleAuthChange = () => {
-      setLoading(true);
-      fetchSessionData();
-    };
+    mockAuthService.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
 
-    window.addEventListener('auth-change', handleAuthChange);
-
-    window.addEventListener('storage', handleAuthChange);
-
-    return () => {
-      window.removeEventListener('auth-change', handleAuthChange);
-      window.removeEventListener('storage', handleAuthChange);
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   return <AuthContext.Provider value={{ user, session, loading }}>{children}</AuthContext.Provider>;
