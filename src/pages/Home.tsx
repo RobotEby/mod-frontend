@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
 import { MockProducts } from '@/mock/products';
+import heroImage from '@/assets/hero-furniture.jpg';
 
 interface Product {
   id: string;
@@ -28,7 +29,7 @@ const Home = () => {
       <section className="relative h-[600px] flex items-center">
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-700"
-          style={{ backgroundImage: `url()` }}
+          style={{ backgroundImage: `url(${heroImage})` }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-transparent" />
         </div>
