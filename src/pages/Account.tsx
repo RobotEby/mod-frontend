@@ -168,26 +168,30 @@ const Account = () => {
         </div>
 
         <Tabs defaultValue="orders" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
             <TabsTrigger value="orders" className="flex items-center gap-2">
               <Package className="h-4 w-4" />
-              <span className="hidden sm:inline">Meus Pedidos</span>
-              <span className="sm:hidden">Pedidos</span>
+              <span className="hidden sm:inline">Pedidos</span>
             </TabsTrigger>
             <TabsTrigger value="delivered" className="flex items-center gap-2">
               <CheckCircle className="h-4 w-4" />
-              <span className="hidden sm:inline">Já Recebidos</span>
-              <span className="sm:hidden">Recebidos</span>
+              <span className="hidden sm:inline">Recebidos</span>
             </TabsTrigger>
             <TabsTrigger value="all" className="flex items-center gap-2">
               <ShoppingBag className="h-4 w-4" />
-              <span className="hidden sm:inline">Todas as Compras</span>
-              <span className="sm:hidden">Todas</span>
+              <span className="hidden sm:inline">Todas</span>
             </TabsTrigger>
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="h-4 w-4" />
-              <span className="hidden sm:inline">Dados Pessoais</span>
-              <span className="sm:hidden">Perfil</span>
+              <span className="hidden sm:inline">Perfil</span>
+            </TabsTrigger>
+            <TabsTrigger value="addresses" className="flex items-center gap-2">
+              <Package className="h-4 w-4" />
+              <span className="hidden sm:inline">Endereços</span>
+            </TabsTrigger>
+            <TabsTrigger value="payment" className="flex items-center gap-2">
+              <ShoppingBag className="h-4 w-4" />
+              <span className="hidden sm:inline">Pagamento</span>
             </TabsTrigger>
           </TabsList>
 
@@ -304,58 +308,40 @@ const Account = () => {
                       </div>
                     </div>
 
-                    <Separator />
-
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="phone">Telefone</Label>
-                        <Input
-                          id="phone"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          placeholder="(00) 00000-0000"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="zipCode">CEP</Label>
-                        <Input
-                          id="zipCode"
-                          value={zipCode}
-                          onChange={(e) => setZipCode(e.target.value)}
-                          placeholder="00000-000"
-                        />
-                      </div>
-                    </div>
-
                     <div className="space-y-2">
-                      <Label htmlFor="address">Endereço</Label>
+                      <Label htmlFor="phone">Telefone</Label>
                       <Input
-                        id="address"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        placeholder="Rua, número, complemento"
+                        id="phone"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="(00) 00000-0000"
                       />
                     </div>
 
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="city">Cidade</Label>
-                        <Input
-                          id="city"
-                          value={city}
-                          onChange={(e) => setCity(e.target.value)}
-                          placeholder="Sua cidade"
-                        />
+                    <Separator />
+
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-semibold">Segurança</h3>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => toast.info('Funcionalidade de alteração de senha em breve')}
+                      >
+                        Alterar Senha
+                      </Button>
+                    </div>
+
+                    <Separator />
+
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-semibold">Preferências de Comunicação</h3>
+                      <div className="flex items-center space-x-2">
+                        <input type="checkbox" id="newsletter" defaultChecked />
+                        <Label htmlFor="newsletter">Receber ofertas e novidades por email</Label>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="state">Estado</Label>
-                        <Input
-                          id="state"
-                          value={state}
-                          onChange={(e) => setState(e.target.value)}
-                          placeholder="UF"
-                          maxLength={2}
-                        />
+                      <div className="flex items-center space-x-2">
+                        <input type="checkbox" id="sms" />
+                        <Label htmlFor="sms">Receber notificações por SMS</Label>
                       </div>
                     </div>
                   </div>
@@ -364,6 +350,100 @@ const Account = () => {
                     {saving ? 'Salvando...' : 'Salvar Alterações'}
                   </Button>
                 </form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="addresses">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <Package className="h-5 w-5" />
+                    Meus Endereços
+                  </span>
+                  <Button onClick={() => toast.info('Adicionar novo endereço')}>
+                    Adicionar Endereço
+                  </Button>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Badge>Principal</Badge>
+                            <p className="font-semibold">Endereço de Entrega</p>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            {address || 'Nenhum endereço cadastrado'}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {city && state ? `${city} - ${state}` : ''}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {zipCode ? `CEP: ${zipCode}` : ''}
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => toast.info('Editar endereço')}
+                          >
+                            Editar
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    Adicione mais endereços para facilitar suas compras
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="payment">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <ShoppingBag className="h-5 w-5" />
+                    Formas de Pagamento
+                  </span>
+                  <Button onClick={() => toast.info('Adicionar novo cartão')}>
+                    Adicionar Cartão
+                  </Button>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground mb-4">
+                      Você ainda não possui cartões salvos
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Adicione um cartão para agilizar suas próximas compras
+                    </p>
+                  </div>
+
+                  <Separator />
+
+                  <div className="space-y-2">
+                    <h3 className="font-semibold">Cupons e Vale-Presente</h3>
+                    <div className="flex gap-2">
+                      <Input placeholder="Digite seu código de cupom" />
+                      <Button variant="outline">Aplicar</Button>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Você não possui cupons ativos no momento
+                    </p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
