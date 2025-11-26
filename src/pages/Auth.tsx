@@ -16,7 +16,7 @@ const Auth = () => {
 
   useEffect(() => {
     if (user) {
-      navigate('/conta');
+      navigate('/minha-conta');
     }
   }, [user, navigate]);
 
@@ -36,12 +36,13 @@ const Auth = () => {
 
       if (error) throw error;
 
+      // Auto-login after signup
       const { error: signInError } = await mockAuthService.signInWithPassword(email, password);
 
       if (signInError) throw signInError;
 
       toast.success('Conta criada com sucesso!');
-      navigate('/conta');
+      navigate('/minha-conta');
     } catch (error: any) {
       toast.error(error.message || 'Erro ao criar conta');
     } finally {
@@ -63,7 +64,7 @@ const Auth = () => {
       if (error) throw error;
 
       toast.success('Login realizado com sucesso!');
-      navigate('/conta');
+      navigate('/minha-conta');
     } catch (error: any) {
       toast.error(error.message || 'Erro ao fazer login');
     } finally {
