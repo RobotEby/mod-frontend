@@ -2,6 +2,11 @@ interface User {
   id: string;
   email: string;
   full_name?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip_code?: string;
 }
 
 interface Session {
@@ -11,33 +16,26 @@ interface Session {
 
 const mockUsers: { [email: string]: { password: string; user: User } } = {};
 
-let currentSession: Session | null = null;
-
-const loadSessionFromStorage = (): Session | null => {
-  const stored = localStorage.getItem('mock_session');
-  if (stored) {
-    currentSession = JSON.parse(stored);
-    return currentSession;
-  }
-  return null;
-};
-
-const saveSessionToStorage = (session: Session | null) => {
-  if (session) {
-    localStorage.setItem('mock_session', JSON.stringify(session));
-  } else {
-    localStorage.removeItem('mock_session');
-  }
+const triggerAuthChange = () => {
+  window.dispatchEvent(new Event('auth-change'));
 };
 
 export const mockAuthService = {
-  init: () => {
-    return loadSessionFromStorage();
-  },
-
   getSession: async (): Promise<{ data: { session: Session | null } }> => {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+
+    if (!token || !user) {
+      return { data: { session: null } };
+    }
+
     return {
-      data: { session: currentSession },
+      data: {
+        session: {
+          access_token: token,
+          user: JSON.parse(user),
+        },
+      },
     };
   },
 
@@ -71,26 +69,24 @@ export const mockAuthService = {
       return { error: new Error('Email ou senha inválidos') };
     }
 
-    const session: Session = {
-      user: userData.user,
-      access_token: `mock-token-${Date.now()}`,
-    };
+    const token = `mock-token-${Date.now()}`;
 
-    currentSession = session;
-    saveSessionToStorage(session);
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData.user));
+
+    triggerAuthChange();
 
     return { error: null };
   },
 
   signOut: async (): Promise<{ error: Error | null }> => {
-    currentSession = null;
-    saveSessionToStorage(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    triggerAuthChange();
     return { error: null };
   },
 
   onAuthStateChange: (callback: (event: string, session: Session | null) => void) => {
-    callback('INITIAL_SESSION', currentSession);
-
     return {
       data: {
         subscription: {
@@ -101,6 +97,27 @@ export const mockAuthService = {
   },
 
   getCurrentUser: (): User | null => {
-    return currentSession?.user || null;
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+  },
+
+  updateProfile: async (updates: Partial<User>): Promise<{ error: Error | null }> => {
+    const user = localStorage.getItem('user');
+
+    if (!user) {
+      return { error: new Error('Usuário não autenticado') };
+    }
+
+    const userData: User = JSON.parse(user);
+    const updatedUser = { ...userData, ...updates };
+
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+
+    if (mockUsers[userData.email]) {
+      mockUsers[userData.email].user = updatedUser;
+    }
+
+    triggerAuthChange();
+    return { error: null };
   },
 };
