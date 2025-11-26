@@ -167,286 +167,357 @@ const Account = () => {
           </Button>
         </div>
 
-        <Tabs defaultValue="orders" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
-            <TabsTrigger value="orders" className="flex items-center gap-2">
-              <Package className="h-4 w-4" />
-              <span className="hidden sm:inline">Pedidos</span>
-            </TabsTrigger>
-            <TabsTrigger value="delivered" className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4" />
-              <span className="hidden sm:inline">Recebidos</span>
-            </TabsTrigger>
-            <TabsTrigger value="all" className="flex items-center gap-2">
-              <ShoppingBag className="h-4 w-4" />
-              <span className="hidden sm:inline">Todas</span>
-            </TabsTrigger>
-            <TabsTrigger value="profile" className="flex items-center gap-2">
+        <Tabs defaultValue="profile" className="flex gap-6">
+          <TabsList className="flex flex-col h-fit w-48 bg-muted/30 p-2">
+            <TabsTrigger value="profile" className="w-full justify-start gap-2">
               <User className="h-4 w-4" />
-              <span className="hidden sm:inline">Perfil</span>
+              Perfil
             </TabsTrigger>
-            <TabsTrigger value="addresses" className="flex items-center gap-2">
+            <TabsTrigger value="addresses" className="w-full justify-start gap-2">
               <Package className="h-4 w-4" />
-              <span className="hidden sm:inline">Endereços</span>
+              Endereços
             </TabsTrigger>
-            <TabsTrigger value="payment" className="flex items-center gap-2">
+            <TabsTrigger value="payment" className="w-full justify-start gap-2">
               <ShoppingBag className="h-4 w-4" />
-              <span className="hidden sm:inline">Pagamento</span>
+              Pagamento
+            </TabsTrigger>
+            <TabsTrigger value="orders" className="w-full justify-start gap-2">
+              <Package className="h-4 w-4" />
+              Pedidos
+            </TabsTrigger>
+            <TabsTrigger value="delivered" className="w-full justify-start gap-2">
+              <CheckCircle className="h-4 w-4" />
+              Recebidos
+            </TabsTrigger>
+            <TabsTrigger value="all" className="w-full justify-start gap-2">
+              <ShoppingBag className="h-4 w-4" />
+              Todas
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="orders">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Package className="h-5 w-5" />
-                  Pedidos em Andamento
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {isLoading ? (
-                  <div className="space-y-4">
-                    {[...Array(2)].map((_, i) => (
-                      <Skeleton key={i} className="h-32 w-full" />
-                    ))}
-                  </div>
-                ) : activeOrders.length > 0 ? (
-                  <div className="space-y-4">{activeOrders.map(renderOrderCard)}</div>
-                ) : (
-                  <div className="text-center py-12">
-                    <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground mb-4">Você não tem pedidos em andamento</p>
-                    <Button onClick={() => navigate('/catalogo')}>Ver Catálogo</Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
+          <div className="flex-1 space-y-6">
+            <TabsContent value="orders">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Package className="h-5 w-5" />
+                    Pedidos em Andamento
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {isLoading ? (
+                    <div className="space-y-4">
+                      {[...Array(2)].map((_, i) => (
+                        <Skeleton key={i} className="h-32 w-full" />
+                      ))}
+                    </div>
+                  ) : activeOrders.length > 0 ? (
+                    <div className="space-y-4">{activeOrders.map(renderOrderCard)}</div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                      <p className="text-muted-foreground">Você não tem pedidos em andamento</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-          <TabsContent value="delivered">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5" />
-                  Pedidos Entregues
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {isLoading ? (
-                  <div className="space-y-4">
-                    {[...Array(2)].map((_, i) => (
-                      <Skeleton key={i} className="h-32 w-full" />
-                    ))}
-                  </div>
-                ) : deliveredOrders.length > 0 ? (
-                  <div className="space-y-4">{deliveredOrders.map(renderOrderCard)}</div>
-                ) : (
-                  <div className="text-center py-12">
-                    <CheckCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground mb-4">
-                      Você ainda não recebeu nenhum pedido
-                    </p>
-                    <Button onClick={() => navigate('/catalogo')}>Ver Catálogo</Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
+            <TabsContent value="delivered">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5" />
+                    Pedidos Entregues
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {isLoading ? (
+                    <div className="space-y-4">
+                      {[...Array(2)].map((_, i) => (
+                        <Skeleton key={i} className="h-32 w-full" />
+                      ))}
+                    </div>
+                  ) : deliveredOrders.length > 0 ? (
+                    <div className="space-y-4">{deliveredOrders.map(renderOrderCard)}</div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <CheckCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                      <p className="text-muted-foreground">Você ainda não recebeu nenhum pedido</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-          <TabsContent value="all">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <ShoppingBag className="h-5 w-5" />
-                  Todas as Compras
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {isLoading ? (
-                  <div className="space-y-4">
-                    {[...Array(3)].map((_, i) => (
-                      <Skeleton key={i} className="h-32 w-full" />
-                    ))}
-                  </div>
-                ) : orders && orders.length > 0 ? (
-                  <div className="space-y-4">{orders.map(renderOrderCard)}</div>
-                ) : (
-                  <div className="text-center py-12">
-                    <ShoppingBag className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground mb-4">Você ainda não fez nenhuma compra</p>
-                    <Button onClick={() => navigate('/catalogo')}>Ver Catálogo</Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
+            <TabsContent value="all">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <ShoppingBag className="h-5 w-5" />
+                    Todas as Compras
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {isLoading ? (
+                    <div className="space-y-4">
+                      {[...Array(3)].map((_, i) => (
+                        <Skeleton key={i} className="h-32 w-full" />
+                      ))}
+                    </div>
+                  ) : orders && orders.length > 0 ? (
+                    <div className="space-y-4">{orders.map(renderOrderCard)}</div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <ShoppingBag className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                      <p className="text-muted-foreground">Você ainda não fez nenhuma compra</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-          <TabsContent value="profile">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5" />
-                  Dados Pessoais
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSaveProfile} className="space-y-6">
-                  <div className="space-y-4">
-                    <div className="grid gap-4 md:grid-cols-2">
+            <TabsContent value="profile">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="h-5 w-5" />
+                    Dados Pessoais
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSaveProfile} className="space-y-6">
+                    <div className="space-y-4">
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label htmlFor="fullName">Nome Completo</Label>
+                          <Input
+                            id="fullName"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            placeholder="Seu nome completo"
+                            disabled
+                            className="bg-muted"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="email">Email</Label>
+                          <Input id="email" value={user.email} disabled className="bg-muted" />
+                        </div>
+                      </div>
+
                       <div className="space-y-2">
-                        <Label htmlFor="fullName">Nome Completo</Label>
+                        <Label htmlFor="phone">Telefone</Label>
                         <Input
-                          id="fullName"
-                          value={fullName}
-                          onChange={(e) => setFullName(e.target.value)}
-                          placeholder="Seu nome completo"
+                          id="phone"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          placeholder="Número de telefone"
                         />
                       </div>
+
+                      <Separator />
+
                       <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" value={user.email} disabled className="bg-muted" />
+                        <h3 className="text-lg font-semibold">Segurança</h3>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() =>
+                            toast.info('Funcionalidade de alteração de senha em breve')
+                          }
+                        >
+                          Alterar Senha
+                        </Button>
                       </div>
+
+                      <Separator />
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Telefone</Label>
-                      <Input
-                        id="phone"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="(00) 00000-0000"
-                      />
-                    </div>
+                    <Button type="submit" disabled={saving}>
+                      {saving ? 'Salvando...' : 'Salvar Alterações'}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-                    <Separator />
-
-                    <div className="space-y-2">
-                      <h3 className="text-lg font-semibold">Segurança</h3>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => toast.info('Funcionalidade de alteração de senha em breve')}
-                      >
-                        Alterar Senha
-                      </Button>
-                    </div>
-
-                    <Separator />
-
-                    <div className="space-y-2">
-                      <h3 className="text-lg font-semibold">Preferências de Comunicação</h3>
-                      <div className="flex items-center space-x-2">
-                        <input type="checkbox" id="newsletter" defaultChecked />
-                        <Label htmlFor="newsletter">Receber ofertas e novidades por email</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <input type="checkbox" id="sms" />
-                        <Label htmlFor="sms">Receber notificações por SMS</Label>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Button type="submit" disabled={saving}>
-                    {saving ? 'Salvando...' : 'Salvar Alterações'}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="addresses">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span className="flex items-center gap-2">
+            <TabsContent value="addresses">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
                     <Package className="h-5 w-5" />
                     Meus Endereços
-                  </span>
-                  <Button onClick={() => toast.info('Adicionar novo endereço')}>
-                    Adicionar Endereço
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <Card>
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <Badge>Principal</Badge>
-                            <p className="font-semibold">Endereço de Entrega</p>
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            {address || 'Nenhum endereço cadastrado'}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {city && state ? `${city} - ${state}` : ''}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {zipCode ? `CEP: ${zipCode}` : ''}
-                          </p>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSaveProfile} className="space-y-6">
+                    <div className="space-y-2">
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label htmlFor="zipCode">CEP</Label>
+                          <Input
+                            id="zipCode"
+                            value={zipCode}
+                            onChange={(e) => setZipCode(e.target.value)}
+                            placeholder="00000-000"
+                          />
                         </div>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => toast.info('Editar endereço')}
-                          >
-                            Editar
-                          </Button>
+                        <div className="space-y-2">
+                          <Label htmlFor="state">Estado</Label>
+                          <Input
+                            id="state"
+                            value={state}
+                            onChange={(e) => setState(e.target.value)}
+                            placeholder="UF"
+                            maxLength={2}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="city">Cidade</Label>
+                          <Input
+                            id="city"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                            placeholder="Nome da cidade"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="neighborhood">Bairro</Label>
+                          <Input id="neighborhood" placeholder="Nome do bairro" />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="street">Rua/Avenida</Label>
+                          <Input
+                            id="street"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            placeholder="Nome da rua"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="number">Número</Label>
+                          <Input id="number" placeholder="123" />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="complement">Complemento</Label>
+                          <Input id="complement" placeholder="Apt, Bloco, etc. (opcional)" />
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                  <p className="text-sm text-muted-foreground text-center py-4">
-                    Adicione mais endereços para facilitar suas compras
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+                    </div>
 
-          <TabsContent value="payment">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span className="flex items-center gap-2">
+                    <Button type="submit" disabled={saving}>
+                      {saving ? 'Salvando...' : 'Salvar Endereço'}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="payment">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
                     <ShoppingBag className="h-5 w-5" />
                     Formas de Pagamento
-                  </span>
-                  <Button onClick={() => toast.info('Adicionar novo cartão')}>
-                    Adicionar Cartão
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="text-center py-8">
-                    <p className="text-muted-foreground mb-4">
-                      Você ainda não possui cartões salvos
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Adicione um cartão para agilizar suas próximas compras
-                    </p>
-                  </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="font-semibold mb-4">Adicionar Cartão de crédito/débito</h3>
+                      <form className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="cardNumber">Número do Cartão</Label>
+                          <Input id="cardNumber" placeholder="0000 0000 0000 0000" maxLength={19} />
+                        </div>
 
-                  <Separator />
+                        <div className="space-y-2">
+                          <Label htmlFor="cardName">Nome no cartão</Label>
+                          <Input id="cardName" placeholder="Nome do titular" />
+                        </div>
 
-                  <div className="space-y-2">
-                    <h3 className="font-semibold">Cupons e Vale-Presente</h3>
-                    <div className="flex gap-2">
-                      <Input placeholder="Digite seu código de cupom" />
-                      <Button variant="outline">Aplicar</Button>
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label htmlFor="cardExpiry">Validade</Label>
+                            <Input id="cardExpiry" placeholder="MM/AA" maxLength={5} />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="cardCvv">CVV</Label>
+                            <Input id="cardCvv" placeholder="000" maxLength={4} type="password" />
+                          </div>
+                        </div>
+
+                        <Button
+                          type="button"
+                          onClick={() => toast.success('Cartão adicionado com sucesso!')}
+                        >
+                          Adicionar Cartão
+                        </Button>
+
+                        <h3 className="font-semibold mb-4">Endereço de cobrança</h3>
+                        <div className="space-y-2">
+                          <div className="grid gap-4 md:grid-cols-2">
+                            <div className="space-y-2">
+                              <Label htmlFor="zipCode">CEP</Label>
+                              <Input
+                                id="zipCode"
+                                value={zipCode}
+                                onChange={(e) => setZipCode(e.target.value)}
+                                placeholder="00000-000"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="state">Estado</Label>
+                              <Input
+                                id="state"
+                                value={state}
+                                onChange={(e) => setState(e.target.value)}
+                                placeholder="UF"
+                                maxLength={2}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="city">Cidade</Label>
+                              <Input
+                                id="city"
+                                value={city}
+                                onChange={(e) => setCity(e.target.value)}
+                                placeholder="Nome da cidade"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="street">Rua/Avenida</Label>
+                              <Input
+                                id="street"
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
+                                placeholder="Nome da rua"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="number">Número</Label>
+                              <Input id="number" placeholder="123" />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="complement">Complemento</Label>
+                              <Input id="complement" placeholder="Apt, Bloco, etc. (opcional)" />
+                            </div>
+                          </div>
+
+                          <Separator />
+
+                          <Button type="submit" disabled={saving}>
+                            {saving ? 'Salvando...' : 'Salvar Endereço'}
+                          </Button>
+                        </div>
+                      </form>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      Você não possui cupons ativos no momento
-                    </p>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </div>
         </Tabs>
       </div>
     </div>
