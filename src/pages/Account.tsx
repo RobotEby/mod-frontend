@@ -66,9 +66,8 @@ const Account = () => {
   const handleLogout = async () => {
     const { error } = await mockAuthService.signOut();
     if (error) {
-      toast.error('Erro ao sair');
-    } else {
       toast.success('Logout realizado com sucesso');
+    } else {
       navigate('/');
     }
   };

@@ -2,16 +2,23 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, ShoppingCart, Package, Clock } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { useState } from 'react';
 import { mockProducts, mockCategories } from '@/lib/mockData';
+import { ReviewForm } from '@/components/ReviewForm';
+import { ReviewList } from '@/components/ReviewList';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addItem } = useCart();
+  const { user } = useAuth();
   const [quantity, setQuantity] = useState(1);
+  const [refreshReviews, setRefreshReviews] = useState(0);
 
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', id],
@@ -173,6 +180,39 @@ const ProductDetail = () => {
               </Button>
             </div>
           </div>
+        </div>
+
+        <Separator className="my-12" />
+
+        <div className="max-w-4xl mx-auto">
+          <Tabs defaultValue="reviews" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="reviews">Avaliações</TabsTrigger>
+              <TabsTrigger value="write-review">Escrever Avaliação</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="reviews" className="mt-6">
+              <ReviewList productId={id!} key={refreshReviews} />
+            </TabsContent>
+
+            <TabsContent value="write-review" className="mt-6">
+              {user ? (
+                <ReviewForm
+                  productId={id!}
+                  onSuccess={() => {
+                    setRefreshReviews((prev) => prev + 1);
+                  }}
+                />
+              ) : (
+                <div className="text-center py-8 border rounded-lg">
+                  <p className="text-muted-foreground mb-4">
+                    Faça login para escrever uma avaliação
+                  </p>
+                  <Button onClick={() => navigate('/auth')}>Fazer Login</Button>
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
