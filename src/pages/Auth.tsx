@@ -30,17 +30,12 @@ const Auth = () => {
     const fullName = formData.get('signup-name') as string;
 
     try {
-      const { error } = await mockAuthService.signUp(email, password, {
-        full_name: fullName,
-      });
+      const response = await mockAuthService.signUp(email, password, fullName);
 
-      if (error) throw error;
-
-      const { error: signInError } = await mockAuthService.signInWithPassword(email, password);
-
-      if (signInError) throw signInError;
+      if (!response.token) return toast.error('Erro ao criar conta');
 
       toast.success('Conta criada com sucesso!');
+      navigate('/');
     } catch (error: any) {
       toast.error(error.message || 'Erro ao criar conta');
     } finally {
@@ -57,9 +52,9 @@ const Auth = () => {
     const password = formData.get('signin-password') as string;
 
     try {
-      const { error } = await mockAuthService.signInWithPassword(email, password);
+      const response = await mockAuthService.signIn(email, password);
 
-      if (error) throw error;
+      if (!response.token) return toast.error('Erro ao fazer login');
 
       toast.success('Login realizado com sucesso!');
       navigate('/');
