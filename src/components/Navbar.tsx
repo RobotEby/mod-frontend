@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
-import { ShoppingCart, User, Menu, Heart } from 'lucide-react';
+import { ShoppingCart, User, Menu, Heart, Percent } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { NotificationBell } from '@/components/NotificationBell';
+import { MegaMenu } from '@/components/MegaMenu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { mockCategories } from '@/lib/mockData';
 
 export const Navbar = () => {
   const { items } = useCart();
@@ -13,18 +15,53 @@ export const Navbar = () => {
   const { wishlistCount } = useWishlist();
   const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
-  const NavLinks = () => (
-    <>
-      <Link to="/" className="text-foreground hover:text-primary transition-colors">
+  const MobileNavLinks = () => (
+    <div className="flex flex-col gap-4">
+      <Link to="/" className="text-foreground hover:text-primary transition-colors text-lg">
         Home
       </Link>
-      <Link to="/catalogo" className="text-foreground hover:text-primary transition-colors">
-        Catálogo
+      <Link to="/catalogo" className="text-foreground hover:text-primary transition-colors text-lg">
+        Todos os Produtos
       </Link>
-      <Link to="/sobre" className="text-foreground hover:text-primary transition-colors">
-        Sobre
-      </Link>
-    </>
+      <div className="border-t pt-4">
+        <p className="text-sm font-semibold text-muted-foreground mb-3">Categorias</p>
+        {mockCategories.map((category) => (
+          <Link
+            key={category.id}
+            to={`/catalogo?categoria=${category.id}`}
+            className="block py-2 text-foreground hover:text-primary transition-colors"
+          >
+            {category.name}
+          </Link>
+        ))}
+      </div>
+      <div className="border-t pt-4">
+        <Link
+          to="/catalogo?ofertas=true"
+          className="flex items-center gap-2 text-destructive font-medium"
+        >
+          <Percent className="h-4 w-4" />
+          Ofertas
+        </Link>
+      </div>
+      <div className="border-t pt-4">
+        <Link to="/sobre" className="text-foreground hover:text-primary transition-colors text-lg">
+          Sobre
+        </Link>
+        <Link
+          to="/blog"
+          className="block py-2 text-foreground hover:text-primary transition-colors text-lg"
+        >
+          Blog
+        </Link>
+        <Link
+          to="/contato"
+          className="block py-2 text-foreground hover:text-primary transition-colors text-lg"
+        >
+          Contato
+        </Link>
+      </div>
+    </div>
   );
 
   return (
@@ -34,18 +71,43 @@ export const Navbar = () => {
           Movelaria on Demand
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
-          <NavLinks />
+        <div className="hidden md:flex items-center gap-6">
+          <Link
+            to="/"
+            className="text-foreground hover:text-primary transition-colors link-underline"
+          >
+            Home
+          </Link>
+          <MegaMenu />
+          <Link
+            to="/catalogo?ofertas=true"
+            className="text-destructive hover:text-destructive/80 transition-colors font-medium flex items-center gap-1"
+          >
+            <Percent className="h-4 w-4" />
+            Ofertas
+          </Link>
+          <Link
+            to="/sobre"
+            className="text-foreground hover:text-primary transition-colors link-underline"
+          >
+            Sobre
+          </Link>
+          <Link
+            to="/blog"
+            className="text-foreground hover:text-primary transition-colors link-underline"
+          >
+            Blog
+          </Link>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           {user && <NotificationBell />}
 
           <Link to="/lista-desejos">
             <Button variant="ghost" size="icon" className="relative">
               <Heart className="h-5 w-5" />
               {wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center animate-scale-in">
                   {wishlistCount}
                 </span>
               )}
@@ -56,7 +118,7 @@ export const Navbar = () => {
             <Button variant="ghost" size="icon" className="relative">
               <ShoppingCart className="h-5 w-5" />
               {cartItemsCount > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center animate-scale-in">
                   {cartItemsCount}
                 </span>
               )}
@@ -76,8 +138,8 @@ export const Navbar = () => {
               </Button>
             </SheetTrigger>
             <SheetContent>
-              <div className="flex flex-col gap-6 mt-8">
-                <NavLinks />
+              <div className="mt-8">
+                <MobileNavLinks />
               </div>
             </SheetContent>
           </Sheet>

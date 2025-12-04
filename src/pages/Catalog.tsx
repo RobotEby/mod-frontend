@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ProductCard } from '@/components/ProductCard';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -12,15 +13,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Search, Star } from 'lucide-react';
+import { Search, Star, Percent } from 'lucide-react';
 import { mockProducts, mockCategories } from '@/lib/mockData';
 
 const Catalog = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    searchParams.get('categoria'),
+  );
   const [priceRange, setPriceRange] = useState([0, 50000]);
   const [searchQuery, setSearchQuery] = useState('');
   const [minRating, setMinRating] = useState<number>(0);
   const [sortBy, setSortBy] = useState<string>('newest');
+  const [showOffers, setShowOffers] = useState(searchParams.get('ofertas') === 'true');
+
+  useEffect(() => {
+    const categoria = searchParams.get('categoria');
+    const ofertas = searchParams.get('ofertas');
+    if (categoria) setSelectedCategory(categoria);
+    if (ofertas === 'true') setShowOffers(true);
+  }, [searchParams]);
 
   const { data: categories } = useQuery({
     queryKey: ['categories'],
@@ -31,11 +43,23 @@ const Catalog = () => {
   });
 
   const { data: products, isLoading } = useQuery({
-    queryKey: ['products', selectedCategory, priceRange, searchQuery, minRating, sortBy],
+    queryKey: [
+      'products',
+      selectedCategory,
+      priceRange,
+      searchQuery,
+      minRating,
+      sortBy,
+      showOffers,
+    ],
     queryFn: async () => {
       await new Promise((resolve) => setTimeout(resolve, 300));
 
       let filtered = [...mockProducts];
+
+      if (showOffers) {
+        filtered = filtered.filter((p) => p.isOnSale);
+      }
 
       if (selectedCategory) {
         filtered = filtered.filter((p) => p.category_id === selectedCategory);
@@ -61,6 +85,9 @@ const Catalog = () => {
         case 'name':
           filtered.sort((a, b) => a.name.localeCompare(b.name));
           break;
+        case 'discount':
+          filtered.sort((a, b) => (b.discountPercent || 0) - (a.discountPercent || 0));
+          break;
         case 'newest':
         default:
           filtered.sort(
@@ -72,13 +99,38 @@ const Catalog = () => {
     },
   });
 
+  const handleCategoryChange = (catId: string | null) => {
+    setSelectedCategory(catId);
+    if (catId) {
+      searchParams.set('categoria', catId);
+    } else {
+      searchParams.delete('categoria');
+    }
+    setSearchParams(searchParams);
+  };
+
+  const handleOffersToggle = () => {
+    const newValue = !showOffers;
+    setShowOffers(newValue);
+    if (newValue) {
+      searchParams.set('ofertas', 'true');
+    } else {
+      searchParams.delete('ofertas');
+    }
+    setSearchParams(searchParams);
+  };
+
   return (
-    <div className="min-h-screen py-12">
+    <div className="min-h-screen py-12 animate-fade-in">
       <div className="container">
         <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-4">Catálogo de Móveis</h1>
+          <h1 className="text-4xl font-bold mb-4">
+            {showOffers ? 'Ofertas Especiais' : 'Catálogo de Móveis'}
+          </h1>
           <p className="text-lg text-muted-foreground mb-6">
-            Explore nossa coleção completa de móveis de luxo
+            {showOffers
+              ? 'Aproveite os melhores preços em móveis selecionados'
+              : 'Explore nossa coleção completa de móveis de luxo'}
           </p>
 
           <div className="flex flex-col md:flex-row gap-4">
@@ -100,6 +152,7 @@ const Catalog = () => {
                 <SelectItem value="newest">Mais Recentes</SelectItem>
                 <SelectItem value="price-asc">Menor Preço</SelectItem>
                 <SelectItem value="price-desc">Maior Preço</SelectItem>
+                <SelectItem value="discount">Maior Desconto</SelectItem>
                 <SelectItem value="name">Nome A-Z</SelectItem>
               </SelectContent>
             </Select>
@@ -109,12 +162,23 @@ const Catalog = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <aside className="lg:col-span-1 space-y-6">
             <div className="bg-card p-6 rounded-lg border">
+              <Button
+                variant={showOffers ? 'default' : 'outline'}
+                className="w-full justify-start gap-2"
+                onClick={handleOffersToggle}
+              >
+                <Percent className="h-4 w-4" />
+                {showOffers ? 'Ver Todos' : 'Ver Ofertas'}
+              </Button>
+            </div>
+
+            <div className="bg-card p-6 rounded-lg border">
               <h3 className="font-semibold text-lg mb-4">Categorias</h3>
               <div className="space-y-2">
                 <Button
                   variant={selectedCategory === null ? 'default' : 'ghost'}
                   className="w-full justify-start"
-                  onClick={() => setSelectedCategory(null)}
+                  onClick={() => handleCategoryChange(null)}
                 >
                   Todas
                 </Button>
@@ -123,7 +187,7 @@ const Catalog = () => {
                     key={category.id}
                     variant={selectedCategory === category.id ? 'default' : 'ghost'}
                     className="w-full justify-start"
-                    onClick={() => setSelectedCategory(category.id)}
+                    onClick={() => handleCategoryChange(category.id)}
                   >
                     {category.name}
                   </Button>
@@ -152,7 +216,7 @@ const Catalog = () => {
             <div className="bg-card p-6 rounded-lg border">
               <h3 className="font-semibold text-lg mb-4">Avaliação Mínima</h3>
               <div className="space-y-2">
-                {[4, 3, 2, 1, 0].map((rating) => (
+                {[5, 4, 3, 2, 1, 0].map((rating) => (
                   <Button
                     key={rating}
                     variant={minRating === rating ? 'default' : 'ghost'}
@@ -163,9 +227,15 @@ const Catalog = () => {
                       {rating > 0 ? (
                         <>
                           {Array.from({ length: rating }).map((_, i) => (
-                            <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                            <Star
+                              key={i}
+                              className={`h-4 w-4 ${
+                                minRating === rating
+                                  ? 'fill-yellow-500 text-yellow-500'
+                                  : 'fill-muted-foreground text-muted-foreground'
+                              }`}
+                            />
                           ))}
-                          <span>& acima</span>
                         </>
                       ) : (
                         <span>Todas</span>
@@ -182,22 +252,27 @@ const Catalog = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[...Array(9)].map((_, i) => (
                   <div key={i} className="space-y-4">
-                    <Skeleton className="aspect-square w-full" />
+                    <Skeleton className="aspect-square w-full shimmer" />
                     <Skeleton className="h-6 w-3/4" />
                     <Skeleton className="h-8 w-1/2" />
                   </div>
                 ))}
               </div>
             ) : products && products.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-animation">
                 {products.map((product) => (
                   <ProductCard
                     key={product.id}
                     id={product.id}
                     name={product.name}
-                    price={Number(product.price)}
+                    price={product.price}
+                    originalPrice={product.originalPrice}
+                    discountPercent={product.discountPercent}
+                    isOnSale={product.isOnSale}
                     image={product.main_image_url || ''}
                     leadTime={product.lead_time || undefined}
+                    stockQuantity={product.stock_quantity}
+                    lowStockThreshold={product.low_stock_threshold}
                   />
                 ))}
               </div>
