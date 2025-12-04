@@ -1,23 +1,43 @@
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Heart, Star } from 'lucide-react';
+import { ShoppingCart, Heart, Star, Clock, AlertTriangle } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
   id: string;
   name: string;
   price: number;
+  originalPrice?: number;
+  discountPercent?: number;
+  isOnSale?: boolean;
   image: string;
   leadTime?: string;
+  stockQuantity?: number;
+  lowStockThreshold?: number;
 }
 
-export const ProductCard = ({ id, name, price, image, leadTime }: ProductCardProps) => {
+export const ProductCard = ({
+  id,
+  name,
+  price,
+  originalPrice,
+  discountPercent,
+  isOnSale,
+  image,
+  leadTime,
+  stockQuantity = 10,
+  lowStockThreshold = 5,
+}: ProductCardProps) => {
   const { addItem } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const isOutOfStock = stockQuantity === 0;
+  const isLowStock = stockQuantity > 0 && stockQuantity <= lowStockThreshold;
+  const pixPrice = price * 0.9;
 
   const { data: reviewStats } = useQuery({
     queryKey: ['review-stats', id],
@@ -37,7 +57,9 @@ export const ProductCard = ({ id, name, price, image, leadTime }: ProductCardPro
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-    addItem({ id, name, price, image });
+    if (!isOutOfStock) {
+      addItem({ id, name, price, image });
+    }
   };
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
@@ -47,13 +69,36 @@ export const ProductCard = ({ id, name, price, image, leadTime }: ProductCardPro
 
   return (
     <Link to={`/produto/${id}`}>
-      <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300">
-        <div className="relative aspect-square overflow-hidden bg-muted">
+      <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 card-hover">
+        <div className="relative aspect-square overflow-hidden bg-muted image-zoom">
           <img
             src={image || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800'}
             alt={name}
-            className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className={cn(
+              'h-full w-full object-cover transition-all duration-500',
+              isOutOfStock && 'grayscale opacity-70',
+            )}
           />
+
+          <div className="absolute top-2 left-2 flex flex-col gap-1">
+            {isOnSale && discountPercent && (
+              <span className="bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded-md">
+                -{discountPercent}%
+              </span>
+            )}
+            {isLowStock && !isOutOfStock && (
+              <span className="bg-warning text-foreground text-xs font-medium px-2 py-1 rounded-md flex items-center gap-1">
+                <AlertTriangle className="h-3 w-3" />
+                Últimas
+              </span>
+            )}
+            {isOutOfStock && (
+              <span className="bg-muted text-muted-foreground text-xs font-medium px-2 py-1 rounded-md">
+                Esgotado
+              </span>
+            )}
+          </div>
+
           <Button
             variant="ghost"
             size="icon"
@@ -68,7 +113,9 @@ export const ProductCard = ({ id, name, price, image, leadTime }: ProductCardPro
           </Button>
         </div>
         <CardContent className="p-4">
-          <h3 className="font-semibold text-lg mb-2 line-clamp-2">{name}</h3>
+          <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+            {name}
+          </h3>
 
           {reviewStats && reviewStats.count > 0 && (
             <div className="flex items-center gap-1 mb-2">
@@ -80,13 +127,36 @@ export const ProductCard = ({ id, name, price, image, leadTime }: ProductCardPro
             </div>
           )}
 
-          <p className="text-2xl font-bold text-primary">R$ {price.toFixed(2).replace('.', ',')}</p>
-          {leadTime && <p className="text-sm text-muted-foreground mt-1">Prazo: {leadTime}</p>}
+          <div className="space-y-1">
+            {isOnSale && originalPrice && (
+              <p className="text-sm text-muted-foreground line-through">
+                R$ {originalPrice.toFixed(2).replace('.', ',')}
+              </p>
+            )}
+            <p className="text-2xl font-bold text-primary">
+              R$ {price.toFixed(2).replace('.', ',')}
+            </p>
+            <p className="text-sm text-success font-medium">
+              R$ {pixPrice.toFixed(2).replace('.', ',')} no PIX
+            </p>
+          </div>
+
+          {leadTime && (
+            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-2">
+              <Clock className="h-3 w-3" />
+              <span>{leadTime}</span>
+            </div>
+          )}
         </CardContent>
         <CardFooter className="p-4 pt-0">
-          <Button onClick={handleAddToCart} className="w-full" variant="default">
+          <Button
+            onClick={handleAddToCart}
+            className="w-full"
+            variant="default"
+            disabled={isOutOfStock}
+          >
             <ShoppingCart className="mr-2 h-4 w-4" />
-            Adicionar ao Carrinho
+            {isOutOfStock ? 'Esgotado' : 'Adicionar ao Carrinho'}
           </Button>
         </CardFooter>
       </Card>

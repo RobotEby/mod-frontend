@@ -4,13 +4,15 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, ShoppingCart, Package, Clock } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Package, Clock, AlertTriangle } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState } from 'react';
 import { mockProducts, mockCategories } from '@/lib/mockData';
 import { ReviewForm } from '@/components/ReviewForm';
 import { ReviewList } from '@/components/ReviewList';
+import { ShippingCalculator } from '@/components/ShippingCalculator';
+import { RelatedProducts } from '@/components/RelatedProducts';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -181,6 +183,12 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
+
+        <div className="mt-8">
+          <ShippingCalculator productPrice={Number(product.price)} />
+        </div>
+
+        <RelatedProducts currentProductId={product.id} categoryId={product.category_id} />
 
         <Separator className="my-12" />
 

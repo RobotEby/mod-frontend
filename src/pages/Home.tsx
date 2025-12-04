@@ -4,8 +4,20 @@ import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 import heroImage from '@/assets/hero-furniture.jpg';
-import { mockProducts } from '@/lib/mockData';
+import { mockProducts, mockCategories } from '@/lib/mockData';
+import { BenefitsBar } from '@/components/BenefitsBar';
+import { PromoBanner } from '@/components/PromoBanner';
+import { CategoryCard } from '@/components/CategoryCard';
+import { NewsletterForm } from '@/components/NewsletterForm';
+import { Footer } from '@/components/Footer';
 
 const Home = () => {
   const { data: products, isLoading } = useQuery({
@@ -18,6 +30,10 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
+      <PromoBanner />
+
+      <BenefitsBar />
+
       <section className="relative h-[600px] flex items-center">
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -96,67 +112,176 @@ const Home = () => {
 
       <section className="py-20">
         <div className="container">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Como Funciona</h2>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4">Explore por Categoria</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Um processo simples e transparente, do pedido até a entrega
+              Encontre o móvel perfeito para cada ambiente da sua casa
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                <span className="text-3xl font-bold text-primary">1</span>
-              </div>
-              <h3 className="text-xl font-semibold">Escolha seu Móvel</h3>
-              <p className="text-muted-foreground">
-                Navegue pelo nosso catálogo e selecione o móvel perfeito para seu espaço
-              </p>
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {mockCategories.map((category) => (
+              <CategoryCard
+                key={category.id}
+                name={category.name}
+                slug={category.slug}
+                image={category.image_url || ''}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
 
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                <span className="text-3xl font-bold text-primary">2</span>
-              </div>
-              <h3 className="text-xl font-semibold">Enviamos à Marcenaria</h3>
-              <p className="text-muted-foreground">
-                Seu pedido é enviado para nossa parceira Marcenaria Diferente para fabricação
-              </p>
-            </div>
-
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                <span className="text-3xl font-bold text-primary">3</span>
-              </div>
-              <h3 className="text-xl font-semibold">Receba em Casa</h3>
-              <p className="text-muted-foreground">
-                Acompanhe o status do pedido e receba seu móvel com entrega garantida
-              </p>
-            </div>
+      <section className="py-20 bg-gradient-to-b from-muted/30 to-background">
+        <div className="container">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">O Que Nossos Clientes Dizem</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Experiências reais de quem transformou seus ambientes
+            </p>
           </div>
 
-          <div className="mt-16 p-8 rounded-2xl bg-gradient-to-r from-primary/10 to-primary/5">
-            <div className="max-w-3xl mx-auto space-y-6">
-              <h3 className="text-2xl font-bold text-center">
-                Por que escolher a Movelaria on Demand?
-              </h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                {[
-                  'Qualidade de marcenaria sob medida',
-                  'Designs exclusivos e modernos',
-                  'Fabricação especializada',
-                  'Acompanhamento em tempo real',
-                ].map((benefit) => (
-                  <div key={benefit} className="flex items-center gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span>{benefit}</span>
+          <div className="max-w-4xl mx-auto">
+            <Carousel
+              opts={{
+                align: 'start',
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent>
+                <CarouselItem>
+                  <div className="bg-card p-8 rounded-2xl border border-border">
+                    <div className="flex gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <span key={i} className="text-primary">
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-muted-foreground mb-6">
+                      "A qualidade dos móveis superou minhas expectativas. O acabamento é impecável
+                      e o design é exatamente o que eu procurava."
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-primary font-semibold">MC</span>
+                      </div>
+                      <div>
+                        <p className="font-semibold">Maria Clara</p>
+                        <p className="text-sm text-muted-foreground">São Paulo, SP</p>
+                      </div>
+                    </div>
                   </div>
-                ))}
+                </CarouselItem>
+
+                <CarouselItem>
+                  <div className="bg-card p-8 rounded-2xl border border-border">
+                    <div className="flex gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <span key={i} className="text-primary">
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-muted-foreground mb-6">
+                      "Processo simples e transparente. Acompanhei todo o status do pedido e recebi
+                      exatamente no prazo prometido."
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-primary font-semibold">RS</span>
+                      </div>
+                      <div>
+                        <p className="font-semibold">Roberto Silva</p>
+                        <p className="text-sm text-muted-foreground">Rio de Janeiro, RJ</p>
+                      </div>
+                    </div>
+                  </div>
+                </CarouselItem>
+
+                <CarouselItem>
+                  <div className="bg-card p-8 rounded-2xl border border-border">
+                    <div className="flex gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <span key={i} className="text-primary">
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-muted-foreground mb-6">
+                      "Móveis de verdadeira alta qualidade. O investimento valeu cada centavo. Minha
+                      sala ficou sofisticada e elegante."
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-primary font-semibold">AF</span>
+                      </div>
+                      <div>
+                        <p className="font-semibold">Ana Fernandes</p>
+                        <p className="text-sm text-muted-foreground">Belo Horizonte, MG</p>
+                      </div>
+                    </div>
+                  </div>
+                </CarouselItem>
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20">
+        <div className="container">
+          <div className="max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="text-4xl font-bold mb-6">Garantia de Qualidade</h2>
+                <p className="text-lg text-muted-foreground mb-6">
+                  Cada móvel passa por rigoroso controle de qualidade antes de chegar até você.
+                </p>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="font-semibold mb-1">Materiais Premium</p>
+                      <p className="text-muted-foreground text-sm">
+                        Utilizamos apenas madeiras selecionadas e acabamentos de primeira linha
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="font-semibold mb-1">Inspeção Detalhada</p>
+                      <p className="text-muted-foreground text-sm">
+                        Cada peça é inspecionada minuciosamente antes do envio
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
+                    <div>
+                      <p className="font-semibold mb-1">Garantia Estendida</p>
+                      <p className="text-muted-foreground text-sm">
+                        Todos os móveis incluem garantia de fabricação
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="relative h-[400px] rounded-2xl overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5" />
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      <NewsletterForm />
+
+      <Footer />
     </div>
   );
 };
