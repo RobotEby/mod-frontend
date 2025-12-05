@@ -42,12 +42,12 @@ export const mockAuthService = {
     };
   },
 
-  signUp: async (email: string, password: string, name: string): Promise<RegisterResponse> => {
+  signUp: async (email: string, password: string, full_name: string): Promise<RegisterResponse> => {
     try {
       const response = await new AccountClient().register({
         email,
         password,
-        name,
+        full_name,
       });
 
       // Salvar token e email no localStorage após registro bem-sucedido

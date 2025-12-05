@@ -11,17 +11,6 @@ export class AccountClient {
   async login(data: LoginData): Promise<LoginResponse> {
     const response = await apiClient.post<LoginResponse>('/account/login', data);
 
-    // Salvar token e dados do usuário no localStorage após login bem-sucedido
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
-      // Salvar objeto user completo (LoginResponse estende User)
-      const userData = {
-        email: response.data.email,
-      };
-      localStorage.setItem('user', JSON.stringify(userData));
-      window.dispatchEvent(new Event('auth-change'));
-    }
-
     return response.data;
   }
 
