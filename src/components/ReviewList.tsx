@@ -5,14 +5,15 @@ import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAppSelector } from '@/app/hooks';
+import { selectUser } from '@/features/user/userSelectors';
 
 interface ReviewListProps {
   productId: string;
 }
 
 export const ReviewList = ({ productId }: ReviewListProps) => {
-  const { user } = useAuth();
+  const user = useAppSelector(selectUser);
 
   const { data: reviews, refetch } = useQuery({
     queryKey: ['reviews', productId],

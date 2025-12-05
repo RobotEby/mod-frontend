@@ -1,19 +1,39 @@
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
+import { Store } from '@reduxjs/toolkit';
+import { RootState } from '@/app/store';
+import { clearAuth } from '@/features/user/userSlice';
 
-// Configuração da base URL da API
-// Em desenvolvimento, usa o proxy do Vite (/api)
-// Em produção, usa a variável de ambiente ou o padrão
-const getApiBaseUrl = () => {
-  if (import.meta.env.VITE_API_BASE_URL) {
-    // Se a variável de ambiente termina com /api, não adiciona novamente
-    const baseUrl = import.meta.env.VITE_API_BASE_URL.endsWith('/api')
-      ? import.meta.env.VITE_API_BASE_URL
-      : `${import.meta.env.VITE_API_BASE_URL}/api`;
-    return `${baseUrl}/v1`;
+// Variável para armazenar a referência do store
+let store: Store<RootState> | null = null;
+
+// Função para configurar o store no api-client
+export const setupApiClient = (reduxStore: Store<RootState>) => {
+  store = reduxStore;
+};
+
+// Função para obter o token do Redux store
+const getTokenFromStore = (): string | null => {
+  // Sempre tenta pegar do Redux primeiro, depois localStorage como fallback
+  if (store) {
+    try {
+      const state = store.getState();
+      // Usa optional chaining para evitar erro se session for null
+      const token = state.user.session?.access_token;
+      if (token) {
+        return token;
+      }
+    } catch (error) {
+      // Se houver erro ao acessar o store, usa localStorage
+      console.warn('Erro ao acessar token do Redux store:', error);
+    }
   }
-  // Em desenvolvimento, usa o proxy do Vite
-  // Em produção, usa o backend direto
-  return import.meta.env.DEV ? '/api/v1' : 'http://localhost:3000/api/v1';
+
+  // Fallback para localStorage (útil quando o usuário ainda não fez login)
+  return localStorage.getItem('token');
+};
+
+const getApiBaseUrl = () => {
+  return `${import.meta.env.VITE_API_BASE_URL}/api/v1`;
 };
 
 const API_BASE_URL = getApiBaseUrl();
@@ -29,7 +49,7 @@ const apiClient: AxiosInstance = axios.create({
 // Interceptor para adicionar token de autenticação nas requisições
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem('token');
+    const token = getTokenFromStore();
 
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -55,10 +75,14 @@ apiClient.interceptors.response.use(
 
       switch (status) {
         case 401:
-          // Não autorizado - limpar token e redirecionar para login
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          window.dispatchEvent(new Event('auth-change'));
+          // Não autorizado - limpar estado do Redux e localStorage
+          if (store) {
+            store.dispatch(clearAuth());
+          } else {
+            // Fallback se store não estiver configurado
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+          }
 
           // Redirecionar para login apenas se não estiver já na página de auth
           if (!window.location.pathname.includes('/auth')) {

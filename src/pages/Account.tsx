@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { selectUser, selectUserLoading } from '@/features/user/userSelectors';
+import { signOut } from '@/features/user/userThunks';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -38,7 +40,9 @@ const orderStatusMap = {
 };
 
 const Account = () => {
-  const { user, loading: authLoading, signOut } = useAuth();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
+  const authLoading = useAppSelector(selectUserLoading);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
@@ -55,8 +59,8 @@ const Account = () => {
 
   useEffect(() => {
     if (user) {
-      setFullName(user.user_metadata?.full_name || '');
-      setPhone(user.user_metadata?.phone || '');
+      setFullName(user.full_name || '');
+      setPhone(user.phone || '');
     }
   }, [user]);
 
@@ -107,7 +111,7 @@ const Account = () => {
 
   const handleLogout = async () => {
     try {
-      await signOut();
+      await dispatch(signOut()).unwrap();
       toast.success('Logout realizado com sucesso');
       navigate('/');
     } catch (error) {

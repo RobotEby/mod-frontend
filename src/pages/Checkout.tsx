@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAppSelector } from '@/app/hooks';
+import { selectUser } from '@/features/user/userSelectors';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,7 +12,7 @@ import { createMockOrder } from '@/lib/mockData';
 
 const Checkout = () => {
   const { items, total, clearCart } = useCart();
-  const { user } = useAuth();
+  const user = useAppSelector(selectUser);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 

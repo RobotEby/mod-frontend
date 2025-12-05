@@ -3,11 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAppSelector } from '@/app/hooks';
+import { selectUser } from '@/features/user/userSelectors';
 
 const Cart = () => {
   const { items, removeItem, updateQuantity, total } = useCart();
-  const { user } = useAuth();
+  const user = useAppSelector(selectUser);
   const navigate = useNavigate();
 
   const handleCheckout = () => {

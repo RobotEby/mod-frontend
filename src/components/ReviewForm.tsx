@@ -6,7 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Star } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAppSelector } from '@/app/hooks';
+import { selectUser } from '@/features/user/userSelectors';
 
 interface ReviewFormProps {
   productId: string;
@@ -14,7 +15,7 @@ interface ReviewFormProps {
 }
 
 export const ReviewForm = ({ productId, onSuccess }: ReviewFormProps) => {
-  const { user } = useAuth();
+  const user = useAppSelector(selectUser);
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [title, setTitle] = useState('');
