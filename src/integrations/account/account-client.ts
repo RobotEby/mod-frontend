@@ -2,25 +2,14 @@ import apiClient from '@/lib/api-client';
 import { LoginData, LoginResponse, RegisterData, RegisterResponse } from './interface';
 
 export class AccountClient {
-  async register(data: RegisterData): Promise<RegisterResponse> {
+  async signUp(data: RegisterData): Promise<RegisterResponse> {
     const response = await apiClient.post<RegisterResponse>('/account/register', data);
 
     return response.data;
   }
 
-  async login(data: LoginData): Promise<LoginResponse> {
+  async signIn(data: LoginData): Promise<LoginResponse> {
     const response = await apiClient.post<LoginResponse>('/account/login', data);
-
-    // Salvar token e dados do usuário no localStorage após login bem-sucedido
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
-      // Salvar objeto user completo (LoginResponse estende User)
-      const userData = {
-        email: response.data.email,
-      };
-      localStorage.setItem('user', JSON.stringify(userData));
-      window.dispatchEvent(new Event('auth-change'));
-    }
 
     return response.data;
   }

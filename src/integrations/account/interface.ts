@@ -1,6 +1,7 @@
 export interface User {
+  id?: string;
   email: string;
-  name?: string;
+  full_name?: string;
   phone?: string;
   address?: string;
   city?: string;
@@ -8,10 +9,14 @@ export interface User {
   zip_code?: string;
 }
 
-export interface RegisterData extends User {
+export interface RegisterData {
+  email: string;
   password: string;
+  full_name: string;
 }
-export interface LoginData extends User {
+
+export interface LoginData {
+  email: string;
   password: string;
 }
 
