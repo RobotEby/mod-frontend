@@ -2,13 +2,13 @@ import apiClient from '@/lib/api-client';
 import { LoginData, LoginResponse, RegisterData, RegisterResponse } from './interface';
 
 export class AccountClient {
-  async register(data: RegisterData): Promise<RegisterResponse> {
+  async signUp(data: RegisterData): Promise<RegisterResponse> {
     const response = await apiClient.post<RegisterResponse>('/account/register', data);
 
     return response.data;
   }
 
-  async login(data: LoginData): Promise<LoginResponse> {
+  async signIn(data: LoginData): Promise<LoginResponse> {
     const response = await apiClient.post<LoginResponse>('/account/login', data);
 
     return response.data;

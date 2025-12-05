@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { accountClient } from '@/integrations/account/account-client';
 
 interface AuthContextType {
   user: User | null;
@@ -29,44 +30,44 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { error };
+    try {
+      const response = await accountClient.signIn({ email, password });
+      const user = {
+        email: response.email,
+        full_name: response.full_name,
+      };
+
+      setUser(user);
+      setSession({ user, access_token: response.token });
+      setLoading(false);
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('token', response.token);
+      return { error: null };
+    } catch (error) {
+      throw new Error(error.message || 'Erro ao fazer login');
+    }
   };
 
-  const signUp = async (email: string, password: string, metadata?: { full_name?: string }) => {
-    const redirectUrl = `${window.location.origin}/`;
+  const signUp = async (email: string, password: string, full_name: string) => {
+    try {
+      const response = await accountClient.signUp({ email, password, full_name });
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: metadata,
-      },
-    });
-    return { error };
+      const user = {
+        email: response.email,
+        full_name: response.full_name,
+      };
+
+      setUser(user);
+      setSession({ user, access_token: response.token });
+      setLoading(false);
+
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('token', response.token);
+      return { error: null };
+    } catch (error) {
+      throw new Error(error.message || 'Erro ao criar conta');
+    }
   };
 
   const signOut = async () => {

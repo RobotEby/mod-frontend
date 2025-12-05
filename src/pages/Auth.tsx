@@ -30,16 +30,7 @@ const Auth = () => {
     const fullName = formData.get('signup-name') as string;
 
     try {
-      const { error } = await signUp(email, password, { full_name: fullName });
-
-      if (error) {
-        if (error.message.includes('already registered')) {
-          toast.error('Este email já está cadastrado. Tente fazer login.');
-        } else {
-          toast.error(error.message || 'Erro ao criar conta');
-        }
-        return;
-      }
+      await signUp(email, password, fullName);
 
       toast.success('Conta criada com sucesso!');
       navigate('/minha-conta');
@@ -59,16 +50,7 @@ const Auth = () => {
     const password = formData.get('signin-password') as string;
 
     try {
-      const { error } = await signIn(email, password);
-
-      if (error) {
-        if (error.message.includes('Invalid login')) {
-          toast.error('Email ou senha incorretos');
-        } else {
-          toast.error(error.message || 'Erro ao fazer login');
-        }
-        return;
-      }
+      await signIn(email, password);
 
       toast.success('Login realizado com sucesso!');
       navigate('/minha-conta');
