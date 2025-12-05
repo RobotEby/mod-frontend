@@ -1,3 +1,6 @@
+import { AccountClient, accountClient } from '@/integrations/account/account-client';
+import { LoginResponse, RegisterResponse } from '@/integrations/account/interface';
+
 interface User {
   id: string;
   email: string;
@@ -39,44 +42,35 @@ export const mockAuthService = {
     };
   },
 
-  signUp: async (
-    email: string,
-    password: string,
-    metadata?: { full_name?: string },
-  ): Promise<{ error: Error | null }> => {
-    if (mockUsers[email]) {
-      return { error: new Error('Usuário já existe') };
+  signUp: async (email: string, password: string, name: string): Promise<RegisterResponse> => {
+    try {
+      const response = await new AccountClient().register({
+        email,
+        password,
+        name,
+      });
+
+      // Salvar token e email no localStorage após registro bem-sucedido
+      if (response.token) {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('user', JSON.stringify({ email: response.email }));
+        window.dispatchEvent(new Event('auth-change'));
+      }
+
+      return response;
+    } catch (error) {
+      throw new Error('Erro ao criar conta');
     }
-
-    const user: User = {
-      id: `user-${Date.now()}`,
-      email,
-      full_name: metadata?.full_name,
-    };
-
-    mockUsers[email] = {
-      password,
-      user,
-    };
-
-    return { error: null };
   },
 
-  signInWithPassword: async (email: string, password: string): Promise<{ error: Error | null }> => {
-    const userData = mockUsers[email];
-
-    if (!userData || userData.password !== password) {
-      return { error: new Error('Email ou senha inválidos') };
+  signIn: async (email: string, password: string): Promise<LoginResponse> => {
+    const response = await new AccountClient().login({ email, password });
+    if (response.token) {
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify({ email: response.email }));
+      window.dispatchEvent(new Event('auth-change'));
     }
-
-    const token = `mock-token-${Date.now()}`;
-
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData.user));
-
-    triggerAuthChange();
-
-    return { error: null };
+    return response;
   },
 
   signOut: async (): Promise<{ error: Error | null }> => {
