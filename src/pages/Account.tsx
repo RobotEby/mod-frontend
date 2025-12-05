@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,8 +12,22 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { getMockOrderWithItems } from '@/lib/mockData';
-import { mockAuthService } from '@/lib/mockAuth';
-import { User, Package, ShoppingBag, CheckCircle } from 'lucide-react';
+import { User, Package, ShoppingBag, CheckCircle, MapPin, CreditCard, Trash2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { AddressForm } from '@/components/AddressForm';
+import { PaymentMethodForm } from '@/components/PaymentMethodForm';
+import { AddressFormData, PaymentMethodFormData } from '@/lib/validationSchemas';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 const orderStatusMap = {
   pending_payment: { label: 'Aguardando Pagamento', variant: 'secondary' as const },
@@ -24,16 +38,14 @@ const orderStatusMap = {
 };
 
 const Account = () => {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
+  const [showAddressForm, setShowAddressForm] = useState(false);
 
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [zipCode, setZipCode] = useState('');
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -43,14 +55,44 @@ const Account = () => {
 
   useEffect(() => {
     if (user) {
-      setFullName(user.full_name || '');
-      setPhone(user.phone || '');
-      setAddress(user.address || '');
-      setCity(user.city || '');
-      setState(user.state || '');
-      setZipCode(user.zip_code || '');
+      setFullName(user.user_metadata?.full_name || '');
+      setPhone(user.user_metadata?.phone || '');
     }
   }, [user]);
+
+  const { data: addresses, isLoading: isLoadingAddresses } = useQuery({
+    queryKey: ['user-addresses', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('user_addresses')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('is_default', { ascending: false })
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const { data: paymentMethods, isLoading: isLoadingPayments } = useQuery({
+    queryKey: ['user-payment-methods', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('user_payment_methods')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('is_default', { ascending: false })
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
 
   const { data: orders, isLoading } = useQuery({
     queryKey: ['user-orders', user?.id],
@@ -64,27 +106,154 @@ const Account = () => {
   });
 
   const handleLogout = async () => {
-    const { error } = await mockAuthService.signOut();
-    if (error) {
+    try {
+      await signOut();
       toast.success('Logout realizado com sucesso');
-    } else {
       navigate('/');
+    } catch (error) {
+      toast.error('Erro ao sair');
     }
   };
+
+  const addAddressMutation = useMutation({
+    mutationFn: async (data: AddressFormData) => {
+      if (!user) throw new Error('User not found');
+
+      const { error } = await supabase.from('user_addresses').insert({
+        user_id: user.id,
+        nickname: data.nickname || null,
+        street: data.street,
+        number: data.number,
+        complement: data.complement || null,
+        neighborhood: data.neighborhood,
+        city: data.city,
+        state: data.state,
+        zip_code: data.zip_code,
+        reference: data.reference || null,
+        is_default: data.is_default,
+      });
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user-addresses'] });
+      toast.success('Endereço adicionado com sucesso!');
+      setShowAddressForm(false);
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Erro ao adicionar endereço');
+    },
+  });
+
+  const deleteAddressMutation = useMutation({
+    mutationFn: async (addressId: string) => {
+      const { error } = await supabase.from('user_addresses').delete().eq('id', addressId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user-addresses'] });
+      toast.success('Endereço removido com sucesso!');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Erro ao remover endereço');
+    },
+  });
+
+  const setDefaultAddressMutation = useMutation({
+    mutationFn: async (addressId: string) => {
+      const { error } = await supabase
+        .from('user_addresses')
+        .update({ is_default: true })
+        .eq('id', addressId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user-addresses'] });
+      toast.success('Endereço padrão atualizado!');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Erro ao atualizar endereço padrão');
+    },
+  });
+
+  const addPaymentMethodMutation = useMutation({
+    mutationFn: async (data: PaymentMethodFormData) => {
+      if (!user) throw new Error('User not found');
+
+      let card_type = 'Desconhecido';
+      const firstDigit = data.card_number[0];
+      if (firstDigit === '4') card_type = 'Visa';
+      else if (firstDigit === '5') card_type = 'Mastercard';
+      else if (firstDigit === '3') card_type = 'Amex';
+
+      const { error } = await supabase.from('user_payment_methods').insert({
+        user_id: user.id,
+        card_type,
+        last4: data.card_number.slice(-4),
+        cardholder_name: data.cardholder_name,
+        expiry_month: data.expiry_month,
+        expiry_year: data.expiry_year,
+        is_default: data.is_default,
+      });
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user-payment-methods'] });
+      toast.success('Cartão adicionado com sucesso!');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Erro ao adicionar cartão');
+    },
+  });
+
+  const deletePaymentMethodMutation = useMutation({
+    mutationFn: async (paymentId: string) => {
+      const { error } = await supabase.from('user_payment_methods').delete().eq('id', paymentId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user-payment-methods'] });
+      toast.success('Cartão removido com sucesso!');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Erro ao remover cartão');
+    },
+  });
+
+  const setDefaultPaymentMutation = useMutation({
+    mutationFn: async (paymentId: string) => {
+      const { error } = await supabase
+        .from('user_payment_methods')
+        .update({ is_default: true })
+        .eq('id', paymentId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user-payment-methods'] });
+      toast.success('Cartão padrão atualizado!');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Erro ao atualizar cartão padrão');
+    },
+  });
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
 
     try {
-      const { error } = await mockAuthService.updateProfile({
-        full_name: fullName,
-        phone,
-        address,
-        city,
-        state,
-        zip_code: zipCode,
-      });
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: fullName,
+          phone,
+        })
+        .eq('id', user!.id);
 
       if (error) throw error;
 
@@ -295,8 +464,6 @@ const Account = () => {
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)}
                             placeholder="Seu nome completo"
-                            disabled
-                            className="bg-muted"
                           />
                         </div>
                         <div className="space-y-2">
@@ -311,7 +478,7 @@ const Account = () => {
                           id="phone"
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
-                          placeholder="Número de telefone"
+                          placeholder="(00) 00000-0000"
                         />
                       </div>
 
@@ -331,6 +498,18 @@ const Account = () => {
                       </div>
 
                       <Separator />
+
+                      <div className="space-y-2">
+                        <h3 className="text-lg font-semibold">Preferências de Comunicação</h3>
+                        <div className="flex items-center space-x-2">
+                          <input type="checkbox" id="newsletter" defaultChecked />
+                          <Label htmlFor="newsletter">Receber ofertas e novidades por email</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <input type="checkbox" id="sms" />
+                          <Label htmlFor="sms">Receber notificações por SMS</Label>
+                        </div>
+                      </div>
                     </div>
 
                     <Button type="submit" disabled={saving}>
@@ -344,71 +523,108 @@ const Account = () => {
             <TabsContent value="addresses">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Package className="h-5 w-5" />
-                    Meus Endereços
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-5 w-5" />
+                      Meus Endereços
+                    </div>
+                    <Button onClick={() => setShowAddressForm(!showAddressForm)}>
+                      {showAddressForm ? 'Cancelar' : 'Adicionar Endereço'}
+                    </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleSaveProfile} className="space-y-6">
-                    <div className="space-y-2">
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div className="space-y-2">
-                          <Label htmlFor="zipCode">CEP</Label>
-                          <Input
-                            id="zipCode"
-                            value={zipCode}
-                            onChange={(e) => setZipCode(e.target.value)}
-                            placeholder="00000-000"
-                          />
+                  {showAddressForm ? (
+                    <AddressForm
+                      onSubmit={async (data) => {
+                        await addAddressMutation.mutateAsync(data);
+                      }}
+                    />
+                  ) : (
+                    <div className="space-y-4">
+                      {isLoadingAddresses ? (
+                        <div className="space-y-4">
+                          {[...Array(2)].map((_, i) => (
+                            <Skeleton key={i} className="h-32 w-full" />
+                          ))}
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="state">Estado</Label>
-                          <Input
-                            id="state"
-                            value={state}
-                            onChange={(e) => setState(e.target.value)}
-                            placeholder="UF"
-                            maxLength={2}
-                          />
+                      ) : addresses && addresses.length > 0 ? (
+                        addresses.map((address) => (
+                          <Card key={address.id}>
+                            <CardContent className="p-4">
+                              <div className="flex justify-between items-start">
+                                <div className="space-y-1">
+                                  {address.nickname && (
+                                    <p className="font-semibold">{address.nickname}</p>
+                                  )}
+                                  <p className="text-sm">
+                                    {address.street}, {address.number}
+                                    {address.complement && ` - ${address.complement}`}
+                                  </p>
+                                  <p className="text-sm">
+                                    {address.neighborhood}, {address.city} - {address.state}
+                                  </p>
+                                  <p className="text-sm">CEP: {address.zip_code}</p>
+                                  {address.reference && (
+                                    <p className="text-sm text-muted-foreground">
+                                      Referência: {address.reference}
+                                    </p>
+                                  )}
+                                  {address.is_default && (
+                                    <Badge variant="default" className="mt-2">
+                                      Padrão
+                                    </Badge>
+                                  )}
+                                </div>
+                                <div className="flex gap-2">
+                                  {!address.is_default && (
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => setDefaultAddressMutation.mutate(address.id)}
+                                    >
+                                      Tornar Padrão
+                                    </Button>
+                                  )}
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <Button variant="destructive" size="sm">
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>Remover Endereço</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          Tem certeza que deseja remover este endereço? Esta ação
+                                          não pode ser desfeita.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                        <AlertDialogAction
+                                          onClick={() => deleteAddressMutation.mutate(address.id)}
+                                        >
+                                          Remover
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))
+                      ) : (
+                        <div className="text-center py-12">
+                          <MapPin className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                          <p className="text-muted-foreground">
+                            Você ainda não tem endereços cadastrados
+                          </p>
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="city">Cidade</Label>
-                          <Input
-                            id="city"
-                            value={city}
-                            onChange={(e) => setCity(e.target.value)}
-                            placeholder="Nome da cidade"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="neighborhood">Bairro</Label>
-                          <Input id="neighborhood" placeholder="Nome do bairro" />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="street">Rua/Avenida</Label>
-                          <Input
-                            id="street"
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                            placeholder="Nome da rua"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="number">Número</Label>
-                          <Input id="number" placeholder="123" />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="complement">Complemento</Label>
-                          <Input id="complement" placeholder="Apt, Bloco, etc. (opcional)" />
-                        </div>
-                      </div>
+                      )}
                     </div>
-
-                    <Button type="submit" disabled={saving}>
-                      {saving ? 'Salvando...' : 'Salvar Endereço'}
-                    </Button>
-                  </form>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
@@ -417,100 +633,112 @@ const Account = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <ShoppingBag className="h-5 w-5" />
+                    <CreditCard className="h-5 w-5" />
                     Formas de Pagamento
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
                     <div>
-                      <h3 className="font-semibold mb-4">Adicionar Cartão de crédito/débito</h3>
-                      <form className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="cardNumber">Número do Cartão</Label>
-                          <Input id="cardNumber" placeholder="0000 0000 0000 0000" maxLength={19} />
+                      <h3 className="font-semibold mb-4">Adicionar Novo Cartão</h3>
+                      <PaymentMethodForm
+                        onSubmit={async (data) => {
+                          await addPaymentMethodMutation.mutateAsync(data);
+                        }}
+                      />
+                    </div>
+
+                    <Separator />
+
+                    <div>
+                      <h3 className="font-semibold mb-4">Cartões Salvos</h3>
+                      {isLoadingPayments ? (
+                        <div className="space-y-4">
+                          {[...Array(2)].map((_, i) => (
+                            <Skeleton key={i} className="h-24 w-full" />
+                          ))}
                         </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="cardName">Nome no cartão</Label>
-                          <Input id="cardName" placeholder="Nome do titular" />
+                      ) : paymentMethods && paymentMethods.length > 0 ? (
+                        <div className="space-y-4">
+                          {paymentMethods.map((payment) => (
+                            <Card key={payment.id}>
+                              <CardContent className="p-4">
+                                <div className="flex justify-between items-start">
+                                  <div className="space-y-1">
+                                    <div className="flex items-center gap-2">
+                                      <p className="font-semibold">{payment.card_type}</p>
+                                      {payment.is_default && (
+                                        <Badge variant="default">Padrão</Badge>
+                                      )}
+                                    </div>
+                                    <p className="text-sm">•••• •••• •••• {payment.last4}</p>
+                                    <p className="text-sm text-muted-foreground">
+                                      {payment.cardholder_name}
+                                    </p>
+                                    <p className="text-sm text-muted-foreground">
+                                      Validade: {payment.expiry_month}/{payment.expiry_year}
+                                    </p>
+                                  </div>
+                                  <div className="flex gap-2">
+                                    {!payment.is_default && (
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setDefaultPaymentMutation.mutate(payment.id)}
+                                      >
+                                        Tornar Padrão
+                                      </Button>
+                                    )}
+                                    <AlertDialog>
+                                      <AlertDialogTrigger asChild>
+                                        <Button variant="destructive" size="sm">
+                                          <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                      </AlertDialogTrigger>
+                                      <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                          <AlertDialogTitle>Remover Cartão</AlertDialogTitle>
+                                          <AlertDialogDescription>
+                                            Tem certeza que deseja remover este cartão? Esta ação
+                                            não pode ser desfeita.
+                                          </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                          <AlertDialogAction
+                                            onClick={() =>
+                                              deletePaymentMethodMutation.mutate(payment.id)
+                                            }
+                                          >
+                                            Remover
+                                          </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                      </AlertDialogContent>
+                                    </AlertDialog>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
                         </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">
+                          Você ainda não possui cartões salvos
+                        </p>
+                      )}
+                    </div>
 
-                        <div className="grid gap-4 md:grid-cols-2">
-                          <div className="space-y-2">
-                            <Label htmlFor="cardExpiry">Validade</Label>
-                            <Input id="cardExpiry" placeholder="MM/AA" maxLength={5} />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="cardCvv">CVV</Label>
-                            <Input id="cardCvv" placeholder="000" maxLength={4} type="password" />
-                          </div>
-                        </div>
+                    <Separator />
 
-                        <Button
-                          type="button"
-                          onClick={() => toast.success('Cartão adicionado com sucesso!')}
-                        >
-                          Adicionar Cartão
-                        </Button>
-
-                        <h3 className="font-semibold mb-4">Endereço de cobrança</h3>
-                        <div className="space-y-2">
-                          <div className="grid gap-4 md:grid-cols-2">
-                            <div className="space-y-2">
-                              <Label htmlFor="zipCode">CEP</Label>
-                              <Input
-                                id="zipCode"
-                                value={zipCode}
-                                onChange={(e) => setZipCode(e.target.value)}
-                                placeholder="00000-000"
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="state">Estado</Label>
-                              <Input
-                                id="state"
-                                value={state}
-                                onChange={(e) => setState(e.target.value)}
-                                placeholder="UF"
-                                maxLength={2}
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="city">Cidade</Label>
-                              <Input
-                                id="city"
-                                value={city}
-                                onChange={(e) => setCity(e.target.value)}
-                                placeholder="Nome da cidade"
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="street">Rua/Avenida</Label>
-                              <Input
-                                id="street"
-                                value={address}
-                                onChange={(e) => setAddress(e.target.value)}
-                                placeholder="Nome da rua"
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="number">Número</Label>
-                              <Input id="number" placeholder="123" />
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="complement">Complemento</Label>
-                              <Input id="complement" placeholder="Apt, Bloco, etc. (opcional)" />
-                            </div>
-                          </div>
-
-                          <Separator />
-
-                          <Button type="submit" disabled={saving}>
-                            {saving ? 'Salvando...' : 'Salvar Endereço'}
-                          </Button>
-                        </div>
-                      </form>
+                    <div className="space-y-2">
+                      <h3 className="font-semibold">Cupons e Vale-Presente</h3>
+                      <div className="flex gap-2">
+                        <Input placeholder="Digite seu código de cupom" />
+                        <Button variant="outline">Aplicar</Button>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Você não possui cupons ativos no momento
+                      </p>
                     </div>
                   </div>
                 </CardContent>

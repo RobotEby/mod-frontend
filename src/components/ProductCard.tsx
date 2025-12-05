@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Heart, Star, Clock, AlertTriangle } from 'lucide-react';
+import { ShoppingCart, Heart, Star, Clock, AlertTriangle, Eye } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useQuery } from '@tanstack/react-query';
@@ -19,6 +19,9 @@ interface ProductCardProps {
   leadTime?: string;
   stockQuantity?: number;
   lowStockThreshold?: number;
+  description?: string;
+  galleryImages?: string[];
+  onQuickView?: () => void;
 }
 
 export const ProductCard = ({
@@ -32,6 +35,7 @@ export const ProductCard = ({
   leadTime,
   stockQuantity = 10,
   lowStockThreshold = 5,
+  onQuickView,
 }: ProductCardProps) => {
   const { addItem } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
@@ -57,6 +61,7 @@ export const ProductCard = ({
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     if (!isOutOfStock) {
       addItem({ id, name, price, image });
     }
@@ -64,25 +69,46 @@ export const ProductCard = ({
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     toggleWishlist(id);
+  };
+
+  const handleQuickView = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onQuickView?.();
   };
 
   return (
     <Link to={`/produto/${id}`}>
-      <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 card-hover">
-        <div className="relative aspect-square overflow-hidden bg-muted image-zoom">
+      <Card className="group overflow-hidden transition-all duration-500 hover:shadow-large hover:-translate-y-2 hover:rotate-[0.5deg]">
+        <div className="relative aspect-square overflow-hidden bg-muted">
           <img
             src={image || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800'}
             alt={name}
             className={cn(
-              'h-full w-full object-cover transition-all duration-500',
+              'h-full w-full object-cover transition-all duration-700 group-hover:scale-110',
               isOutOfStock && 'grayscale opacity-70',
             )}
           />
 
+          <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/20 transition-all duration-300 flex items-center justify-center">
+            {onQuickView && (
+              <Button
+                variant="secondary"
+                size="sm"
+                className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg"
+                onClick={handleQuickView}
+              >
+                <Eye className="mr-2 h-4 w-4" />
+                Ver Rápido
+              </Button>
+            )}
+          </div>
+
           <div className="absolute top-2 left-2 flex flex-col gap-1">
             {isOnSale && discountPercent && (
-              <span className="bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded-md">
+              <span className="bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded-md animate-bounce-subtle">
                 -{discountPercent}%
               </span>
             )}
@@ -102,18 +128,21 @@ export const ProductCard = ({
           <Button
             variant="ghost"
             size="icon"
-            className="absolute top-2 right-2 bg-background/80 hover:bg-background"
+            className="absolute top-2 right-2 bg-background/80 hover:bg-background transition-all duration-300 hover:scale-110"
             onClick={handleToggleWishlist}
           >
             <Heart
-              className={`h-5 w-5 ${
-                isInWishlist(id) ? 'fill-primary text-primary' : 'text-muted-foreground'
-              }`}
+              className={cn(
+                'h-5 w-5 transition-all duration-300',
+                isInWishlist(id)
+                  ? 'fill-primary text-primary animate-heartbeat'
+                  : 'text-muted-foreground',
+              )}
             />
           </Button>
         </div>
         <CardContent className="p-4">
-          <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+          <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-300">
             {name}
           </h3>
 
@@ -151,11 +180,11 @@ export const ProductCard = ({
         <CardFooter className="p-4 pt-0">
           <Button
             onClick={handleAddToCart}
-            className="w-full"
+            className="w-full group/btn transition-all duration-300 hover:shadow-glow"
             variant="default"
             disabled={isOutOfStock}
           >
-            <ShoppingCart className="mr-2 h-4 w-4" />
+            <ShoppingCart className="mr-2 h-4 w-4 transition-transform duration-300 group-hover/btn:scale-110" />
             {isOutOfStock ? 'Esgotado' : 'Adicionar ao Carrinho'}
           </Button>
         </CardFooter>

@@ -7,12 +7,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
-import { mockAuthService } from '@/lib/mockAuth';
+import { Loader2 } from 'lucide-react';
 
 const Auth = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, signIn, signUp } = useAuth();
 
   useEffect(() => {
     if (user) {
@@ -30,12 +30,19 @@ const Auth = () => {
     const fullName = formData.get('signup-name') as string;
 
     try {
-      const response = await mockAuthService.signUp(email, password, fullName);
+      const { error } = await signUp(email, password, { full_name: fullName });
 
-      if (!response.token) return toast.error('Erro ao criar conta');
+      if (error) {
+        if (error.message.includes('already registered')) {
+          toast.error('Este email já está cadastrado. Tente fazer login.');
+        } else {
+          toast.error(error.message || 'Erro ao criar conta');
+        }
+        return;
+      }
 
       toast.success('Conta criada com sucesso!');
-      navigate('/');
+      navigate('/minha-conta');
     } catch (error: any) {
       toast.error(error.message || 'Erro ao criar conta');
     } finally {
@@ -52,12 +59,19 @@ const Auth = () => {
     const password = formData.get('signin-password') as string;
 
     try {
-      const response = await mockAuthService.signIn(email, password);
+      const { error } = await signIn(email, password);
 
-      if (!response.token) return toast.error('Erro ao fazer login');
+      if (error) {
+        if (error.message.includes('Invalid login')) {
+          toast.error('Email ou senha incorretos');
+        } else {
+          toast.error(error.message || 'Erro ao fazer login');
+        }
+        return;
+      }
 
       toast.success('Login realizado com sucesso!');
-      navigate('/');
+      navigate('/minha-conta');
     } catch (error: any) {
       toast.error(error.message || 'Erro ao fazer login');
     } finally {
@@ -67,20 +81,24 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted/30 py-12">
-      <div className="container max-w-md">
-        <Card>
+      <div className="container max-w-md animate-fade-in">
+        <Card className="backdrop-blur-sm border-border/50 shadow-large">
           <CardHeader className="text-center">
-            <CardTitle className="text-3xl">Bem-vindo</CardTitle>
+            <CardTitle className="text-3xl font-bold">Bem-vindo</CardTitle>
             <CardDescription>Entre ou crie sua conta para continuar</CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="signin">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Entrar</TabsTrigger>
-                <TabsTrigger value="signup">Cadastrar</TabsTrigger>
+            <Tabs defaultValue="signin" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="signin" className="transition-all duration-300">
+                  Entrar
+                </TabsTrigger>
+                <TabsTrigger value="signup" className="transition-all duration-300">
+                  Cadastrar
+                </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="signin">
+              <TabsContent value="signin" className="animate-fade-in">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="signin-email">Email</Label>
@@ -90,6 +108,7 @@ const Auth = () => {
                       type="email"
                       placeholder="seu@email.com"
                       required
+                      className="transition-all duration-300 focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   <div className="space-y-2">
@@ -100,15 +119,23 @@ const Auth = () => {
                       type="password"
                       placeholder="••••••••"
                       required
+                      className="transition-all duration-300 focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? 'Entrando...' : 'Entrar'}
+                  <Button type="submit" className="w-full group" disabled={loading}>
+                    {loading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Entrando...
+                      </>
+                    ) : (
+                      'Entrar'
+                    )}
                   </Button>
                 </form>
               </TabsContent>
 
-              <TabsContent value="signup">
+              <TabsContent value="signup" className="animate-fade-in">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="signup-name">Nome Completo</Label>
@@ -118,6 +145,7 @@ const Auth = () => {
                       type="text"
                       placeholder="Seu nome"
                       required
+                      className="transition-all duration-300 focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   <div className="space-y-2">
@@ -128,6 +156,7 @@ const Auth = () => {
                       type="email"
                       placeholder="seu@email.com"
                       required
+                      className="transition-all duration-300 focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   <div className="space-y-2">
@@ -139,10 +168,18 @@ const Auth = () => {
                       placeholder="••••••••"
                       required
                       minLength={6}
+                      className="transition-all duration-300 focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? 'Criando conta...' : 'Criar Conta'}
+                  <Button type="submit" className="w-full group" disabled={loading}>
+                    {loading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Criando conta...
+                      </>
+                    ) : (
+                      'Criar Conta'
+                    )}
                   </Button>
                 </form>
               </TabsContent>
