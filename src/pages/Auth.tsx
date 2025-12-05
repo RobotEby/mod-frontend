@@ -8,11 +8,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { Loader2 } from 'lucide-react';
+import { accountClient } from '@/integrations/account/account-client';
 
 const Auth = () => {
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { user, signIn, signUp } = useAuth();
+  const { user, setUser, setSession, loading, setLoading } = useAuth();
 
   useEffect(() => {
     if (user) {
@@ -30,8 +30,21 @@ const Auth = () => {
     const fullName = formData.get('signup-name') as string;
 
     try {
-      await signUp(email, password, fullName);
+      setLoading(true);
+      const response = await accountClient.signUp({ email, password, full_name: fullName });
 
+      const user = {
+        id: response.id,
+        email: response.email,
+        full_name: response.full_name,
+      };
+
+      setUser(user);
+      setSession({ user, access_token: response.token });
+
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('token', response.token);
+      setLoading(false);
       toast.success('Conta criada com sucesso!');
       navigate('/minha-conta');
     } catch (error: any) {
@@ -50,7 +63,18 @@ const Auth = () => {
     const password = formData.get('signin-password') as string;
 
     try {
-      await signIn(email, password);
+      const response = await accountClient.signIn({ email, password });
+      const user = {
+        id: response.id,
+        email: response.email,
+        full_name: response.full_name,
+      };
+
+      setUser(user);
+      setSession({ user, access_token: response.token });
+      setLoading(false);
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('token', response.token);
 
       toast.success('Login realizado com sucesso!');
       navigate('/minha-conta');

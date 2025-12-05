@@ -1,81 +1,36 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { accountClient } from '@/integrations/account/account-client';
+import { AccountUser } from '@/types/account';
 
 interface AuthContextType {
-  user: User | null;
-  session: Session | null;
+  user: AccountUser | null;
+  session: {
+    user: AccountUser;
+    access_token: string;
+  } | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signUp: (
-    email: string,
-    password: string,
-    metadata?: { full_name?: string },
-  ) => Promise<{ error: Error | null }>;
-  signOut: () => Promise<void>;
+  setSession: (session: { user: AccountUser; access_token: string }) => void;
+  setUser: (user: AccountUser) => void;
+  setLoading: (loading: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   session: null,
   loading: true,
-  signIn: async () => ({ error: null }),
-  signUp: async () => ({ error: null }),
-  signOut: async () => {},
+  setSession: () => {},
+  setUser: () => {},
+  setLoading: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const signIn = async (email: string, password: string) => {
-    try {
-      const response = await accountClient.signIn({ email, password });
-      const user = {
-        email: response.email,
-        full_name: response.full_name,
-      };
-
-      setUser(user);
-      setSession({ user, access_token: response.token });
-      setLoading(false);
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('token', response.token);
-      return { error: null };
-    } catch (error) {
-      throw new Error(error.message || 'Erro ao fazer login');
-    }
-  };
-
-  const signUp = async (email: string, password: string, full_name: string) => {
-    try {
-      const response = await accountClient.signUp({ email, password, full_name });
-
-      const user = {
-        email: response.email,
-        full_name: response.full_name,
-      };
-
-      setUser(user);
-      setSession({ user, access_token: response.token });
-      setLoading(false);
-
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('token', response.token);
-      return { error: null };
-    } catch (error) {
-      throw new Error(error.message || 'Erro ao criar conta');
-    }
-  };
-
-  const signOut = async () => {
-    await supabase.auth.signOut();
-  };
+  const [user, setUser] = useState<AccountUser | null>(null);
+  const [session, setSession] = useState<{ user: AccountUser; access_token: string } | null>(null);
+  const [loading, setLoading] = useState(false);
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, setSession, setUser, setLoading }}>
       {children}
     </AuthContext.Provider>
   );
