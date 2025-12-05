@@ -6,7 +6,8 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, ShoppingCart, Package, Clock, AlertTriangle } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAppSelector } from '@/app/hooks';
+import { selectUser } from '@/features/user/userSelectors';
 import { useState } from 'react';
 import { mockProducts, mockCategories } from '@/lib/mockData';
 import { ReviewForm } from '@/components/ReviewForm';
@@ -18,7 +19,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addItem } = useCart();
-  const { user } = useAuth();
+  const user = useAppSelector(selectUser);
   const [quantity, setQuantity] = useState(1);
   const [refreshReviews, setRefreshReviews] = useState(0);
 

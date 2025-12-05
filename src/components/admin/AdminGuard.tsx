@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAppSelector } from '@/app/hooks';
+import { selectUser, selectUserLoading } from '@/features/user/userSelectors';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
 
@@ -9,7 +10,8 @@ interface AdminGuardProps {
 }
 
 export const AdminGuard = ({ children }: AdminGuardProps) => {
-  const { user, loading: authLoading } = useAuth();
+  const user = useAppSelector(selectUser);
+  const authLoading = useAppSelector(selectUserLoading);
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [checking, setChecking] = useState(true);

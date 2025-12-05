@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import { ShoppingCart, User, Menu, Heart, Percent } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAppSelector } from '@/app/hooks';
+import { selectUser } from '@/features/user/userSelectors';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { NotificationBell } from '@/components/NotificationBell';
 import { MegaMenu } from '@/components/MegaMenu';
@@ -11,7 +12,7 @@ import { mockCategories } from '@/lib/mockData';
 
 export const Navbar = () => {
   const { items } = useCart();
-  const { user } = useAuth();
+  const user = useAppSelector(selectUser);
   const { wishlistCount } = useWishlist();
   const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
 

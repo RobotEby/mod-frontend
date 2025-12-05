@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,13 +6,16 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { useAuth } from '@/contexts/AuthContext';
 import { Loader2 } from 'lucide-react';
-import { accountClient } from '@/integrations/account/account-client';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { selectUser, selectUserLoading } from '@/features/user/userSelectors';
+import { signIn, signUp } from '@/features/user/userThunks';
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { user, setUser, setSession, loading, setLoading } = useAuth();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
+  const loading = useAppSelector(selectUserLoading);
 
   useEffect(() => {
     if (user) {
@@ -22,7 +25,6 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
 
     const formData = new FormData(e.currentTarget);
     const email = formData.get('signup-email') as string;
@@ -30,58 +32,33 @@ const Auth = () => {
     const fullName = formData.get('signup-name') as string;
 
     try {
-      setLoading(true);
-      const response = await accountClient.signUp({ email, password, full_name: fullName });
-
-      const user = {
-        id: response.id,
-        email: response.email,
-        full_name: response.full_name,
-      };
-
-      setUser(user);
-      setSession({ user, access_token: response.token });
-
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('token', response.token);
-      setLoading(false);
+      await dispatch(signUp({ email, password, full_name: fullName })).unwrap();
       toast.success('Conta criada com sucesso!');
       navigate('/minha-conta');
     } catch (error: any) {
-      toast.error(error.message || 'Erro ao criar conta');
-    } finally {
-      setLoading(false);
+      // rejectWithValue retorna a string diretamente
+      const errorMessage =
+        typeof error === 'string' ? error : error?.message || 'Erro ao criar conta';
+      toast.error(errorMessage);
     }
   };
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
 
     const formData = new FormData(e.currentTarget);
     const email = formData.get('signin-email') as string;
     const password = formData.get('signin-password') as string;
 
     try {
-      const response = await accountClient.signIn({ email, password });
-      const user = {
-        id: response.id,
-        email: response.email,
-        full_name: response.full_name,
-      };
-
-      setUser(user);
-      setSession({ user, access_token: response.token });
-      setLoading(false);
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('token', response.token);
-
+      await dispatch(signIn({ email, password })).unwrap();
       toast.success('Login realizado com sucesso!');
       navigate('/minha-conta');
     } catch (error: any) {
-      toast.error(error.message || 'Erro ao fazer login');
-    } finally {
-      setLoading(false);
+      // rejectWithValue retorna a string diretamente
+      const errorMessage =
+        typeof error === 'string' ? error : error?.message || 'Erro ao fazer login';
+      toast.error(errorMessage);
     }
   };
 
