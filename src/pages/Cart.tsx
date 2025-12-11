@@ -1,8 +1,8 @@
-import { useCart } from "@/contexts/CartContext";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { useCart } from '@/contexts/CartContext';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAppSelector } from '@/app/hooks';
 import { selectUser } from '@/features/user/userSelectors';
 
@@ -13,10 +13,10 @@ const Cart = () => {
 
   const handleCheckout = () => {
     if (!user) {
-      navigate("/auth");
+      navigate('/auth');
       return;
     }
-    navigate("/checkout");
+    navigate('/checkout');
   };
 
   if (items.length === 0) {
@@ -25,9 +25,7 @@ const Cart = () => {
         <div className="text-center space-y-6">
           <ShoppingBag className="h-24 w-24 mx-auto text-muted-foreground" />
           <h2 className="text-3xl font-bold">Seu carrinho está vazio</h2>
-          <p className="text-muted-foreground">
-            Adicione produtos para começar suas compras
-          </p>
+          <p className="text-muted-foreground">Adicione produtos para começar suas compras</p>
           <Button asChild size="lg">
             <Link to="/catalogo">Ver Catálogo</Link>
           </Button>
@@ -48,7 +46,10 @@ const Cart = () => {
                 <div className="flex gap-6">
                   <div className="w-24 h-24 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
                     <img
-                      src={item.image || "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200"}
+                      src={
+                        item.image ||
+                        'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200'
+                      }
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
@@ -57,28 +58,22 @@ const Cart = () => {
                   <div className="flex-1 space-y-2">
                     <h3 className="font-semibold text-lg">{item.name}</h3>
                     <p className="text-2xl font-bold text-primary">
-                      R$ {item.price.toFixed(2).replace(".", ",")}
+                      R$ {item.price.toFixed(2).replace('.', ',')}
                     </p>
 
                     <div className="flex items-center gap-2">
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() =>
-                          updateQuantity(item.id, item.quantity - 1)
-                        }
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
                       >
                         <Minus className="h-4 w-4" />
                       </Button>
-                      <span className="w-12 text-center font-semibold">
-                        {item.quantity}
-                      </span>
+                      <span className="w-12 text-center font-semibold">{item.quantity}</span>
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() =>
-                          updateQuantity(item.id, item.quantity + 1)
-                        }
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       >
                         <Plus className="h-4 w-4" />
                       </Button>
@@ -86,18 +81,11 @@ const Cart = () => {
                   </div>
 
                   <div className="flex flex-col justify-between items-end">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeItem(item.id)}
-                    >
+                    <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)}>
                       <Trash2 className="h-5 w-5 text-destructive" />
                     </Button>
                     <p className="text-xl font-bold">
-                      R${" "}
-                      {(item.price * item.quantity)
-                        .toFixed(2)
-                        .replace(".", ",")}
+                      R$ {(item.price * item.quantity).toFixed(2).replace('.', ',')}
                     </p>
                   </div>
                 </div>
@@ -110,13 +98,11 @@ const Cart = () => {
           <CardContent className="p-6 space-y-4">
             <div className="flex justify-between items-center text-lg">
               <span className="font-semibold">Subtotal</span>
-              <span>R$ {total.toFixed(2).replace(".", ",")}</span>
+              <span>R$ {total.toFixed(2).replace('.', ',')}</span>
             </div>
             <div className="flex justify-between items-center text-2xl font-bold">
               <span>Total</span>
-              <span className="text-primary">
-                R$ {total.toFixed(2).replace(".", ",")}
-              </span>
+              <span className="text-primary">R$ {total.toFixed(2).replace('.', ',')}</span>
             </div>
             <Button size="lg" className="w-full" onClick={handleCheckout}>
               Finalizar Compra

@@ -46,59 +46,59 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
-                <div className="min-h-screen flex flex-col">
-                  <Routes>
-                    <Route
-                      path="/admin/*"
-                      element={
-                        <AdminGuard>
-                          <AdminLayout />
-                        </AdminGuard>
-                      }
-                    >
-                      <Route index element={<AdminDashboard />} />
-                      <Route path="produtos" element={<AdminProducts />} />
-                      <Route path="pedidos" element={<AdminOrders />} />
-                      <Route path="categorias" element={<AdminCategories />} />
-                      <Route path="estoque" element={<AdminInventory />} />
-                    </Route>
+              <div className="min-h-screen flex flex-col">
+                <Routes>
+                  <Route
+                    path="/admin/*"
+                    element={
+                      <AdminGuard>
+                        <AdminLayout />
+                      </AdminGuard>
+                    }
+                  >
+                    <Route index element={<AdminDashboard />} />
+                    <Route path="produtos" element={<AdminProducts />} />
+                    <Route path="pedidos" element={<AdminOrders />} />
+                    <Route path="categorias" element={<AdminCategories />} />
+                    <Route path="estoque" element={<AdminInventory />} />
+                  </Route>
 
-                    <Route
-                      path="*"
-                      element={
-                        <>
-                          <Navbar />
-                          <main className="flex-1 pb-16 lg:pb-0">
-                            <Routes>
-                              <Route path="/" element={<Home />} />
-                              <Route path="/catalogo" element={<Catalog />} />
-                              <Route path="/produto/:id" element={<ProductDetail />} />
-                              <Route path="/carrinho" element={<Cart />} />
-                              <Route path="/checkout" element={<Checkout />} />
-                              <Route path="/auth" element={<Auth />} />
-                              <Route path="/minha-conta" element={<Account />} />
-                              <Route path="/sobre" element={<About />} />
-                              <Route path="/lista-desejos" element={<Wishlist />} />
-                              <Route path="/faq" element={<FAQ />} />
-                              <Route path="/contato" element={<Contact />} />
-                              <Route path="/blog" element={<Blog />} />
-                              <Route path="/blog/:slug" element={<BlogPost />} />
-                              <Route path="/termos" element={<Terms />} />
-                              <Route path="/privacidade" element={<Privacy />} />
-                              <Route path="*" element={<NotFound />} />
-                            </Routes>
-                          </main>
-                          <ScrollToTop />
-                          <MobileBottomNav />
-                        </>
-                      }
-                    />
-                  </Routes>
-                </div>
-              </BrowserRouter>
-            </CartProvider>
-          </WishlistProvider>
-        </NotificationProvider>
+                  <Route
+                    path="*"
+                    element={
+                      <>
+                        <Navbar />
+                        <main className="flex-1 pb-16 lg:pb-0">
+                          <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/catalogo" element={<Catalog />} />
+                            <Route path="/produto/:id" element={<ProductDetail />} />
+                            <Route path="/carrinho" element={<Cart />} />
+                            <Route path="/checkout" element={<Checkout />} />
+                            <Route path="/auth" element={<Auth />} />
+                            <Route path="/minha-conta" element={<Account />} />
+                            <Route path="/sobre" element={<About />} />
+                            <Route path="/lista-desejos" element={<Wishlist />} />
+                            <Route path="/faq" element={<FAQ />} />
+                            <Route path="/contato" element={<Contact />} />
+                            <Route path="/blog" element={<Blog />} />
+                            <Route path="/blog/:slug" element={<BlogPost />} />
+                            <Route path="/termos" element={<Terms />} />
+                            <Route path="/privacidade" element={<Privacy />} />
+                            <Route path="*" element={<NotFound />} />
+                          </Routes>
+                        </main>
+                        <ScrollToTop />
+                        <MobileBottomNav />
+                      </>
+                    }
+                  />
+                </Routes>
+              </div>
+            </BrowserRouter>
+          </CartProvider>
+        </WishlistProvider>
+      </NotificationProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
