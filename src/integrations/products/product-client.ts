@@ -71,24 +71,20 @@ export class ProductClient {
     return response.data;
   }
 
-  // Deletar produto
   async delete(id: string): Promise<void> {
     await apiClient.delete(`/products/${id}`);
   }
 
-  // Buscar produtos por categoria
   async getByCategory(categoryId: string): Promise<Product[]> {
     const response = await apiClient.get<Product[]>(`/products/category/${categoryId}`);
     return response.data;
   }
 
-  // Buscar produtos em promoção
   async getOnSale(): Promise<Product[]> {
     const response = await apiClient.get<Product[]>('/products/sale');
     return response.data;
   }
 
-  // Buscar produtos relacionados
   async getRelated(productId: string, limit: number = 4): Promise<Product[]> {
     const response = await apiClient.get<Product[]>(`/products/${productId}/related`, {
       params: { limit },

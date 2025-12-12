@@ -9,19 +9,16 @@ import {
 } from '@/integrations/account/interface';
 import { AccountUser } from '@/types/account';
 
-// Interface para erros da API
 interface ApiErrorResponse {
   message?: string;
   error?: string;
   errors?: Record<string, string[]>;
 }
 
-// Função helper para extrair mensagem de erro
 const getErrorMessage = (error: unknown): string => {
   if (error instanceof AxiosError) {
     const response = error.response?.data as ApiErrorResponse | undefined;
 
-    // Prioridade: message > error > errors (primeiro campo) > mensagem padrão
     if (response?.message) {
       return response.message;
     }
@@ -35,7 +32,6 @@ const getErrorMessage = (error: unknown): string => {
       }
     }
 
-    // Mensagens específicas por status code
     switch (error.response?.status) {
       case 400:
         return 'Dados inválidos. Verifique as informações e tente novamente.';
@@ -90,12 +86,9 @@ export const signIn = createAsyncThunk<LoginResponse, LoginData, { rejectValue: 
 );
 
 export const signOut = createAsyncThunk<void, void>('user/signOut', async () => {
-  // Sempre tenta fazer logout, mas não rejeita se falhar
-  // O estado será limpo no extraReducers mesmo se a requisição falhar
   try {
     await accountClient.logout();
   } catch (error) {
-    // Ignora erro - o estado será limpo mesmo assim
     console.warn('Erro ao fazer logout no servidor, mas estado local será limpo:', error);
   }
 });

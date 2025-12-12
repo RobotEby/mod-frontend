@@ -36,7 +36,6 @@ const Auth = () => {
       toast.success('Conta criada com sucesso!');
       navigate('/minha-conta');
     } catch (error: any) {
-      // rejectWithValue retorna a string diretamente
       const errorMessage =
         typeof error === 'string' ? error : error?.message || 'Erro ao criar conta';
       toast.error(errorMessage);
@@ -55,7 +54,6 @@ const Auth = () => {
       toast.success('Login realizado com sucesso!');
       navigate('/minha-conta');
     } catch (error: any) {
-      // rejectWithValue retorna a string diretamente
       const errorMessage =
         typeof error === 'string' ? error : error?.message || 'Erro ao fazer login';
       toast.error(errorMessage);
