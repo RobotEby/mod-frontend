@@ -13,7 +13,6 @@ interface UserState {
   loading: boolean;
 }
 
-// Carregar estado inicial do localStorage se existir
 const loadInitialState = (): UserState => {
   try {
     const userStr = localStorage.getItem('user');
@@ -64,13 +63,11 @@ const userSlice = createSlice({
       state.user = null;
       state.session = null;
       state.loading = false;
-      // Limpar localStorage
       localStorage.removeItem('user');
       localStorage.removeItem('token');
     },
   },
   extraReducers: (builder) => {
-    // signUp
     builder.addCase(signUp.pending, (state) => {
       state.loading = true;
     });
@@ -86,7 +83,6 @@ const userSlice = createSlice({
         user,
         access_token: action.payload.token,
       };
-      // Salvar no localStorage
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('token', action.payload.token);
     });
@@ -94,7 +90,6 @@ const userSlice = createSlice({
       state.loading = false;
     });
 
-    // signIn
     builder.addCase(signIn.pending, (state) => {
       state.loading = true;
     });
@@ -110,7 +105,6 @@ const userSlice = createSlice({
         user,
         access_token: action.payload.token,
       };
-      // Salvar no localStorage
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('token', action.payload.token);
     });
@@ -118,7 +112,6 @@ const userSlice = createSlice({
       state.loading = false;
     });
 
-    // signOut
     builder.addCase(signOut.pending, (state) => {
       state.loading = true;
     });
@@ -126,12 +119,10 @@ const userSlice = createSlice({
       state.user = null;
       state.session = null;
       state.loading = false;
-      // Limpar localStorage
       localStorage.removeItem('user');
       localStorage.removeItem('token');
     });
     builder.addCase(signOut.rejected, (state) => {
-      // Mesmo se falhar, limpar estado local
       state.user = null;
       state.session = null;
       state.loading = false;
@@ -139,7 +130,6 @@ const userSlice = createSlice({
       localStorage.removeItem('token');
     });
 
-    // fetchUser
     builder.addCase(fetchUser.pending, (state) => {
       state.loading = true;
     });
@@ -149,7 +139,6 @@ const userSlice = createSlice({
       if (state.session) {
         state.session.user = action.payload;
       }
-      // Atualizar localStorage
       localStorage.setItem('user', JSON.stringify(action.payload));
     });
     builder.addCase(fetchUser.rejected, (state) => {

@@ -84,42 +84,44 @@ CREATE TABLE public.reviews
   USING (auth.uid
     () = user_id);
 
-    -- Wishlist items policies
-    CREATE POLICY "Users can view their wishlist items"
-  ON public.wishlist_items FOR
-    SELECT
-        USING (EXISTS (
-    SELECT 1
-        FROM public.wishlists
-        WHERE wishlists.id = wishlist_items.wishlist_id
-            AND wishlists.user_id = auth.uid()
-  ));
+ -- Ensure RLS is enabled first (run once)
+ALTER TABLE public.wishlist_items ENABLE ROW LEVEL SECURITY;
 
-    CREATE POLICY "Users can add to their wishlists"
-  ON public.wishlist_items FOR
-    INSERT
-  WITH CHECK
-        (EXISTS (
-        SELECT 1 FROM 
-    ublic.wishlists
-     
-    RE wishlists.id = wishlist_items.wishlist_id
-  
+CREATE POLICY "Users can view their wishlist items"
+  ON public.wishlist_items
+  FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1
+      FROM public.wishlists
+      WHERE wishlists.id = wishlist_items.wishlist_id
         AND wishlists.user_id = auth.uid()
-  )
-    );
+    )
+  );
 
-    CREATE POLICY "Users can remove from their wishlists"
-  ON public.wishlist_items FOR
-    DELETE
-  USING (EXISTS
-    (
-    SELECT 1
-    FROM public.wishlists
-    WHERE wishlists.id = wishlist_items.wishlist_id
+CREATE POLICY "Users can add to their wishlists"
+  ON public.wishlist_items
+  FOR INSERT
+  WITH CHECK (
+    EXISTS (
+      SELECT 1
+      FROM public.wishlists
+      WHERE wishlists.id = wishlist_items.wishlist_id
         AND wishlists.user_id = auth.uid()
-  )
-    );
+    )
+  );
+
+CREATE POLICY "Users can remove from their wishlists"
+  ON public.wishlist_items
+  FOR DELETE
+  USING (
+    EXISTS (
+      SELECT 1
+      FROM public.wishlists
+      WHERE wishlists.id = wishlist_items.wishlist_id
+        AND wishlists.user_id = auth.uid()
+    )
+  );
 
     -- Notification policies
     CREATE POLICY "Users can view their own notifications"

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Edit, Trash2, MoreHorizontal, Eye } from 'lucide-react';
+import { Edit, Trash2, MoreHorizontal, Eye, Copy, Star } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -12,12 +12,19 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
+
+interface ProductReviewStats {
+  total_reviews: number;
+  average_rating: number;
+}
 
 interface Product {
   id: string;
@@ -25,10 +32,12 @@ interface Product {
   price: number;
   category_id: string | null;
   stock_quantity?: number;
-  status?: string;
   is_on_sale?: boolean;
   discount_percent?: number;
   main_image_url?: string | null;
+  review_stats?: ProductReviewStats;
+  dimensions?: string;
+  lead_time?: string;
 }
 
 interface ProductTableProps {
@@ -37,7 +46,12 @@ interface ProductTableProps {
   onEdit: (product: Product) => void;
   onDelete: (productId: string) => void;
   onView: (productId: string) => void;
+  onDuplicate?: (productId: string) => void;
+  selectedIds: string[];
+  onSelectionChange: (ids: string[]) => void;
 }
+
+const ITEMS_PER_PAGE = 10;
 
 export const ProductTable = ({
   products,
@@ -45,11 +59,21 @@ export const ProductTable = ({
   onEdit,
   onDelete,
   onView,
+  onDuplicate,
+  selectedIds,
+  onSelectionChange,
 }: ProductTableProps) => {
   const [search, setSearch] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE,
   );
 
   const getCategoryName = (categoryId: string | null) => {
@@ -58,29 +82,52 @@ export const ProductTable = ({
     return category?.name || 'Desconhecida';
   };
 
-  const getStatusBadge = (status?: string) => {
-    switch (status) {
-      case 'active':
-        return (
-          <Badge variant="default" className="bg-emerald-600">
-            Ativo
-          </Badge>
-        );
-      case 'inactive':
-        return <Badge variant="secondary">Inativo</Badge>;
-      case 'out_of_stock':
-        return <Badge variant="destructive">Sem Estoque</Badge>;
-      default:
-        return <Badge variant="outline">-</Badge>;
+  const renderRating = (reviewStats?: ProductReviewStats) => {
+    if (!reviewStats || reviewStats.total_reviews === 0) {
+      return <span className="text-muted-foreground text-sm">Sem avaliações</span>;
+    }
+    return (
+      <div className="flex items-center gap-1">
+        <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+        <span className="font-medium">{reviewStats.average_rating.toFixed(1)}</span>
+        <span className="text-muted-foreground text-sm">({reviewStats.total_reviews})</span>
+      </div>
+    );
+  };
+
+  const isAllSelected =
+    paginatedProducts.length > 0 && paginatedProducts.every((p) => selectedIds.includes(p.id));
+
+  const isSomeSelected =
+    paginatedProducts.some((p) => selectedIds.includes(p.id)) && !isAllSelected;
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      const newIds = [...new Set([...selectedIds, ...paginatedProducts.map((p) => p.id)])];
+      onSelectionChange(newIds);
+    } else {
+      const pageIds = paginatedProducts.map((p) => p.id);
+      onSelectionChange(selectedIds.filter((id) => !pageIds.includes(id)));
+    }
+  };
+
+  const handleSelectOne = (productId: string, checked: boolean) => {
+    if (checked) {
+      onSelectionChange([...selectedIds, productId]);
+    } else {
+      onSelectionChange(selectedIds.filter((id) => id !== productId));
     }
   };
 
   return (
     <div className="space-y-4">
       <Input
-        placeholder="Buscar produtos..."
+        placeholder="Buscar produtos por nome..."
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={(e) => {
+          setSearch(e.target.value);
+          setCurrentPage(1);
+        }}
         className="max-w-sm"
       />
 
@@ -88,18 +135,43 @@ export const ProductTable = ({
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
+              <TableHead className="w-[50px]">
+                <Checkbox
+                  checked={isAllSelected}
+                  ref={(el) => {
+                    if (el) {
+                      (el as any).indeterminate = isSomeSelected;
+                    }
+                  }}
+                  onCheckedChange={handleSelectAll}
+                  aria-label="Selecionar todos"
+                />
+              </TableHead>
               <TableHead className="w-[80px]">Imagem</TableHead>
               <TableHead>Produto</TableHead>
               <TableHead>Categoria</TableHead>
               <TableHead className="text-right">Preço</TableHead>
+              <TableHead className="text-center">Avaliação</TableHead>
               <TableHead className="text-center">Estoque</TableHead>
-              <TableHead className="text-center">Status</TableHead>
               <TableHead className="w-[80px]">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredProducts.map((product) => (
-              <TableRow key={product.id} className="hover:bg-muted/30">
+            {paginatedProducts.map((product) => (
+              <TableRow
+                key={product.id}
+                className={cn(
+                  'hover:bg-muted/30',
+                  selectedIds.includes(product.id) && 'bg-primary/5',
+                )}
+              >
+                <TableCell>
+                  <Checkbox
+                    checked={selectedIds.includes(product.id)}
+                    onCheckedChange={(checked) => handleSelectOne(product.id, !!checked)}
+                    aria-label={`Selecionar ${product.name}`}
+                  />
+                </TableCell>
                 <TableCell>
                   <div className="w-12 h-12 rounded-md overflow-hidden bg-muted">
                     {product.main_image_url ? (
@@ -134,12 +206,13 @@ export const ProductTable = ({
                 <TableCell className="text-right font-medium">
                   R$ {product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                 </TableCell>
+                <TableCell className="text-center">{renderRating(product.review_stats)}</TableCell>
                 <TableCell className="text-center">
                   <span
                     className={cn(
                       'font-medium',
                       (product.stock_quantity || 0) === 0
-                        ? 'text-red-600'
+                        ? 'text-destructive'
                         : (product.stock_quantity || 0) <= 5
                         ? 'text-amber-600'
                         : 'text-foreground',
@@ -148,7 +221,6 @@ export const ProductTable = ({
                     {product.stock_quantity || 0}
                   </span>
                 </TableCell>
-                <TableCell className="text-center">{getStatusBadge(product.status)}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -165,9 +237,16 @@ export const ProductTable = ({
                         <Edit className="h-4 w-4 mr-2" />
                         Editar
                       </DropdownMenuItem>
+                      {onDuplicate && (
+                        <DropdownMenuItem onClick={() => onDuplicate(product.id)}>
+                          <Copy className="h-4 w-4 mr-2" />
+                          Duplicar
+                        </DropdownMenuItem>
+                      )}
+                      <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={() => onDelete(product.id)}
-                        className="text-destructive"
+                        className="text-destructive focus:text-destructive"
                       >
                         <Trash2 className="h-4 w-4 mr-2" />
                         Excluir
@@ -177,9 +256,9 @@ export const ProductTable = ({
                 </TableCell>
               </TableRow>
             ))}
-            {filteredProducts.length === 0 && (
+            {paginatedProducts.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                   Nenhum produto encontrado
                 </TableCell>
               </TableRow>
@@ -187,6 +266,59 @@ export const ProductTable = ({
           </TableBody>
         </Table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">
+            Mostrando {(currentPage - 1) * ITEMS_PER_PAGE + 1} a{' '}
+            {Math.min(currentPage * ITEMS_PER_PAGE, filteredProducts.length)} de{' '}
+            {filteredProducts.length} produtos
+          </p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+            >
+              Anterior
+            </Button>
+            <div className="flex items-center gap-1">
+              {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                let page: number;
+                if (totalPages <= 5) {
+                  page = i + 1;
+                } else if (currentPage <= 3) {
+                  page = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  page = totalPages - 4 + i;
+                } else {
+                  page = currentPage - 2 + i;
+                }
+                return (
+                  <Button
+                    key={page}
+                    variant={page === currentPage ? 'default' : 'outline'}
+                    size="sm"
+                    className="w-8"
+                    onClick={() => setCurrentPage(page)}
+                  >
+                    {page}
+                  </Button>
+                );
+              })}
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+            >
+              Próximo
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
