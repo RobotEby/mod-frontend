@@ -104,11 +104,17 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-colors duration-300;
   }
 
   html {
     scroll-behavior: smooth;
+  }
+
+  *,
+  *::before,
+  *::after {
+    @apply transition-colors duration-200;
   }
 }
 

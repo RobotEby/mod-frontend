@@ -1,12 +1,15 @@
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { useState, ReactNode } from 'react';
 import { AdminSidebar } from './AdminSidebar';
 import { cn } from '@/lib/utils';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
-export const AdminLayout = () => {
+interface AdminLayoutProps {
+  children: ReactNode;
+}
+
+export const AdminLayout = ({ children }: AdminLayoutProps) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -39,9 +42,7 @@ export const AdminLayout = () => {
           sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64',
         )}
       >
-        <div className="p-4 lg:p-6">
-          <Outlet />
-        </div>
+        <div className="p-4 lg:p-6">{children}</div>
       </main>
     </div>
   );

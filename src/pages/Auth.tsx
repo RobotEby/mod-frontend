@@ -19,7 +19,7 @@ const Auth = () => {
 
   useEffect(() => {
     if (user) {
-      navigate('/minha-conta');
+      navigate('/admin');
     }
   }, [user, navigate]);
 
@@ -34,9 +34,8 @@ const Auth = () => {
     try {
       await dispatch(signUp({ email, password, full_name: fullName })).unwrap();
       toast.success('Conta criada com sucesso!');
-      navigate('/minha-conta');
+      navigate('/conta');
     } catch (error: any) {
-      // rejectWithValue retorna a string diretamente
       const errorMessage =
         typeof error === 'string' ? error : error?.message || 'Erro ao criar conta';
       toast.error(errorMessage);
@@ -53,9 +52,8 @@ const Auth = () => {
     try {
       await dispatch(signIn({ email, password })).unwrap();
       toast.success('Login realizado com sucesso!');
-      navigate('/minha-conta');
+      navigate('/conta');
     } catch (error: any) {
-      // rejectWithValue retorna a string diretamente
       const errorMessage =
         typeof error === 'string' ? error : error?.message || 'Erro ao fazer login';
       toast.error(errorMessage);

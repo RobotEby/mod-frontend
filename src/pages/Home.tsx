@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/ProductCard';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -17,7 +17,22 @@ import { BenefitsBar } from '@/components/BenefitsBar';
 import { PromoBanner } from '@/components/PromoBanner';
 import { CategoryCard } from '@/components/CategoryCard';
 import { NewsletterForm } from '@/components/NewsletterForm';
-import { Footer } from '@/components/Footer';
+import { FlashDeals } from '@/components/FlashDeals';
+import { BestSellers } from '@/components/BestSellers';
+import { HowItWorks } from '@/components/HowItWorks';
+import { SocialProof } from '@/components/SocialProof';
+import { InstagramFeed } from '@/components/InstagramFeed';
+import { RecentlyViewed } from '@/components/RecentlyViewed';
+import { PaymentBenefits } from '@/components/PaymentBenefits';
+import { TrustBadges } from '@/components/TrustBadges';
+import { RoomGallery } from '@/components/RoomGallery';
+import { CustomizationShowcase } from '@/components/CustomizationShowcase';
+import { FeaturedCollections } from '@/components/FeaturedColections';
+import { ServicesBanner } from '@/components/ServicesBanner';
+import { VideoTestimonials } from '@/components/VideoTestimonials';
+import { BlogPreview } from '@/components/BlogPreview';
+import { FAQPreview } from '@/components/FAQPreview';
+import { SustainabilityBanner } from '@/components/SustainabilityBanner';
 
 const Home = () => {
   const { data: products, isLoading } = useQuery({
@@ -31,7 +46,7 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       <PromoBanner />
-
+      <PaymentBenefits />
       <BenefitsBar />
 
       <section className="relative h-[600px] flex items-center">
@@ -65,12 +80,15 @@ const Home = () => {
         </div>
       </section>
 
+      <SocialProof />
+      <FlashDeals />
+
       <section className="py-20 bg-gradient-to-b from-background to-muted/30">
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">Produtos em Destaque</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Conheça nossa seleção de móveis exclusivos, perfeitos para transformar seu ambiente
+              Conheça nossa seleção de móveis exclusivos
             </p>
           </div>
 
@@ -110,12 +128,15 @@ const Home = () => {
         </div>
       </section>
 
+      <HowItWorks />
+      <RoomGallery />
+
       <section className="py-20">
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">Explore por Categoria</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Encontre o móvel perfeito para cada ambiente da sua casa
+              Encontre o móvel perfeito para cada ambiente
             </p>
           </div>
 
@@ -132,6 +153,10 @@ const Home = () => {
         </div>
       </section>
 
+      <BestSellers />
+      <CustomizationShowcase />
+      <FeaturedCollections />
+
       <section className="py-20 bg-gradient-to-b from-muted/30 to-background">
         <div className="container">
           <div className="text-center mb-16">
@@ -142,88 +167,50 @@ const Home = () => {
           </div>
 
           <div className="max-w-4xl mx-auto">
-            <Carousel
-              opts={{
-                align: 'start',
-                loop: true,
-              }}
-              className="w-full"
-            >
+            <Carousel opts={{ align: 'start', loop: true }} className="w-full">
               <CarouselContent>
-                <CarouselItem>
-                  <div className="bg-card p-8 rounded-2xl border border-border">
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <span key={i} className="text-primary">
-                          ★
-                        </span>
-                      ))}
-                    </div>
-                    <p className="text-muted-foreground mb-6">
-                      "A qualidade dos móveis superou minhas expectativas. O acabamento é impecável
-                      e o design é exatamente o que eu procurava."
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-primary font-semibold">MC</span>
+                {[
+                  {
+                    name: 'Maria Clara',
+                    location: 'São Paulo, SP',
+                    initials: 'MC',
+                    text: 'A qualidade dos móveis superou minhas expectativas. O acabamento é impecável.',
+                  },
+                  {
+                    name: 'Roberto Silva',
+                    location: 'Rio de Janeiro, RJ',
+                    initials: 'RS',
+                    text: 'Processo simples e transparente. Recebi exatamente no prazo prometido.',
+                  },
+                  {
+                    name: 'Ana Fernandes',
+                    location: 'Belo Horizonte, MG',
+                    initials: 'AF',
+                    text: 'Móveis de verdadeira alta qualidade. O investimento valeu cada centavo.',
+                  },
+                ].map((testimonial, idx) => (
+                  <CarouselItem key={idx}>
+                    <div className="bg-card p-8 rounded-2xl border border-border">
+                      <div className="flex gap-1 mb-4">
+                        {[...Array(5)].map((_, i) => (
+                          <span key={i} className="text-primary">
+                            ★
+                          </span>
+                        ))}
                       </div>
-                      <div>
-                        <p className="font-semibold">Maria Clara</p>
-                        <p className="text-sm text-muted-foreground">São Paulo, SP</p>
-                      </div>
-                    </div>
-                  </div>
-                </CarouselItem>
-
-                <CarouselItem>
-                  <div className="bg-card p-8 rounded-2xl border border-border">
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <span key={i} className="text-primary">
-                          ★
-                        </span>
-                      ))}
-                    </div>
-                    <p className="text-muted-foreground mb-6">
-                      "Processo simples e transparente. Acompanhei todo o status do pedido e recebi
-                      exatamente no prazo prometido."
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-primary font-semibold">RS</span>
-                      </div>
-                      <div>
-                        <p className="font-semibold">Roberto Silva</p>
-                        <p className="text-sm text-muted-foreground">Rio de Janeiro, RJ</p>
+                      <p className="text-muted-foreground mb-6">"{testimonial.text}"</p>
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-primary font-semibold">{testimonial.initials}</span>
+                        </div>
+                        <div>
+                          <p className="font-semibold">{testimonial.name}</p>
+                          <p className="text-sm text-muted-foreground">{testimonial.location}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </CarouselItem>
-
-                <CarouselItem>
-                  <div className="bg-card p-8 rounded-2xl border border-border">
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <span key={i} className="text-primary">
-                          ★
-                        </span>
-                      ))}
-                    </div>
-                    <p className="text-muted-foreground mb-6">
-                      "Móveis de verdadeira alta qualidade. O investimento valeu cada centavo. Minha
-                      sala ficou sofisticada e elegante."
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-primary font-semibold">AF</span>
-                      </div>
-                      <div>
-                        <p className="font-semibold">Ana Fernandes</p>
-                        <p className="text-sm text-muted-foreground">Belo Horizonte, MG</p>
-                      </div>
-                    </div>
-                  </div>
-                </CarouselItem>
+                  </CarouselItem>
+                ))}
               </CarouselContent>
               <CarouselPrevious />
               <CarouselNext />
@@ -232,56 +219,21 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="py-20">
+      <VideoTestimonials />
+      <ServicesBanner />
+
+      <section className="py-12">
         <div className="container">
-          <div className="max-w-4xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <h2 className="text-4xl font-bold mb-6">Garantia de Qualidade</h2>
-                <p className="text-lg text-muted-foreground mb-6">
-                  Cada móvel passa por rigoroso controle de qualidade antes de chegar até você.
-                </p>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
-                    <div>
-                      <p className="font-semibold mb-1">Materiais Premium</p>
-                      <p className="text-muted-foreground text-sm">
-                        Utilizamos apenas madeiras selecionadas e acabamentos de primeira linha
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
-                    <div>
-                      <p className="font-semibold mb-1">Inspeção Detalhada</p>
-                      <p className="text-muted-foreground text-sm">
-                        Cada peça é inspecionada minuciosamente antes do envio
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
-                    <div>
-                      <p className="font-semibold mb-1">Garantia Estendida</p>
-                      <p className="text-muted-foreground text-sm">
-                        Todos os móveis incluem garantia de fabricação
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="relative h-[400px] rounded-2xl overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5" />
-              </div>
-            </div>
-          </div>
+          <TrustBadges variant="full" />
         </div>
       </section>
 
+      <SustainabilityBanner />
+      <InstagramFeed />
+      <BlogPreview />
+      <FAQPreview />
+      <RecentlyViewed />
       <NewsletterForm />
-
-      <Footer />
     </div>
   );
 };
