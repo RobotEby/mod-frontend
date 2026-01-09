@@ -19,7 +19,7 @@ export const ThemeToggle = () => {
     );
   }
 
-  const isDark = theme === 'dark';
+  const isDark = theme === 'light' ? false : true;
 
   return (
     <Button
