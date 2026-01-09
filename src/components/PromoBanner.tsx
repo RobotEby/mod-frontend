@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Sparkles, Truck, Tag } from 'lucide-react';
@@ -53,28 +53,46 @@ const banners: Banner[] = [
 
 export const PromoBanner = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const isAnimatingRef = useRef(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      handleNext();
-    }, 6000);
-    return () => clearInterval(timer);
-  }, [currentIndex]);
+  const handleAnimationEnd = useCallback(() => {
+    isAnimatingRef.current = false;
+    setIsAnimating(false);
+  }, []);
 
-  const handlePrevious = () => {
-    if (isAnimating) return;
+  const handlePrevious = useCallback(() => {
+    if (isAnimatingRef.current) return;
+    if (banners.length <= 1) return;
+
+    isAnimatingRef.current = true;
     setIsAnimating(true);
     setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);
-    setTimeout(() => setIsAnimating(false), 500);
-  };
+  }, []);
 
-  const handleNext = () => {
-    if (isAnimating) return;
+  const handleNext = useCallback(() => {
+    if (isAnimatingRef.current) return;
+    if (banners.length <= 1) return;
+
+    isAnimatingRef.current = true;
     setIsAnimating(true);
     setCurrentIndex((prev) => (prev + 1) % banners.length);
-    setTimeout(() => setIsAnimating(false), 500);
-  };
+  }, []);
+
+  useEffect(() => {
+    if (banners.length <= 1) return;
+
+    const timer = setInterval(() => {
+      if (isAnimatingRef.current) return;
+
+      isAnimatingRef.current = true;
+      setIsAnimating(true);
+      setCurrentIndex((prev) => (prev + 1) % banners.length);
+    }, 6000);
+
+    return () => clearInterval(timer);
+  }, [banners.length]);
 
   const currentBanner = banners[currentIndex];
 
@@ -94,8 +112,11 @@ export const PromoBanner = () => {
       <div className="container relative h-full flex items-center">
         <div className="max-w-xl">
           <div
-            className={`${currentBanner.textColor} space-y-4 animate-slide-up`}
             key={currentBanner.id}
+            className={`${currentBanner.textColor} space-y-4 ${
+              isAnimating ? 'animate-slide-up' : ''
+            }`}
+            onAnimationEnd={handleAnimationEnd}
           >
             <div className="flex items-center gap-3">
               {currentBanner.icon}
@@ -120,22 +141,47 @@ export const PromoBanner = () => {
         </div>
       </div>
 
+      <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
+        <button
+          onClick={handlePrevious}
+          aria-label="Anterior"
+          className="p-2 rounded-md bg-white/90 shadow"
+          type="button"
+        >
+          <ChevronLeft />
+        </button>
+      </div>
+
+      <div className="absolute top-1/2 right-4 transform -translate-y-1/2">
+        <button
+          onClick={handleNext}
+          aria-label="Próximo"
+          className="p-2 rounded-md bg-white/90 shadow"
+          type="button"
+        >
+          <ChevronRight />
+        </button>
+      </div>
+
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3">
         {banners.map((_, index) => (
           <button
             key={index}
             onClick={() => {
-              if (!isAnimating) {
-                setIsAnimating(true);
-                setCurrentIndex(index);
-                setTimeout(() => setIsAnimating(false), 500);
-              }
+              if (index === currentIndex) return;
+              if (isAnimatingRef.current) return;
+
+              isAnimatingRef.current = true;
+              setIsAnimating(true);
+              setCurrentIndex(index);
             }}
             className={`h-2 rounded-full transition-all duration-300 ${
               index === currentIndex
                 ? `w-8 bg-background`
                 : `w-2 bg-background/50 hover:bg-background/70`
             }`}
+            aria-label={`Ir para slide ${index + 1}`}
+            type="button"
           />
         ))}
       </div>
