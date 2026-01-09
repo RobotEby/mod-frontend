@@ -5,7 +5,6 @@ import { store } from './app/store';
 import './index.css';
 import { setupApiClient } from './lib/api-client.ts';
 
-// Configurar o api-client com o Redux store
 setupApiClient(store);
 
 createRoot(document.getElementById('root')!).render(

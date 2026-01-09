@@ -20,10 +20,9 @@ export class AccountClient {
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
     } finally {
-      // Sempre limpar dados locais, mesmo se a requisição falhar
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      localStorage.removeItem('email'); // Limpar email também se existir
+      localStorage.removeItem('email');
       window.dispatchEvent(new Event('auth-change'));
     }
   }
@@ -36,7 +35,6 @@ export class AccountClient {
   async updateProfile(data: Partial<RegisterData & { full_name?: string }>) {
     const response = await apiClient.put('/account/profile', data);
 
-    // Atualizar dados do usuário no localStorage
     if (response.data.user) {
       localStorage.setItem('user', JSON.stringify(response.data.user));
       window.dispatchEvent(new Event('auth-change'));
@@ -46,5 +44,4 @@ export class AccountClient {
   }
 }
 
-// Exportar instância singleton para facilitar o uso
 export const accountClient = new AccountClient();

@@ -4,16 +4,20 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, ShoppingCart, Package, Clock, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Package, Clock } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useAppSelector } from '@/app/hooks';
 import { selectUser } from '@/features/user/userSelectors';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { mockProducts, mockCategories } from '@/lib/mockData';
 import { ReviewForm } from '@/components/ReviewForm';
 import { ReviewList } from '@/components/ReviewList';
 import { ShippingCalculator } from '@/components/ShippingCalculator';
 import { RelatedProducts } from '@/components/RelatedProducts';
+import { InstallmentCalculator } from '@/components/InstallmentCalculator';
+import { StockUrgency } from '@/components/StockUrgency';
+import { ShareButtons } from '@/components/ShareButtons';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -22,6 +26,7 @@ const ProductDetail = () => {
   const user = useAppSelector(selectUser);
   const [quantity, setQuantity] = useState(1);
   const [refreshReviews, setRefreshReviews] = useState(0);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', id],
@@ -35,10 +40,33 @@ const ProductDetail = () => {
 
       return {
         ...foundProduct,
-        categories: category ? { name: category.name } : null,
+        categories: category ? { name: category.name, slug: category.slug } : null,
       };
     },
   });
+
+  useEffect(() => {
+    if (product) {
+      const recentlyViewed = JSON.parse(localStorage.getItem('recently-viewed') || '[]');
+      const filtered = recentlyViewed.filter((p: { id: string }) => p.id !== product.id);
+      const updated = [
+        {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.main_image_url,
+        },
+        ...filtered,
+      ].slice(0, 10);
+      localStorage.setItem('recently-viewed', JSON.stringify(updated));
+    }
+  }, [product]);
+
+  useEffect(() => {
+    if (product?.main_image_url) {
+      setSelectedImage(product.main_image_url);
+    }
+  }, [product]);
 
   if (isLoading) {
     return (
@@ -80,9 +108,26 @@ const ProductDetail = () => {
     });
   };
 
+  const allImages = [product.main_image_url, ...(product.gallery_images || [])].filter(
+    Boolean,
+  ) as string[];
+
+  const breadcrumbItems = [
+    { label: 'Home', href: '/' },
+    { label: 'Catálogo', href: '/catalogo' },
+    ...(product.categories
+      ? [{ label: product.categories.name, href: `/catalogo?categoria=${product.category_id}` }]
+      : []),
+    { label: product.name },
+  ];
+
   return (
     <div className="min-h-screen py-12">
       <div className="container">
+        <div className="mb-6">
+          <Breadcrumbs items={breadcrumbItems} />
+        </div>
+
         <Button variant="ghost" onClick={() => navigate(-1)} className="mb-8">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Voltar
@@ -90,46 +135,90 @@ const ProductDetail = () => {
 
         <div className="grid md:grid-cols-2 gap-12">
           <div className="space-y-4">
-            <div className="aspect-square overflow-hidden rounded-lg bg-muted">
+            <div className="aspect-square overflow-hidden rounded-lg bg-muted group relative">
               <img
                 src={
+                  selectedImage ||
                   product.main_image_url ||
                   'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800'
                 }
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-foreground/10">
+                <span className="text-sm text-white bg-foreground/80 px-3 py-1 rounded-full">
+                  Passe o mouse para ampliar
+                </span>
+              </div>
             </div>
-            {product.gallery_images && product.gallery_images.length > 0 && (
+
+            {allImages.length > 1 && (
               <div className="grid grid-cols-4 gap-4">
-                {product.gallery_images.map((img, idx) => (
-                  <div
+                {allImages.map((img, idx) => (
+                  <button
                     key={idx}
-                    className="aspect-square overflow-hidden rounded-lg bg-muted cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={() => setSelectedImage(img)}
+                    className={`aspect-square overflow-hidden rounded-lg bg-muted cursor-pointer transition-all duration-200 ${
+                      selectedImage === img
+                        ? 'ring-2 ring-primary ring-offset-2'
+                        : 'hover:opacity-80'
+                    }`}
                   >
                     <img
                       src={img}
                       alt={`${product.name} - ${idx + 1}`}
                       className="w-full h-full object-cover"
                     />
-                  </div>
+                  </button>
                 ))}
               </div>
             )}
           </div>
 
           <div className="space-y-6">
-            {product.categories && (
-              <p className="text-sm text-muted-foreground uppercase tracking-wide">
-                {product.categories.name}
-              </p>
-            )}
+            <div className="flex items-center justify-between">
+              {product.categories && (
+                <p className="text-sm text-muted-foreground uppercase tracking-wide">
+                  {product.categories.name}
+                </p>
+              )}
+              <ShareButtons
+                title={product.name}
+                description={product.description || 'Confira este móvel incrível!'}
+              />
+            </div>
 
             <h1 className="text-4xl font-bold">{product.name}</h1>
 
-            <p className="text-4xl font-bold text-primary">
-              R$ {Number(product.price).toFixed(2).replace('.', ',')}
-            </p>
+            <div className="space-y-2">
+              <div className="flex items-baseline gap-3">
+                {product.originalPrice && product.originalPrice > product.price && (
+                  <span className="text-lg text-muted-foreground line-through">
+                    R${' '}
+                    {Number(product.originalPrice).toLocaleString('pt-BR', {
+                      minimumFractionDigits: 2,
+                    })}
+                  </span>
+                )}
+                <span className="text-4xl font-bold text-primary">
+                  R$ {Number(product.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </span>
+                {product.discountPercent && (
+                  <span className="text-sm font-medium text-destructive bg-destructive/10 px-2 py-1 rounded">
+                    -{product.discountPercent}%
+                  </span>
+                )}
+              </div>
+
+              <InstallmentCalculator price={Number(product.price)} />
+            </div>
+
+            {product.stock_quantity !== undefined && product.stock_quantity !== null && (
+              <StockUrgency
+                stockQuantity={product.stock_quantity}
+                lowStockThreshold={product.low_stock_threshold ?? 5}
+              />
+            )}
 
             {product.description && (
               <div className="prose max-w-none">
@@ -177,9 +266,14 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              <Button size="lg" className="w-full" onClick={handleAddToCart}>
+              <Button
+                size="lg"
+                className="w-full"
+                onClick={handleAddToCart}
+                disabled={product.stock_quantity === 0}
+              >
                 <ShoppingCart className="mr-2 h-5 w-5" />
-                Adicionar ao Carrinho
+                {product.stock_quantity === 0 ? 'Produto Esgotado' : 'Adicionar ao Carrinho'}
               </Button>
             </div>
           </div>

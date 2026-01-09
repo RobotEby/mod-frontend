@@ -39,7 +39,7 @@ const Checkout = () => {
 
       toast.success('Pedido realizado com sucesso!');
       clearCart();
-      navigate('/minha-conta');
+      navigate('/conta');
     } catch (error: any) {
       toast.error(error.message || 'Erro ao processar pedido');
     } finally {

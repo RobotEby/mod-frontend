@@ -9,6 +9,7 @@ import { NotificationBell } from '@/components/NotificationBell';
 import { MegaMenu } from '@/components/MegaMenu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { mockCategories } from '@/lib/mockData';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export const Navbar = () => {
   const { items } = useCart();
@@ -102,6 +103,8 @@ export const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
+
           {user && <NotificationBell />}
 
           <Link to="/lista-desejos">

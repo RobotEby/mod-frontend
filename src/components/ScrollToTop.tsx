@@ -15,7 +15,7 @@ export const ScrollToTop = () => {
       }
     };
 
-    window.addEventListener('scroll', toggleVisibility);
+    window.addEventListener('scroll', toggleVisibility, { passive: true });
     return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
 
@@ -28,6 +28,7 @@ export const ScrollToTop = () => {
 
   return (
     <Button
+      id="scroll-to-top"
       onClick={scrollToTop}
       size="icon"
       className={cn(
