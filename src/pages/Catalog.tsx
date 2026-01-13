@@ -445,7 +445,7 @@ const Catalog = () => {
             <div className="bg-card p-6 rounded-lg border transition-all duration-300 hover:shadow-soft">
               <h3 className="font-semibold text-lg mb-4">Avaliação Mínima</h3>
               <div className="space-y-2">
-                {[4, 3, 2, 1, 0].map((rating) => (
+                {[5, 4, 3, 2, 1, 0].map((rating) => (
                   <Button
                     key={rating}
                     variant={minRating === rating ? 'default' : 'ghost'}
@@ -456,9 +456,17 @@ const Catalog = () => {
                       {rating > 0 ? (
                         <>
                           {Array.from({ length: rating }).map((_, i) => (
-                            <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                            <Star
+                              key={i}
+                              className={`h-4 w-4 ${
+                                minRating === rating
+                                  ? 'fill-yellow-500 text-yellow-500'
+                                  : 'fill-muted-foreground text-muted-foreground'
+                              }`}
+                            />
                           ))}
                           <span>& acima</span>
+                          {rating < 5 && rating > 0 && <span>e acima</span>}
                         </>
                       ) : (
                         <span>Todas</span>

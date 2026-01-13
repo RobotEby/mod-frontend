@@ -45,7 +45,7 @@ export const Footer = () => {
                   to="/faq"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  FAQ
+                  Dúvidas Frequentes
                 </Link>
               </li>
               <li>
@@ -62,6 +62,14 @@ export const Footer = () => {
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   Política de Privacidade
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/LGPD"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  LGPD
                 </Link>
               </li>
             </ul>

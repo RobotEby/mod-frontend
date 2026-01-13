@@ -9,22 +9,18 @@ import { cn } from '@/lib/utils';
 const Blog = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  // Get unique categories
   const categories = Array.from(new Set(mockBlogPosts.map((post) => post.category)));
 
-  // Filter posts by category
   const filteredPosts = selectedCategory
     ? mockBlogPosts.filter((post) => post.category === selectedCategory)
     : mockBlogPosts;
 
-  // Featured post is the most recent
   const featuredPost = mockBlogPosts[0];
   const regularPosts = filteredPosts.filter((post) => post.id !== featuredPost.id);
 
   return (
     <div className="min-h-screen py-12 md:py-16">
       <div className="container px-4 md:px-6">
-        {/* Header */}
         <div className="text-center mb-8 md:mb-12">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">Blog</h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
@@ -32,7 +28,6 @@ const Blog = () => {
           </p>
         </div>
 
-        {/* Category Filters */}
         <div className="flex flex-wrap justify-center gap-2 mb-8 md:mb-12 px-2">
           <Button
             variant={selectedCategory === null ? 'default' : 'outline'}
@@ -55,7 +50,6 @@ const Blog = () => {
           ))}
         </div>
 
-        {/* Featured Post */}
         {!selectedCategory && (
           <article className="mb-10 md:mb-16 animate-fade-in">
             <Link to={`/blog/${featuredPost.slug}`} className="group block">
@@ -96,7 +90,6 @@ const Blog = () => {
           </article>
         )}
 
-        {/* Regular Posts Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {(selectedCategory ? filteredPosts : regularPosts).map((post, index) => (
             <article
@@ -151,7 +144,6 @@ const Blog = () => {
           ))}
         </div>
 
-        {/* Empty State */}
         {filteredPosts.length === 0 && (
           <div className="text-center py-12 md:py-16">
             <p className="text-muted-foreground text-base md:text-lg mb-4">
