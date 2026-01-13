@@ -465,7 +465,6 @@ const Catalog = () => {
                               }`}
                             />
                           ))}
-                          <span>& acima</span>
                           {rating < 5 && rating > 0 && <span>e acima</span>}
                         </>
                       ) : (

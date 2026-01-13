@@ -50,7 +50,7 @@ const Terms = () => {
         <div className="mb-8 lg:mb-12">
           <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">Termos de Uso</h1>
           <p className="text-muted-foreground text-sm md:text-base">
-            Última atualização: {new Date().toLocaleDateString('pt-BR')}
+            Última atualização: 12/01/2026
           </p>
         </div>
 
@@ -185,15 +185,6 @@ const Terms = () => {
                           Criação ou atualização do seu perfil e viabilização das interações
                         </td>
                         <td className="border p-3 text-muted-foreground">Cadastro no site</td>
-                      </tr>
-                      <tr>
-                        <td className="border p-3 text-muted-foreground">E-mail</td>
-                        <td className="border p-3 text-muted-foreground">
-                          Newsletter e comunicações promocionais
-                        </td>
-                        <td className="border p-3 text-muted-foreground">
-                          Formulário de newsletter
-                        </td>
                       </tr>
                       <tr>
                         <td className="border p-3 text-muted-foreground">Endereço de entrega</td>
@@ -331,7 +322,7 @@ const Terms = () => {
                   a sua utilização do Site.
                 </p>
                 <p className="text-sm text-muted-foreground mt-4 m-0">
-                  <strong>Última atualização:</strong> {new Date().toLocaleDateString('pt-BR')}
+                  <strong>Última atualização:</strong> 12/01/2026
                 </p>
               </div>
             </div>

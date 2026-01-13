@@ -80,9 +80,9 @@ export const ProductCard = ({
   };
 
   return (
-    <Link to={`/produto/${id}`}>
-      <Card className="group overflow-hidden transition-all duration-500 hover:shadow-large hover:-translate-y-2 hover:rotate-[0.5deg]">
-        <div className="relative aspect-square overflow-hidden bg-muted">
+    <Link to={`/produto/${id}`} className="block h-full">
+      <Card className="group h-full flex flex-col overflow-hidden transition-all duration-500 hover:shadow-large hover:-translate-y-2">
+        <div className="relative aspect-square overflow-hidden bg-muted flex-shrink-0">
           <img
             src={image || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800'}
             alt={name}
@@ -141,7 +141,8 @@ export const ProductCard = ({
             />
           </Button>
         </div>
-        <CardContent className="p-4">
+
+        <CardContent className="p-4 flex flex-col flex-1">
           <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-300">
             {name}
           </h3>
@@ -156,7 +157,7 @@ export const ProductCard = ({
             </div>
           )}
 
-          <div className="space-y-1">
+          <div className="space-y-1 mt-auto">
             {isOnSale && originalPrice && (
               <p className="text-sm text-muted-foreground line-through">
                 R$ {originalPrice.toFixed(2).replace('.', ',')}
@@ -177,7 +178,8 @@ export const ProductCard = ({
             </div>
           )}
         </CardContent>
-        <CardFooter className="p-4 pt-0">
+
+        <CardFooter className="p-4 pt-0 flex-shrink-0">
           <Button
             onClick={handleAddToCart}
             className="w-full group/btn transition-all duration-300 hover:shadow-glow"

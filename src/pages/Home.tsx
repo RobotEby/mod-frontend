@@ -16,7 +16,6 @@ import { mockProducts, mockCategories } from '@/lib/mockData';
 import { BenefitsBar } from '@/components/BenefitsBar';
 import { PromoBanner } from '@/components/PromoBanner';
 import { CategoryCard } from '@/components/CategoryCard';
-import { NewsletterForm } from '@/components/NewsletterForm';
 import { FlashDeals } from '@/components/FlashDeals';
 import { BestSellers } from '@/components/BestSellers';
 import { HowItWorks } from '@/components/HowItWorks';
@@ -231,7 +230,6 @@ const Home = () => {
       <InstagramFeed />
       <FAQPreview />
       <RecentlyViewed />
-      <NewsletterForm />
     </div>
   );
 };
