@@ -217,7 +217,7 @@ export const VideoTestimonials = () => {
             ref={containerRef}
             role="listbox"
             aria-label="Depoimentos em vídeo - use as setas para navegar"
-            className="flex gap-3 md:gap-4 pb-4 px-1"
+            className="flex items-start gap-3 md:gap-4 pb-4 px-1"
           >
             {videos.map((video, index) => (
               <button
@@ -232,7 +232,9 @@ export const VideoTestimonials = () => {
                 onMouseEnter={() => handleMouseEnter(video.id)}
                 onMouseLeave={() => handleMouseLeave(video.id)}
                 className={cn(
-                  'flex-shrink-0 w-40 sm:w-48 md:w-56 lg:w-64 group text-left',
+                  'flex-shrink-0 w-40 sm:w-48 md:w-56 lg:w-64',
+                  'flex flex-col',
+                  'group text-left',
                   !prefersReducedMotion && 'animate-fade-in',
                   'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl',
                   'touch-manipulation',
@@ -301,7 +303,7 @@ export const VideoTestimonials = () => {
                         !prefersReducedMotion && 'animate-fade-in',
                       )}
                     >
-                      Preview
+                      Prévia
                     </div>
                   )}
 
