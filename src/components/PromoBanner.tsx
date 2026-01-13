@@ -62,23 +62,23 @@ export const PromoBanner = () => {
     setIsAnimating(false);
   }, []);
 
-  const handlePrevious = useCallback(() => {
-    if (isAnimatingRef.current) return;
-    if (banners.length <= 1) return;
+  // const handlePrevious = useCallback(() => {
+  //   if (isAnimatingRef.current) return;
+  //   if (banners.length <= 1) return;
 
-    isAnimatingRef.current = true;
-    setIsAnimating(true);
-    setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);
-  }, []);
+  //   isAnimatingRef.current = true;
+  //   setIsAnimating(true);
+  //   setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);
+  // }, []);
 
-  const handleNext = useCallback(() => {
-    if (isAnimatingRef.current) return;
-    if (banners.length <= 1) return;
+  // const handleNext = useCallback(() => {
+  //   if (isAnimatingRef.current) return;
+  //   if (banners.length <= 1) return;
 
-    isAnimatingRef.current = true;
-    setIsAnimating(true);
-    setCurrentIndex((prev) => (prev + 1) % banners.length);
-  }, []);
+  //   isAnimatingRef.current = true;
+  //   setIsAnimating(true);
+  //   setCurrentIndex((prev) => (prev + 1) % banners.length);
+  // }, []);
 
   useEffect(() => {
     if (banners.length <= 1) return;
