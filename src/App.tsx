@@ -31,6 +31,7 @@ import Blog from '@/pages/Blog';
 import BlogPost from '@/pages/BlogPost';
 import FAQ from '@/pages/FAQ';
 import Terms from '@/pages/Terms';
+import LGPD from '@/pages/LGPD';
 import Privacy from '@/pages/Privacy';
 import NotFound from '@/pages/NotFound';
 
@@ -98,6 +99,7 @@ const App = () => (
                               <Route path="/faq" element={<FAQ />} />
                               <Route path="/termos" element={<Terms />} />
                               <Route path="/privacidade" element={<Privacy />} />
+                              <Route path="/LGPD" element={<LGPD />} />
                               <Route path="*" element={<NotFound />} />
                             </Routes>
                           </main>
