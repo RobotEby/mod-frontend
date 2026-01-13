@@ -51,12 +51,6 @@ export const Navbar = () => {
           Sobre
         </Link>
         <Link
-          to="/blog"
-          className="block py-2 text-foreground hover:text-primary transition-colors text-lg"
-        >
-          Blog
-        </Link>
-        <Link
           to="/contato"
           className="block py-2 text-foreground hover:text-primary transition-colors text-lg"
         >
@@ -92,13 +86,13 @@ export const Navbar = () => {
             to="/sobre"
             className="text-foreground hover:text-primary transition-colors link-underline"
           >
-            Sobre
+            Conheça a MOD
           </Link>
           <Link
-            to="/blog"
+            to="/contato"
             className="text-foreground hover:text-primary transition-colors link-underline"
           >
-            Blog
+            Fale com a MOD
           </Link>
         </div>
 
@@ -129,7 +123,7 @@ export const Navbar = () => {
             </Button>
           </Link>
 
-          <Link to={user ? '/minha-conta' : '/auth'}>
+          <Link to={user ? '/conta  ' : '/auth'}>
             <Button variant="ghost" size="icon">
               <User className="h-5 w-5" />
             </Button>

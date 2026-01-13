@@ -141,7 +141,7 @@ export const mockProducts: Product[] = [
   {
     id: 'prod-3',
     category_id: 'cat-2',
-    name: 'Guarda-roupa Luxo',
+    name: 'Guarda-roupa alta qualidade',
     description:
       'Guarda-roupa espaçoso com portas de correr e acabamento em laca. Design moderno e funcional.',
     price: 7225,
@@ -447,51 +447,6 @@ export const mockProducts: Product[] = [
     low_stock_threshold: 2,
     sku: 'EST-TRA-001',
     status: 'active',
-  },
-];
-
-export interface BlogPost {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  content: string;
-  image_url: string;
-  category: string;
-  created_at: string;
-}
-
-export const mockBlogPosts: BlogPost[] = [
-  {
-    id: 'blog-1',
-    title: 'Tendências de Decoração 2024',
-    slug: 'tendencias-decoracao-2024',
-    excerpt: 'Descubra as principais tendências de decoração para transformar seu espaço.',
-    content:
-      'As tendências de decoração para 2024 trazem uma mistura de minimalismo com toques de cor...',
-    image_url: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800',
-    category: 'Tendências',
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: 'blog-2',
-    title: 'Como Escolher Móveis para Espaços Pequenos',
-    slug: 'moveis-espacos-pequenos',
-    excerpt: 'Dicas práticas para otimizar ambientes compactos com móveis funcionais.',
-    content: 'Espaços pequenos exigem planejamento cuidadoso na escolha de móveis...',
-    image_url: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=800',
-    category: 'Dicas',
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: 'blog-3',
-    title: 'Cuidados com Móveis de Madeira',
-    slug: 'cuidados-moveis-madeira',
-    excerpt: 'Aprenda a manter seus móveis de madeira sempre bonitos e duráveis.',
-    content: 'Móveis de madeira requerem cuidados específicos para manter sua beleza...',
-    image_url: 'https://images.unsplash.com/photo-1567016432779-094069958ea5?w=800',
-    category: 'Dicas',
-    created_at: new Date().toISOString(),
   },
 ];
 

@@ -15,6 +15,7 @@ import { AdminLayout } from '@/components/admin/AdminLayout';
 import { AdminGuard } from '@/components/admin/AdminGuard';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { CookieConsent } from '@/components/CookieConsent';
+import { ExitIntentPopup } from '@/components/ExitIntentPopup';
 
 import Home from '@/pages/Home';
 import Catalog from '@/pages/Catalog';
@@ -44,7 +45,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <ThemeProvider
     attribute="class"
-    defaultTheme="system"
+    defaultTheme="light"
     enableSystem
     disableTransitionOnChange={false}
   >
@@ -104,6 +105,7 @@ const App = () => (
                           <MobileBottomNav />
                           <WhatsAppButton />
                           <CookieConsent />
+                          <ExitIntentPopup />
                         </>
                       }
                     />

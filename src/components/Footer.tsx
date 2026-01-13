@@ -19,21 +19,21 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/contato"
+                <a
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  href="https://wa.me/5511999999999"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  Fale Conosco
-                </Link>
+                  Entre em Contato
+                </a>
               </li>
-              <li>
-                <Link
-                  to="/blog"
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Blog
-                </Link>
-              </li>
+              <Link
+                to="/blog"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Blog
+              </Link>
             </ul>
           </div>
 
@@ -119,7 +119,8 @@ export const Footer = () => {
 
         <div className="border-t border-border mt-8 pt-8 text-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Movelaria on Demand. Todos os direitos reservados.
+            © CopyRight {new Date().getFullYear()} Movelaria on Demand LTDA. Todos os direitos
+            reservados.
           </p>
         </div>
       </div>

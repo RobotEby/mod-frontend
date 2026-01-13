@@ -30,7 +30,6 @@ import { CustomizationShowcase } from '@/components/CustomizationShowcase';
 import { FeaturedCollections } from '@/components/FeaturedColections';
 import { ServicesBanner } from '@/components/ServicesBanner';
 import { VideoTestimonials } from '@/components/VideoTestimonials';
-import { BlogPreview } from '@/components/BlogPreview';
 import { FAQPreview } from '@/components/FAQPreview';
 import { SustainabilityBanner } from '@/components/SustainabilityBanner';
 
@@ -59,7 +58,7 @@ const Home = () => {
         <div className="container relative z-10">
           <div className="max-w-2xl space-y-6">
             <h1 className="text-5xl md:text-6xl font-bold leading-tight">
-              Móveis de Luxo <span className="text-primary">Sob Medida</span>
+              Móveis de Alta Qualidade <span className="text-primary">Sob Medida</span>
             </h1>
             <p className="text-xl text-muted-foreground">
               Móveis high-end com a qualidade de marcenaria sob medida. Designs exclusivos,
@@ -230,7 +229,6 @@ const Home = () => {
 
       <SustainabilityBanner />
       <InstagramFeed />
-      <BlogPreview />
       <FAQPreview />
       <RecentlyViewed />
       <NewsletterForm />

@@ -18,7 +18,7 @@ interface ShareButtonsProps {
 export const ShareButtons = ({
   url = window.location.href,
   title = 'Confira este produto incrível!',
-  description = 'Móveis de luxo sob medida',
+  description = 'Móveis de alta qualidade sob medida',
 }: ShareButtonsProps) => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
