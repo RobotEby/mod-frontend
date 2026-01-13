@@ -112,7 +112,7 @@ const Account = () => {
   const handleLogout = async () => {
     try {
       await dispatch(signOut()).unwrap();
-      toast.success('Conta desvinculada');
+      toast.success('Você saiu da conta');
       navigate('/');
     } catch (error) {
       toast.error('Erro ao sair');
