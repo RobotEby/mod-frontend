@@ -339,23 +339,6 @@ const Contact = () => {
           </div>
         </div>
       </section>
-
-      <section className="py-8 md:py-12 bg-muted/30">
-        <div className="container">
-          <div className="max-w-2xl mx-auto text-center px-4">
-            <div className="inline-flex items-center gap-2 bg-card px-4 py-2 rounded-full border mb-3 md:mb-4">
-              <Clock className="h-4 w-4 text-primary" />
-              <span className="text-xs md:text-sm font-medium">
-                Tempo médio de resposta: 2 horas
-              </span>
-            </div>
-            <p className="text-xs md:text-sm text-muted-foreground">
-              Respondemos todas as mensagens em até 24 horas úteis. Para urgências, utilize nosso
-              WhatsApp para atendimento imediato.
-            </p>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };
