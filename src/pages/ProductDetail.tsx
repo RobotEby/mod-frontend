@@ -168,11 +168,6 @@ const ProductDetail = () => {
                 alt={product.name}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-foreground/10">
-                <span className="text-sm text-white bg-foreground/80 px-3 py-1 rounded-full">
-                  Passe o mouse para ampliar
-                </span>
-              </div>
             </div>
 
             {allImages.length > 1 && (
