@@ -1,3 +1,4 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 export const addressSchema = z.object({
@@ -19,7 +20,7 @@ export const paymentMethodSchema = z.object({
   expiry_month: z.string().regex(/^(0[1-9]|1[0-2])$/, 'Mês inválido'),
   expiry_year: z.string().regex(/^\d{2}$/, 'Ano inválido'),
   cvv: z.string().regex(/^\d{3,4}$/, 'CVV inválido'),
-  is_default: z.boolean().default(false),
+  is_default: z.boolean().optional(),
 });
 
 export const profileSchema = z.object({

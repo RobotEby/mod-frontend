@@ -112,7 +112,7 @@ const Account = () => {
   const handleLogout = async () => {
     try {
       await dispatch(signOut()).unwrap();
-      toast.success('Logout realizado com sucesso');
+      toast.success('Conta desvinculada');
       navigate('/');
     } catch (error) {
       toast.error('Erro ao sair');
@@ -468,6 +468,7 @@ const Account = () => {
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)}
                             placeholder="Seu nome completo"
+                            disabled
                           />
                         </div>
                         <div className="space-y-2">
@@ -502,18 +503,6 @@ const Account = () => {
                       </div>
 
                       <Separator />
-
-                      <div className="space-y-2">
-                        <h3 className="text-lg font-semibold">Preferências de Comunicação</h3>
-                        <div className="flex items-center space-x-2">
-                          <input type="checkbox" id="newsletter" defaultChecked />
-                          <Label htmlFor="newsletter">Receber ofertas e novidades por email</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <input type="checkbox" id="sms" />
-                          <Label htmlFor="sms">Receber notificações por SMS</Label>
-                        </div>
-                      </div>
                     </div>
 
                     <Button type="submit" disabled={saving}>
@@ -733,17 +722,6 @@ const Account = () => {
                     </div>
 
                     <Separator />
-
-                    <div className="space-y-2">
-                      <h3 className="font-semibold">Cupons e Vale-Presente</h3>
-                      <div className="flex gap-2">
-                        <Input placeholder="Digite seu código de cupom" />
-                        <Button variant="outline">Aplicar</Button>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Você não possui cupons ativos no momento
-                      </p>
-                    </div>
                   </div>
                 </CardContent>
               </Card>

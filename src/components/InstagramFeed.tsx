@@ -5,32 +5,32 @@ const instagramPosts = [
   {
     id: 1,
     image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=400',
-    likes: 234,
+    likes: 'Ir até o post',
   },
   {
     id: 2,
     image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=400',
-    likes: 189,
+    likes: 'Ir até o post',
   },
   {
     id: 3,
     image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400',
-    likes: 456,
+    likes: 'Ir até o post',
   },
   {
     id: 4,
     image: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?w=400',
-    likes: 321,
+    likes: 'Ir até o post',
   },
   {
     id: 5,
     image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=400',
-    likes: 278,
+    likes: 'Ir até o post',
   },
   {
     id: 6,
     image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400',
-    likes: 198,
+    likes: 'Ir até o post',
   },
 ];
 

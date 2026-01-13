@@ -82,6 +82,7 @@ const Catalog = () => {
   });
   const [activeQuickFilters, setActiveQuickFilters] = useState<string[]>([]);
   const [isSticky, setIsSticky] = useState(false);
+  const [filtersLoaded, setFiltersLoaded] = useState(false);
 
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
@@ -96,11 +97,39 @@ const Catalog = () => {
   }, []);
 
   useEffect(() => {
+    const savedFilters = localStorage.getItem('catalog-filters');
+    if (savedFilters) {
+      try {
+        const parsed = JSON.parse(savedFilters);
+        if (parsed.activeQuickFilters) setActiveQuickFilters(parsed.activeQuickFilters);
+        if (parsed.selectedCategory) setSelectedCategory(parsed.selectedCategory);
+        if (parsed.priceRange) setPriceRange(parsed.priceRange);
+        if (parsed.minRating !== undefined) setMinRating(parsed.minRating);
+        if (parsed.sortBy) setSortBy(parsed.sortBy);
+      } catch (e) {
+        console.error('Error loading saved filters:', e);
+      }
+    }
+    setFiltersLoaded(true);
+  }, []);
+
+  useEffect(() => {
     const categoria = searchParams.get('categoria');
     const ofertas = searchParams.get('ofertas');
     if (categoria) setSelectedCategory(categoria);
     if (ofertas === 'true') setShowOffers(true);
   }, [searchParams]);
+
+  useEffect(() => {
+    const filters = {
+      activeQuickFilters,
+      selectedCategory,
+      priceRange,
+      minRating,
+      sortBy,
+    };
+    localStorage.setItem('catalog-filters', JSON.stringify(filters));
+  }, [activeQuickFilters, selectedCategory, priceRange, minRating, sortBy, filtersLoaded]);
 
   useEffect(() => {
     localStorage.setItem('catalog-view-mode', viewMode);
@@ -251,7 +280,7 @@ const Catalog = () => {
           <p className="text-lg text-muted-foreground mb-6 animate-slide-up [animation-delay:100ms]">
             {showOffers
               ? 'Aproveite os melhores preços em móveis selecionados'
-              : 'Explore nossa coleção completa de móveis de luxo'}
+              : 'Explore nossa coleção completa de móveis de alta qualidade'}
           </p>
 
           <div className="flex flex-col md:flex-row gap-4 animate-slide-up [animation-delay:200ms]">
@@ -427,16 +456,9 @@ const Catalog = () => {
                       {rating > 0 ? (
                         <>
                           {Array.from({ length: rating }).map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`h-4 w-4 ${
-                                minRating === rating
-                                  ? 'fill-yellow-500 text-yellow-500'
-                                  : 'fill-muted-foreground text-muted-foreground'
-                              }`}
-                            />
+                            <Star key={i} className="h-4 w-4 fill-primary text-primary" />
                           ))}
-                          {rating < 5 && rating > 0 && <span>e acima</span>}
+                          <span>& acima</span>
                         </>
                       ) : (
                         <span>Todas</span>

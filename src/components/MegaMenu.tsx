@@ -28,7 +28,7 @@ export const MegaMenu = () => {
                   Ver Todos os Produtos
                 </Link>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Explore nossa coleção completa de móveis de luxo
+                  Explore nossa coleção completa de móveis de alta qualidade
                 </p>
               </div>
 

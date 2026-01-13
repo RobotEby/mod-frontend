@@ -8,9 +8,6 @@ export interface UploadResult {
 }
 
 export const storageService = {
-  /**
-   * Upload an image to Supabase Storage
-   */
   uploadImage: async (file: File, folder: string = 'products'): Promise<UploadResult> => {
     const fileExt = file.name.split('.').pop();
     const fileName = `${folder}/${Date.now()}-${Math.random()
@@ -34,17 +31,11 @@ export const storageService = {
     };
   },
 
-  /**
-   * Upload multiple images
-   */
   uploadImages: async (files: File[], folder: string = 'products'): Promise<UploadResult[]> => {
     const uploads = files.map((file) => storageService.uploadImage(file, folder));
     return Promise.all(uploads);
   },
 
-  /**
-   * Delete an image from storage
-   */
   deleteImage: async (path: string): Promise<void> => {
     const { error } = await supabase.storage.from(BUCKET_NAME).remove([path]);
 
@@ -53,9 +44,6 @@ export const storageService = {
     }
   },
 
-  /**
-   * Delete multiple images
-   */
   deleteImages: async (paths: string[]): Promise<void> => {
     if (paths.length === 0) return;
 
@@ -66,9 +54,6 @@ export const storageService = {
     }
   },
 
-  /**
-   * Get public URL for an image path
-   */
   getPublicUrl: (path: string): string => {
     const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(path);
     return data.publicUrl;

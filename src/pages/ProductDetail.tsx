@@ -8,7 +8,7 @@ import { ArrowLeft, ShoppingCart, Package, Clock } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useAppSelector } from '@/app/hooks';
 import { selectUser } from '@/features/user/userSelectors';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { mockProducts, mockCategories } from '@/lib/mockData';
 import { ReviewForm } from '@/components/ReviewForm';
 import { ReviewList } from '@/components/ReviewList';
@@ -18,6 +18,7 @@ import { InstallmentCalculator } from '@/components/InstallmentCalculator';
 import { StockUrgency } from '@/components/StockUrgency';
 import { ShareButtons } from '@/components/ShareButtons';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { StickyAddToCart } from '@/components/StickyAddToCart';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -27,6 +28,8 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [refreshReviews, setRefreshReviews] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+  const ctaButtonRef = useRef<HTMLButtonElement>(null);
 
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', id],
@@ -66,6 +69,26 @@ const ProductDetail = () => {
     if (product?.main_image_url) {
       setSelectedImage(product.main_image_url);
     }
+  }, [product]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowStickyBar(!entry.isIntersecting);
+      },
+      { threshold: 0 },
+    );
+
+    const currentRef = ctaButtonRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
   }, [product]);
 
   if (isLoading) {
@@ -267,6 +290,7 @@ const ProductDetail = () => {
               </div>
 
               <Button
+                ref={ctaButtonRef}
                 size="lg"
                 className="w-full"
                 onClick={handleAddToCart}
@@ -317,6 +341,14 @@ const ProductDetail = () => {
             </TabsContent>
           </Tabs>
         </div>
+
+        <StickyAddToCart
+          productName={product.name}
+          price={Number(product.price)}
+          onAddToCart={handleAddToCart}
+          isOutOfStock={product.stock_quantity === 0}
+          isVisible={showStickyBar}
+        />
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-
+import { Shield } from 'lucide-react';
 interface PaymentMethodFormProps {
   onSubmit: (data: PaymentMethodFormData) => Promise<void>;
   submitLabel?: string;
@@ -23,7 +23,7 @@ export const PaymentMethodForm = ({
   onSubmit,
   submitLabel = 'Adicionar Cartão',
 }: PaymentMethodFormProps) => {
-  const form = useForm({
+  const form = useForm<PaymentMethodFormData>({
     resolver: zodResolver(paymentMethodSchema),
     defaultValues: {
       cardholder_name: '',
@@ -33,7 +33,7 @@ export const PaymentMethodForm = ({
       cvv: '',
       is_default: false,
     },
-  } as const);
+  });
 
   const formatCardNumber = (value: string) => {
     const cleaned = value.replace(/\s/g, '');
@@ -44,6 +44,14 @@ export const PaymentMethodForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <div className="flex items-start gap-2 p-3 bg-primary/5 border border-primary/20 rounded-lg text-sm">
+          <Shield className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+          <p className="text-muted-foreground">
+            <span className="font-medium text-foreground">Seus dados estão protegidos.</span> Apenas
+            os últimos 4 dígitos do cartão são armazenados. O número completo e CVV nunca são
+            salvos.
+          </p>
+        </div>
         <FormField
           control={form.control}
           name="card_number"

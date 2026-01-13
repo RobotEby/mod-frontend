@@ -141,7 +141,7 @@ export const PromoBanner = () => {
         </div>
       </div>
 
-      <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
+      {/* <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
         <button
           onClick={handlePrevious}
           aria-label="Anterior"
@@ -161,7 +161,7 @@ export const PromoBanner = () => {
         >
           <ChevronRight />
         </button>
-      </div>
+      </div> */}
 
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3">
         {banners.map((_, index) => (
