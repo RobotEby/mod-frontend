@@ -44,10 +44,13 @@ export const ScrollToTop = () => {
   }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }, [pathname]);
+
+    return null;
   };
 
   return (
