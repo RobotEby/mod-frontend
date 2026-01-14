@@ -21,11 +21,11 @@ export const ScrollToTop = () => {
       if (hash) {
         const el = document.querySelector(hash);
         if (el) {
-          el.scrollIntoView({ behavior: 'auto' });
+          el.scrollIntoView({ behavior: 'smooth' });
           return;
         }
       }
-      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, 0);
     return () => window.clearTimeout(id);
   }, [pathname, hash, search]);
