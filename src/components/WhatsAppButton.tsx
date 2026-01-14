@@ -82,7 +82,9 @@ export const WhatsAppButton = () => {
       style={bottomStyle}
       className={cn(
         'fixed right-6 z-50 flex items-center justify-center rounded-full bg-[#25D366] text-white p-3 md:p-4 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl',
-        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0',
+        isVisible
+          ? 'translate-y-0 opacity-100 pointer-events-auto'
+          : 'translate-y-20 opacity-0 pointer-events-none',
       )}
       aria-label="Abrir WhatsApp"
       title="Abrir WhatsApp"
