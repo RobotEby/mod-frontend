@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { storageService, UploadResult } from '@/services/storageService';
 import { cn } from '@/lib/utils';
 
 interface ImageUploaderProps {
@@ -48,14 +47,14 @@ export function ImageUploader({ value, onChange, label, className }: ImageUpload
     setUploading(true);
     setError(null);
 
-    try {
-      const result: UploadResult = await storageService.uploadImage(file);
-      onChange(result.url);
-    } catch (err: any) {
-      setError(err.message || 'Erro ao fazer upload');
-    } finally {
-      setUploading(false);
-    }
+    // try {
+    //   const result: UploadResult = await storageService.uploadImage(file);
+    //   onChange(result.url);
+    // } catch (err: any) {
+    //   setError(err.message || 'Erro ao fazer upload');
+    // } finally {
+    //   setUploading(false);
+    // }
   };
 
   const handleDrop = useCallback((e: React.DragEvent) => {
@@ -235,14 +234,14 @@ export function MultiImageUploader({
     setUploading(true);
     setError(null);
 
-    try {
-      const results = await storageService.uploadImages(filesToUpload);
-      onChange([...values, ...results.map((r) => r.url)]);
-    } catch (err: any) {
-      setError(err.message || 'Erro ao fazer upload');
-    } finally {
-      setUploading(false);
-    }
+    // try {
+    //   const results = await storageService.uploadImages(filesToUpload);
+    //   onChange([...values, ...results.map((r) => r.url)]);
+    // } catch (err: any) {
+    //   setError(err.message || 'Erro ao fazer upload');
+    // } finally {
+    //   setUploading(false);
+    // }
   };
 
   const handleDrop = useCallback(
