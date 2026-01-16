@@ -1,36 +1,53 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { accountClient } from '@/integrations/account/account-client';
+import apiClient from '@/lib/api-client';
 import { AccountUser } from '@/types/account';
+import { useAppDispatch } from '@/app/hooks';
+// import {} from '@/features/user/userSlice';
 
 interface AuthContextType {
   user: AccountUser | null;
-  session: {
-    user: AccountUser;
-    access_token: string;
-  } | null;
   loading: boolean;
-  setSession: (session: { user: AccountUser; access_token: string }) => void;
-  setUser: (user: AccountUser) => void;
-  setLoading: (loading: boolean) => void;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
-  session: null,
   loading: true,
-  setSession: () => {},
-  setUser: () => {},
-  setLoading: () => {},
+  refreshUser: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<AccountUser | null>(null);
-  const [session, setSession] = useState<{ user: AccountUser; access_token: string } | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+
+  const fetchUser = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      const { data } = await apiClient.get<AccountUser>('/auth/me');
+
+      setUser(data);
+      // que, que eu boto aqui? setUser?
+      dispatch({ user: data, token });
+    } catch (error) {
+      console.error('Erro ao carregar sessão:', error);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, setSession, setUser, setLoading }}>
+    <AuthContext.Provider value={{ user, loading, refreshUser: fetchUser }}>
       {children}
     </AuthContext.Provider>
   );

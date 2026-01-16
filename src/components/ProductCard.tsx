@@ -5,7 +5,7 @@ import { ShoppingCart, Heart, Star, Clock, AlertTriangle, Eye } from 'lucide-rea
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import apiClient from '@/lib/api-client';
 import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
@@ -46,15 +46,13 @@ export const ProductCard = ({
   const { data: reviewStats } = useQuery({
     queryKey: ['review-stats', id],
     queryFn: async () => {
-      const { data: avgData } = await supabase.rpc('get_product_avg_rating', {
-        product_uuid: id,
-      });
-      const { data: countData } = await supabase.rpc('get_product_review_count', {
-        product_uuid: id,
-      });
+      const response = await apiClient.get<{ avgRating: number; count: number }>(
+        `/products/${id}/stats`,
+      );
+
       return {
-        avgRating: avgData || 0,
-        count: countData || 0,
+        avgRating: response.data?.avgRating || 0,
+        count: response.data?.count || 0,
       };
     },
   });

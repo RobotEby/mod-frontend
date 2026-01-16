@@ -4,7 +4,6 @@ import { LayoutGrid, List } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { OrderKanban } from '@/components/admin/OrderKanban';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Badge } from '@/components/ui/badge';
 import {
   Table,
   TableBody,
@@ -21,7 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import apiClient from '@/lib/api-client';
 
 type OrderStatus =
   | 'pending_payment'
@@ -38,6 +37,17 @@ const statusLabels: Record<OrderStatus, string> = {
   delivered: 'Entregue',
 };
 
+interface Order {
+  id: string;
+  total_amount: number;
+  status: OrderStatus;
+  created_at: string;
+  user_id: string;
+  shipping_address?: any;
+  items_count?: number;
+  customer_name?: string;
+}
+
 export default function AdminOrders() {
   const [viewMode, setViewMode] = useState<'kanban' | 'table'>('kanban');
   const { toast } = useToast();
@@ -46,39 +56,31 @@ export default function AdminOrders() {
   const { data: orders, isLoading } = useQuery({
     queryKey: ['admin-orders'],
     queryFn: async () => {
-      const { data: ordersData, error: ordersError } = await supabase
-        .from('orders')
-        .select(
-          `
-          id,
-          total_amount,
-          status,
-          created_at,
-          user_id,
-          shipping_address
-        `,
-        )
-        .order('created_at', { ascending: false });
-
-      if (ordersError) throw ordersError;
+      const { data: ordersData } = await apiClient.get<Order[]>('/orders');
 
       const ordersWithItems = await Promise.all(
         (ordersData || []).map(async (order) => {
-          const { count } = await supabase
-            .from('order_items')
-            .select('id', { count: 'exact' })
-            .eq('order_id', order.id);
+          let items_count = 0;
+          let customer_name = 'Cliente';
 
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('full_name')
-            .eq('id', order.user_id)
-            .single();
+          try {
+            const { data: countData } = await apiClient.get<{ count: number }>(
+              `/orders/${order.id}/items/count`,
+            );
+            items_count = countData.count;
+
+            const { data: profile } = await apiClient.get<{ full_name: string }>(
+              `/users/${order.user_id}/profile`,
+            );
+            customer_name = profile.full_name;
+          } catch (err) {
+            console.warn(`Erro ao carregar detalhes do pedido ${order.id}`, err);
+          }
 
           return {
             ...order,
-            items_count: count || 0,
-            customer_name: profile?.full_name || 'Cliente',
+            items_count,
+            customer_name,
           };
         }),
       );
@@ -89,20 +91,16 @@ export default function AdminOrders() {
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ orderId, newStatus }: { orderId: string; newStatus: OrderStatus }) => {
-      const { error } = await supabase
-        .from('orders')
-        .update({ status: newStatus })
-        .eq('id', orderId);
-      if (error) throw error;
+      await apiClient.patch(`/orders/${orderId}`, { status: newStatus });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
       toast({ title: 'Status atualizado com sucesso!' });
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast({
         title: 'Erro ao atualizar status',
-        description: error.message,
+        description: error.response?.data?.message || error.message,
         variant: 'destructive',
       });
     },

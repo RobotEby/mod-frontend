@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import apiClient from '@/lib/api-client';
 import { useAuth } from './AuthContext';
 
 interface Notification {
@@ -30,75 +30,53 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
   const fetchNotifications = async () => {
     if (!user) return;
 
-    const { data, error } = await supabase
-      .from('notifications')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(50);
-
-    if (error) {
+    try {
+      const { data } = await apiClient.get<Notification[]>('/notifications');
+      setNotifications(data || []);
+    } catch (error) {
       console.error('Error fetching notifications:', error);
-      return;
     }
-
-    setNotifications(data || []);
   };
 
   useEffect(() => {
     if (user) {
       fetchNotifications();
-
-      const channel = supabase
-        .channel('notifications')
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: 'notifications',
-            filter: `user_id=eq.${user.id}`,
-          },
-          () => {
-            fetchNotifications();
-          },
-        )
-        .subscribe();
-
-      return () => {
-        supabase.removeChannel(channel);
-      };
+      const intervalId = setInterval(fetchNotifications, 30000);
+      return () => clearInterval(intervalId);
     } else {
       setNotifications([]);
     }
   }, [user]);
 
   const markAsRead = async (id: string) => {
-    const { error } = await supabase.from('notifications').update({ is_read: true }).eq('id', id);
+    try {
+      await apiClient.patch(`/notifications/${id}/read`);
 
-    if (!error) {
+      setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, is_read: true } : n)));
+    } catch (error) {
+      console.error('Erro ao marcar como lida', error);
       await fetchNotifications();
     }
   };
 
   const markAllAsRead = async () => {
     if (!user) return;
+    try {
+      await apiClient.post('/notifications/read-all');
 
-    const { error } = await supabase
-      .from('notifications')
-      .update({ is_read: true })
-      .eq('user_id', user.id)
-      .eq('is_read', false);
-
-    if (!error) {
+      setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
+    } catch (error) {
+      console.error('Erro ao marcar todas como lidas', error);
       await fetchNotifications();
     }
   };
 
   const deleteNotification = async (id: string) => {
-    const { error } = await supabase.from('notifications').delete().eq('id', id);
-
-    if (!error) {
+    try {
+      await apiClient.delete(`/notifications/${id}`);
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
+    } catch (error) {
+      console.error('Erro ao deletar notificação', error);
       await fetchNotifications();
     }
   };
