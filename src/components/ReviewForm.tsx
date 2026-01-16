@@ -4,10 +4,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Star } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import apiClient from '@/lib/api-client';
 import { toast } from 'sonner';
 import { useAppSelector } from '@/app/hooks';
 import { selectUser } from '@/features/user/userSelectors';
+import { AxiosError } from 'axios';
 
 interface ReviewFormProps {
   productId: string;
@@ -37,30 +38,30 @@ export const ReviewForm = ({ productId, onSuccess }: ReviewFormProps) => {
 
     setIsSubmitting(true);
 
-    const { error } = await supabase.from('reviews').insert({
-      user_id: user.id,
-      product_id: productId,
-      rating,
-      title: title || null,
-      comment: comment || null,
-    });
+    try {
+      await apiClient.post('/reviews', {
+        user_id: user.id,
+        product_id: productId,
+        rating,
+        title: title || null,
+        comment: comment || null,
+      });
 
-    setIsSubmitting(false);
-
-    if (error) {
-      if (error.code === '23505') {
+      toast.success('Avaliação enviada! Aguardando aprovação.');
+      setRating(0);
+      setTitle('');
+      setComment('');
+      onSuccess();
+    } catch (error) {
+      const err = error as AxiosError;
+      if (err.response?.status === 409) {
         toast.error('Você já avaliou este produto');
       } else {
         toast.error('Erro ao enviar avaliação');
       }
-      return;
+    } finally {
+      setIsSubmitting(false);
     }
-
-    toast.success('Avaliação enviada! Aguardando aprovação.');
-    setRating(0);
-    setTitle('');
-    setComment('');
-    onSuccess();
   };
 
   return (

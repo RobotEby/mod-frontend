@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { DollarSign, Package, ShoppingCart, AlertTriangle } from 'lucide-react';
 import { StatsCard } from '@/components/admin/StatsCard';
 import { Skeleton } from '@/components/ui/skeleton';
-import { supabase } from '@/integrations/supabase/client';
+import apiClient from '@/lib/api-client';
 import { SalesTrendsChart } from '@/components/admin/SalesTrendsChart';
 import { TopProductsChart } from '@/components/admin/TopProductsChart';
 import { CategoryChart } from '@/components/admin/CategoryChart';
@@ -14,9 +14,11 @@ export default function AdminDashboard() {
     queryKey: ['admin-stats'],
     queryFn: async () => {
       const [productsRes, ordersRes, lowStockRes] = await Promise.all([
-        supabase.from('products').select('id, price', { count: 'exact' }),
-        supabase.from('orders').select('id, total_amount, status', { count: 'exact' }),
-        supabase.from('products').select('id').lt('stock_quantity', 5),
+        apiClient.get<{ count: number }>('/products/count'),
+
+        apiClient.get<{ id: string; total_amount: number; status: string }[]>('/orders'),
+
+        apiClient.get<{ id: string }[]>('/products', { params: { low_stock: true } }),
       ]);
 
       const totalRevenue =
@@ -25,8 +27,8 @@ export default function AdminDashboard() {
           .reduce((sum, o) => sum + Number(o.total_amount), 0) || 0;
 
       return {
-        totalProducts: productsRes.count || 0,
-        totalOrders: ordersRes.count || 0,
+        totalProducts: productsRes.data.count || 0,
+        totalOrders: ordersRes.data?.length || 0,
         totalRevenue,
         lowStockCount: lowStockRes.data?.length || 0,
       };

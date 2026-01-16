@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import apiClient from '@/lib/api-client';
 
 interface Category {
   id: string;
@@ -28,16 +28,18 @@ export default function AdminCategories() {
   const { data: categories, isLoading } = useQuery({
     queryKey: ['admin-categories'],
     queryFn: async () => {
-      const { data: cats, error } = await supabase.from('categories').select('*').order('name');
-      if (error) throw error;
+      const { data: cats } = await apiClient.get<Category[]>('/categories');
 
       const categoriesWithCount = await Promise.all(
         (cats || []).map(async (cat) => {
-          const { count } = await supabase
-            .from('products')
-            .select('id', { count: 'exact' })
-            .eq('category_id', cat.id);
-          return { ...cat, product_count: count || 0 };
+          try {
+            const { data } = await apiClient.get<{ total: number }>('/products/count', {
+              params: { category_id: cat.id },
+            });
+            return { ...cat, product_count: data.total || 0 };
+          } catch {
+            return { ...cat, product_count: 0 };
+          }
         }),
       );
 
@@ -47,14 +49,11 @@ export default function AdminCategories() {
 
   const createMutation = useMutation({
     mutationFn: async (data: { name: string; slug: string; image_url: string }) => {
-      const { error } = await supabase.from('categories').insert([
-        {
-          name: data.name,
-          slug: data.slug || data.name.toLowerCase().replace(/\s+/g, '-'),
-          image_url: data.image_url || null,
-        },
-      ]);
-      if (error) throw error;
+      await apiClient.post('/categories', {
+        name: data.name,
+        slug: data.slug || data.name.toLowerCase().replace(/\s+/g, '-'),
+        image_url: data.image_url || null,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-categories'] });
@@ -62,10 +61,10 @@ export default function AdminCategories() {
       setFormOpen(false);
       resetForm();
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast({
         title: 'Erro ao criar categoria',
-        description: error.message,
+        description: error.response?.data?.message || error.message,
         variant: 'destructive',
       });
     },
@@ -79,15 +78,11 @@ export default function AdminCategories() {
       id: string;
       data: { name: string; slug: string; image_url: string };
     }) => {
-      const { error } = await supabase
-        .from('categories')
-        .update({
-          name: data.name,
-          slug: data.slug,
-          image_url: data.image_url || null,
-        })
-        .eq('id', id);
-      if (error) throw error;
+      await apiClient.put(`/categories/${id}`, {
+        name: data.name,
+        slug: data.slug,
+        image_url: data.image_url || null,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-categories'] });
@@ -95,10 +90,10 @@ export default function AdminCategories() {
       setFormOpen(false);
       resetForm();
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast({
         title: 'Erro ao atualizar categoria',
-        description: error.message,
+        description: error.response?.data?.message || error.message,
         variant: 'destructive',
       });
     },
@@ -106,17 +101,16 @@ export default function AdminCategories() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from('categories').delete().eq('id', id);
-      if (error) throw error;
+      await apiClient.delete(`/categories/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-categories'] });
       toast({ title: 'Categoria excluída com sucesso!' });
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast({
         title: 'Erro ao excluir categoria',
-        description: error.message,
+        description: error.response?.data?.message || error.message,
         variant: 'destructive',
       });
     },

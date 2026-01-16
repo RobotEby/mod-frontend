@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '@/app/hooks';
 import { selectUser, selectUserLoading } from '@/features/user/userSelectors';
-import { supabase } from '@/integrations/supabase/client';
+import apiClient from '@/lib/api-client';
 import { Loader2 } from 'lucide-react';
 
 interface AdminGuardProps {
@@ -26,17 +26,12 @@ export const AdminGuard = ({ children }: AdminGuardProps) => {
       }
 
       try {
-        const { data, error } = await supabase.rpc('has_role', {
-          _user_id: user.id,
-          _role: 'admin',
+        const { data } = await apiClient.post<{ hasRole: boolean }>('/auth/check-role', {
+          user_id: user.id,
+          role: 'admin',
         });
 
-        if (error) {
-          console.error('Error checking admin role:', error);
-          setIsAdmin(false);
-        } else {
-          setIsAdmin(data === true);
-        }
+        setIsAdmin(data.hasRole);
       } catch (err) {
         console.error('Error checking admin role:', err);
         setIsAdmin(false);

@@ -15,7 +15,6 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { getMockOrderWithItems } from '@/lib/mockData';
 import { User, Package, ShoppingBag, CheckCircle, MapPin, CreditCard, Trash2 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { AddressForm } from '@/components/AddressForm';
 import { PaymentMethodForm } from '@/components/PaymentMethodForm';
 import { AddressFormData, PaymentMethodFormData } from '@/lib/validationSchemas';
@@ -31,6 +30,8 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
+const API_BASE_URL = 'http://localhost:3000/api';
+
 const orderStatusMap = {
   pending_payment: { label: 'Aguardando Pagamento', variant: 'secondary' as const },
   sent_to_factory: { label: 'Enviado à Marcenaria', variant: 'default' as const },
@@ -38,6 +39,24 @@ const orderStatusMap = {
   shipped: { label: 'Enviado', variant: 'default' as const },
   delivered: { label: 'Entregue', variant: 'default' as const },
 };
+
+async function apiRequest(endpoint: string, options: RequestInit = {}) {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    ...options,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `Erro na requisição: ${response.statusText}`);
+  }
+
+  if (response.status === 204) return null;
+
+  return response.json();
+}
 
 const Account = () => {
   const dispatch = useAppDispatch();
@@ -68,15 +87,13 @@ const Account = () => {
     queryKey: ['user-addresses', user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const { data, error } = await supabase
-        .from('user_addresses')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('is_default', { ascending: false })
-        .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      return data;
+      const data = await apiRequest(`/user_addresses?user_id=${user.id}`);
+
+      return data.sort((a: any, b: any) => {
+        if (a.is_default !== b.is_default) return b.is_default ? 1 : -1;
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
     },
     enabled: !!user,
   });
@@ -85,15 +102,13 @@ const Account = () => {
     queryKey: ['user-payment-methods', user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const { data, error } = await supabase
-        .from('user_payment_methods')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('is_default', { ascending: false })
-        .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      return data;
+      const data = await apiRequest(`/user_payment_methods?user_id=${user.id}`);
+
+      return data.sort((a: any, b: any) => {
+        if (a.is_default !== b.is_default) return b.is_default ? 1 : -1;
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
     },
     enabled: !!user,
   });
@@ -102,7 +117,6 @@ const Account = () => {
     queryKey: ['user-orders', user?.id],
     queryFn: async () => {
       if (!user) return [];
-
       await new Promise((resolve) => setTimeout(resolve, 300));
       return getMockOrderWithItems(user.id);
     },
@@ -123,21 +137,22 @@ const Account = () => {
     mutationFn: async (data: AddressFormData) => {
       if (!user) throw new Error('User not found');
 
-      const { error } = await supabase.from('user_addresses').insert({
-        user_id: user.id,
-        nickname: data.nickname || null,
-        street: data.street,
-        number: data.number,
-        complement: data.complement || null,
-        neighborhood: data.neighborhood,
-        city: data.city,
-        state: data.state,
-        zip_code: data.zip_code,
-        reference: data.reference || null,
-        is_default: data.is_default,
+      await apiRequest('/user_addresses', {
+        method: 'POST',
+        body: JSON.stringify({
+          user_id: user.id,
+          nickname: data.nickname || null,
+          street: data.street,
+          number: data.number,
+          complement: data.complement || null,
+          neighborhood: data.neighborhood,
+          city: data.city,
+          state: data.state,
+          zip_code: data.zip_code,
+          reference: data.reference || null,
+          is_default: data.is_default,
+        }),
       });
-
-      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-addresses'] });
@@ -151,9 +166,9 @@ const Account = () => {
 
   const deleteAddressMutation = useMutation({
     mutationFn: async (addressId: string) => {
-      const { error } = await supabase.from('user_addresses').delete().eq('id', addressId);
-
-      if (error) throw error;
+      await apiRequest(`/user_addresses/${addressId}`, {
+        method: 'DELETE',
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-addresses'] });
@@ -166,12 +181,10 @@ const Account = () => {
 
   const setDefaultAddressMutation = useMutation({
     mutationFn: async (addressId: string) => {
-      const { error } = await supabase
-        .from('user_addresses')
-        .update({ is_default: true })
-        .eq('id', addressId);
-
-      if (error) throw error;
+      await apiRequest(`/user_addresses/${addressId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ is_default: true }),
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-addresses'] });
@@ -192,17 +205,18 @@ const Account = () => {
       else if (firstDigit === '5') card_type = 'Mastercard';
       else if (firstDigit === '3') card_type = 'Amex';
 
-      const { error } = await supabase.from('user_payment_methods').insert({
-        user_id: user.id,
-        card_type,
-        last4: data.card_number.slice(-4),
-        cardholder_name: data.cardholder_name,
-        expiry_month: data.expiry_month,
-        expiry_year: data.expiry_year,
-        is_default: data.is_default,
+      await apiRequest('/user_payment_methods', {
+        method: 'POST',
+        body: JSON.stringify({
+          user_id: user.id,
+          card_type,
+          last4: data.card_number.slice(-4),
+          cardholder_name: data.cardholder_name,
+          expiry_month: data.expiry_month,
+          expiry_year: data.expiry_year,
+          is_default: data.is_default,
+        }),
       });
-
-      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-payment-methods'] });
@@ -215,9 +229,9 @@ const Account = () => {
 
   const deletePaymentMethodMutation = useMutation({
     mutationFn: async (paymentId: string) => {
-      const { error } = await supabase.from('user_payment_methods').delete().eq('id', paymentId);
-
-      if (error) throw error;
+      await apiRequest(`/user_payment_methods/${paymentId}`, {
+        method: 'DELETE',
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-payment-methods'] });
@@ -230,12 +244,10 @@ const Account = () => {
 
   const setDefaultPaymentMutation = useMutation({
     mutationFn: async (paymentId: string) => {
-      const { error } = await supabase
-        .from('user_payment_methods')
-        .update({ is_default: true })
-        .eq('id', paymentId);
-
-      if (error) throw error;
+      await apiRequest(`/user_payment_methods/${paymentId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ is_default: true }),
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-payment-methods'] });
@@ -251,15 +263,13 @@ const Account = () => {
     setSaving(true);
 
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({
+      await apiRequest(`/profiles/${user!.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
           full_name: fullName,
           phone,
-        })
-        .eq('id', user!.id);
-
-      if (error) throw error;
+        }),
+      });
 
       toast.success('Perfil atualizado com sucesso!');
     } catch (error: any) {
@@ -274,7 +284,6 @@ const Account = () => {
   }
 
   const activeOrders = orders?.filter((order) => order.status !== 'delivered') || [];
-
   const deliveredOrders = orders?.filter((order) => order.status === 'delivered') || [];
 
   const renderOrderCard = (order: any) => (
@@ -287,8 +296,12 @@ const Account = () => {
               {new Date(order.created_at).toLocaleDateString('pt-BR')}
             </p>
           </div>
-          <Badge variant={orderStatusMap[order.status]?.variant || 'secondary'}>
-            {orderStatusMap[order.status]?.label || order.status}
+          <Badge
+            variant={
+              orderStatusMap[order.status as keyof typeof orderStatusMap]?.variant || 'secondary'
+            }
+          >
+            {orderStatusMap[order.status as keyof typeof orderStatusMap]?.label || order.status}
           </Badge>
         </div>
 
@@ -542,7 +555,7 @@ const Account = () => {
                           ))}
                         </div>
                       ) : addresses && addresses.length > 0 ? (
-                        addresses.map((address) => (
+                        addresses.map((address: any) => (
                           <Card key={address.id}>
                             <CardContent className="p-4">
                               <div className="flex justify-between items-start">
@@ -653,7 +666,7 @@ const Account = () => {
                         </div>
                       ) : paymentMethods && paymentMethods.length > 0 ? (
                         <div className="space-y-4">
-                          {paymentMethods.map((payment) => (
+                          {paymentMethods.map((payment: any) => (
                             <Card key={payment.id}>
                               <CardContent className="p-4">
                                 <div className="flex justify-between items-start">

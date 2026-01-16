@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import apiClient from '@/lib/api-client';
 import { Star, ThumbsUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
@@ -12,50 +12,74 @@ interface ReviewListProps {
   productId: string;
 }
 
+interface Profile {
+  id: string;
+  full_name: string;
+}
+
+interface Review {
+  id: string;
+  user_id: string;
+  product_id: string;
+  rating: number;
+  title?: string;
+  comment?: string;
+  status: string;
+  helpful_count: number;
+  created_at: string;
+  profile?: Profile;
+}
+
 export const ReviewList = ({ productId }: ReviewListProps) => {
   const user = useAppSelector(selectUser);
 
   const { data: reviews, refetch } = useQuery({
     queryKey: ['reviews', productId],
     queryFn: async () => {
-      const { data: reviewsData, error } = await supabase
-        .from('reviews')
-        .select('*')
-        .eq('product_id', productId)
-        .eq('status', 'approved')
-        .order('created_at', { ascending: false });
+      const { data: reviewsData } = await apiClient.get<Review[]>('/reviews', {
+        params: {
+          product_id: productId,
+          status: 'approved',
+        },
+      });
 
-      if (error) throw error;
+      if (!reviewsData || reviewsData.length === 0) return [];
 
-      const userIds = reviewsData?.map((r) => r.user_id) || [];
-      const { data: profilesData } = await supabase
-        .from('profiles')
-        .select('id, full_name')
-        .in('id', userIds);
+      const userIds = [...new Set(reviewsData.map((r) => r.user_id))];
 
-      const reviewsWithProfiles = reviewsData?.map((review) => ({
+      let profiles: Profile[] = [];
+
+      if (userIds.length > 0) {
+        try {
+          const { data } = await apiClient.get<Profile[]>('/profiles', {
+            params: { ids: userIds.join(',') },
+          });
+          profiles = data;
+        } catch (error) {
+          console.warn('Não foi possível carregar perfis', error);
+        }
+      }
+
+      const reviewsWithProfiles = reviewsData.map((review) => ({
         ...review,
-        profile: profilesData?.find((p) => p.id === review.user_id),
+        profile: profiles.find((p) => p.id === review.user_id),
       }));
 
-      return reviewsWithProfiles;
+      return reviewsWithProfiles.sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      );
     },
   });
 
   const { data: stats } = useQuery({
     queryKey: ['review-stats', productId],
     queryFn: async () => {
-      const { data: avgData } = await supabase.rpc('get_product_avg_rating', {
-        product_uuid: productId,
-      });
-
-      const { data: countData } = await supabase.rpc('get_product_review_count', {
-        product_uuid: productId,
-      });
-
+      const response = await apiClient.get<{ avgRating: number; count: number }>(
+        `/products/${productId}/stats`,
+      );
       return {
-        avgRating: avgData || 0,
-        count: countData || 0,
+        avgRating: response.data?.avgRating || 0,
+        count: response.data?.count || 0,
       };
     },
   });
@@ -66,20 +90,12 @@ export const ReviewList = ({ productId }: ReviewListProps) => {
       return;
     }
 
-    const review = reviews?.find((r) => r.id === reviewId);
-    if (!review) return;
-
-    const { error } = await supabase
-      .from('reviews')
-      .update({ helpful_count: review.helpful_count + 1 })
-      .eq('id', reviewId);
-
-    if (error) {
+    try {
+      await apiClient.post(`/reviews/${reviewId}/helpful`);
+      refetch();
+    } catch (error) {
       toast.error('Erro ao marcar como útil');
-      return;
     }
-
-    refetch();
   };
 
   if (!reviews || reviews.length === 0) {
