@@ -296,7 +296,7 @@ export const ProductForm = ({
               </div>
 
               <div className="md:col-span-2 border-t border-border pt-4 mt-2">
-                <h4 className="font-medium mb-4">Configurações de Promoção</h4>
+                <h4 className="font-roboto-medium mb-4">Configurações de Promoção</h4>
                 <div className="flex flex-col gap-4">
                   <FormField
                     control={form.control}

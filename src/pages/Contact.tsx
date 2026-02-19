@@ -98,7 +98,7 @@ const Contact = () => {
       <section className="relative py-16 md:py-24 bg-gradient-to-b from-primary/5 to-background overflow-hidden">
         <div className="container relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 animate-fade-in">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-roboto-bold mb-4 md:mb-6 animate-fade-in">
               Transforme Seu Espaço com{' '}
               <span className="text-primary">Móveis de Alta Qualidade</span>
             </h1>
@@ -148,7 +148,7 @@ const Contact = () => {
                   suffix={stat.suffix}
                   delay={index * 150}
                   duration={2000}
-                  className="text-2xl md:text-3xl font-bold text-primary mb-1"
+                  className="text-2xl md:text-3xl font-roboto-bold text-primary mb-1"
                 />
                 <div className="text-xs md:text-sm text-muted-foreground">{stat.label}</div>
               </div>
@@ -160,7 +160,7 @@ const Contact = () => {
       <section className="py-12 md:py-20">
         <div className="container">
           <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">Entre em Contato</h2>
+            <h2 className="text-2xl md:text-3xl font-roboto-bold mb-3 md:mb-4">Entre em Contato</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base px-4">
               Escolha a forma mais conveniente para falar conosco. Nossa equipe está pronta para
               atender você.
@@ -177,7 +177,7 @@ const Contact = () => {
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 {method.highlight && (
-                  <div className="absolute -top-2 -right-2 md:-top-3 md:-right-3 bg-primary text-primary-foreground text-[10px] md:text-xs px-2 py-0.5 md:px-2.5 md:py-1 rounded-full font-medium">
+                  <div className="absolute -top-2 -right-2 md:-top-3 md:-right-3 bg-primary text-primary-foreground text-[10px] md:text-xs px-2 py-0.5 md:px-2.5 md:py-1 rounded-full font-roboto-medium">
                     Recomendado
                   </div>
                 )}
@@ -190,8 +190,10 @@ const Contact = () => {
                     className={`h-5 w-5 md:h-6 md:w-6 ${method.highlight ? '' : 'text-primary'}`}
                   />
                 </div>
-                <h3 className="font-semibold text-base md:text-lg mb-1">{method.title}</h3>
-                <p className="text-primary font-medium mb-1 text-sm md:text-base">{method.value}</p>
+                <h3 className="font-roboto-semibold text-base md:text-lg mb-1">{method.title}</h3>
+                <p className="text-primary font-roboto-medium mb-1 text-sm md:text-base">
+                  {method.value}
+                </p>
                 <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4">
                   {method.description}
                 </p>
@@ -222,8 +224,10 @@ const Contact = () => {
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
             <div className="animate-fade-in order-2 lg:order-1">
-              <span className="text-primary font-medium text-sm md:text-base">Sobre Nós</span>
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mt-2 mb-4 md:mb-6">
+              <span className="text-primary font-roboto-medium text-sm md:text-base">
+                Sobre Nós
+              </span>
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-roboto-bold mt-2 mb-4 md:mb-6">
                 Móveis Sob Medida com a Qualidade que Você Merece
               </h2>
               <p className="text-muted-foreground mb-4 md:mb-6 text-sm md:text-base">
@@ -267,7 +271,7 @@ const Contact = () => {
                 />
               </div>
               <div className="absolute -bottom-4 -left-4 md:-bottom-6 md:-left-6 bg-card p-4 md:p-6 rounded-xl border shadow-lg hidden sm:block">
-                <div className="text-2xl md:text-3xl font-bold text-primary">98%</div>
+                <div className="text-2xl md:text-3xl font-roboto-bold text-primary">98%</div>
                 <div className="text-xs md:text-sm text-muted-foreground">Taxa de satisfação</div>
               </div>
             </div>
@@ -278,7 +282,7 @@ const Contact = () => {
       <section className="py-12 md:py-20">
         <div className="container">
           <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">O Que Oferecemos</h2>
+            <h2 className="text-2xl md:text-3xl font-roboto-bold mb-3 md:mb-4">O Que Oferecemos</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base px-4">
               Qualidade, confiança e atendimento excepcional em cada detalhe
             </p>
@@ -294,7 +298,7 @@ const Contact = () => {
                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-3 md:mb-4">
                   <benefit.icon className="h-5 w-5 md:h-6 md:w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold text-base md:text-lg mb-2">{benefit.title}</h3>
+                <h3 className="font-roboto-semibold text-base md:text-lg mb-2">{benefit.title}</h3>
                 <p className="text-xs md:text-sm text-muted-foreground">{benefit.description}</p>
               </div>
             ))}
@@ -305,7 +309,7 @@ const Contact = () => {
       <section className="py-12 md:py-20 bg-primary text-primary-foreground">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center px-4">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-roboto-bold mb-4 md:mb-6">
               Pronto para Transformar Seu Ambiente?
             </h2>
             <p className="text-base md:text-lg opacity-90 mb-6 md:mb-8">

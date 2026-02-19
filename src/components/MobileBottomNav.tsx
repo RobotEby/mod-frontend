@@ -70,12 +70,14 @@ export const MobileBottomNav = () => {
               <div className="relative">
                 <item.icon className={cn('h-5 w-5', isActive && 'scale-110')} />
                 {item.hasBadge && badgeCount > 0 && (
-                  <span className="absolute -top-2 -right-2 h-4 w-4 flex items-center justify-center bg-primary text-primary-foreground text-[10px] font-bold rounded-full">
+                  <span className="absolute -top-2 -right-2 h-4 w-4 flex items-center justify-center bg-primary text-primary-foreground text-[10px] font-roboto-bold rounded-full">
                     {badgeCount > 9 ? '9+' : badgeCount}
                   </span>
                 )}
               </div>
-              <span className={cn('text-[10px] mt-1 font-medium', isActive && 'text-primary')}>
+              <span
+                className={cn('text-[10px] mt-1 font-roboto-medium', isActive && 'text-primary')}
+              >
                 {item.label}
               </span>
               {isActive && (

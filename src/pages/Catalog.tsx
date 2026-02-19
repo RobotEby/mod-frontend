@@ -274,7 +274,7 @@ const Catalog = () => {
     <div className="min-h-screen py-12 animate-fade-in">
       <div className="container">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-4 animate-slide-up">
+          <h1 className="text-4xl font-roboto-bold mb-4 animate-slide-up">
             {showOffers ? 'Ofertas Especiais' : 'Catálogo de Móveis'}
           </h1>
           <p className="text-lg text-muted-foreground mb-6 animate-slide-up [animation-delay:100ms]">
@@ -401,7 +401,7 @@ const Catalog = () => {
             </div>
 
             <div className="bg-card p-6 rounded-lg border transition-all duration-300 hover:shadow-soft">
-              <h3 className="font-semibold text-lg mb-4">Categorias</h3>
+              <h3 className="font-roboto-semibold text-lg mb-4">Categorias</h3>
               <div className="space-y-2">
                 <Button
                   variant={selectedCategory === null ? 'default' : 'ghost'}
@@ -425,7 +425,7 @@ const Catalog = () => {
             </div>
 
             <div className="bg-card p-6 rounded-lg border transition-all duration-300 hover:shadow-soft">
-              <h3 className="font-semibold text-lg mb-4">Faixa de Preço</h3>
+              <h3 className="font-roboto-semibold text-lg mb-4">Faixa de Preço</h3>
               <div className="space-y-4">
                 <Slider
                   min={0}
@@ -443,7 +443,7 @@ const Catalog = () => {
             </div>
 
             <div className="bg-card p-6 rounded-lg border transition-all duration-300 hover:shadow-soft">
-              <h3 className="font-semibold text-lg mb-4">Avaliação Mínima</h3>
+              <h3 className="font-roboto-semibold text-lg mb-4">Avaliação Mínima</h3>
               <div className="space-y-2">
                 {[5, 4, 3, 2, 1, 0].map((rating) => (
                   <Button

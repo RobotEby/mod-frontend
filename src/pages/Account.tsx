@@ -319,10 +319,10 @@ const Account = () => {
                 />
               </div>
               <div className="flex-1">
-                <p className="font-semibold">{item.products?.name}</p>
+                <p className="font-roboto-semibold">{item.products?.name}</p>
                 <p className="text-sm text-muted-foreground">Quantidade: {item.quantity}</p>
               </div>
-              <p className="font-semibold">
+              <p className="font-roboto-semibold">
                 R$ {Number(item.price_at_purchase).toFixed(2).replace('.', ',')}
               </p>
             </div>
@@ -330,8 +330,8 @@ const Account = () => {
         </div>
 
         <div className="mt-4 pt-4 border-t flex justify-between">
-          <span className="font-semibold">Total</span>
-          <span className="font-bold text-primary">
+          <span className="font-roboto-semibold">Total</span>
+          <span className="font-roboto-bold text-primary">
             R$ {Number(order.total_amount).toFixed(2).replace('.', ',')}
           </span>
         </div>
@@ -344,7 +344,7 @@ const Account = () => {
       <div className="container max-w-6xl">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Minha Conta</h1>
+            <h1 className="text-4xl font-roboto-bold mb-2">Minha Conta</h1>
             <p className="text-muted-foreground">Gerencie seus dados e acompanhe seus pedidos</p>
           </div>
           <Button variant="outline" onClick={handleLogout}>
@@ -503,7 +503,7 @@ const Account = () => {
                       <Separator />
 
                       <div className="space-y-2">
-                        <h3 className="text-lg font-semibold">Segurança</h3>
+                        <h3 className="text-lg font-roboto-semibold">Segurança</h3>
                         <Button
                           type="button"
                           variant="outline"
@@ -561,7 +561,7 @@ const Account = () => {
                               <div className="flex justify-between items-start">
                                 <div className="space-y-1">
                                   {address.nickname && (
-                                    <p className="font-semibold">{address.nickname}</p>
+                                    <p className="font-roboto-semibold">{address.nickname}</p>
                                   )}
                                   <p className="text-sm">
                                     {address.street}, {address.number}
@@ -646,7 +646,7 @@ const Account = () => {
                 <CardContent>
                   <div className="space-y-6">
                     <div>
-                      <h3 className="font-semibold mb-4">Adicionar Novo Cartão</h3>
+                      <h3 className="font-roboto-semibold mb-4">Adicionar Novo Cartão</h3>
                       <PaymentMethodForm
                         onSubmit={async (data) => {
                           await addPaymentMethodMutation.mutateAsync(data);
@@ -657,7 +657,7 @@ const Account = () => {
                     <Separator />
 
                     <div>
-                      <h3 className="font-semibold mb-4">Cartões Salvos</h3>
+                      <h3 className="font-roboto-semibold mb-4">Cartões Salvos</h3>
                       {isLoadingPayments ? (
                         <div className="space-y-4">
                           {[...Array(2)].map((_, i) => (
@@ -672,7 +672,7 @@ const Account = () => {
                                 <div className="flex justify-between items-start">
                                   <div className="space-y-1">
                                     <div className="flex items-center gap-2">
-                                      <p className="font-semibold">{payment.card_type}</p>
+                                      <p className="font-roboto-semibold">{payment.card_type}</p>
                                       {payment.is_default && (
                                         <Badge variant="default">Padrão</Badge>
                                       )}

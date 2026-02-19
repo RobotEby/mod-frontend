@@ -38,7 +38,7 @@ export const SalesTrendsChart = () => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-lg font-semibold">Tendência de Vendas</CardTitle>
+        <CardTitle className="text-lg font-roboto-semibold">Tendência de Vendas</CardTitle>
         <Tabs value={period} onValueChange={(v) => setPeriod(v as any)}>
           <TabsList className="h-8">
             <TabsTrigger value="7" className="text-xs px-2">
@@ -83,7 +83,7 @@ export const SalesTrendsChart = () => {
                   if (active && payload && payload.length) {
                     return (
                       <div className="bg-popover border border-border rounded-lg p-3 shadow-lg">
-                        <p className="font-medium mb-1">{label}</p>
+                        <p className="font-roboto-medium mb-1">{label}</p>
                         <p className="text-sm text-primary">
                           Receita: R$ {payload[0].value?.toLocaleString('pt-BR')}
                         </p>

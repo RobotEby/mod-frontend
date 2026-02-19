@@ -1,4 +1,4 @@
-import { Instagram, Heart } from 'lucide-react';
+import { Instagram } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const instagramPosts = [
@@ -36,56 +36,50 @@ const instagramPosts = [
 
 export const InstagramFeed = () => {
   return (
-    <section className="py-16">
-      <div className="container">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-10">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 rounded-lg">
-              <Instagram className="h-6 w-6 text-white" />
+    <section className="hidden md:block py-6 md:py-16 bg-muted/30">
+      <div className="container px-4">
+        <div className="flex items-center justify-between mb-4 md:mb-8">
+          <div className="flex items-center gap-2 md:gap-3">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 flex items-center justify-center">
+              <Instagram className="h-4 w-4 md:h-5 md:w-5 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold">Siga-nos no Instagram</h2>
-              <p className="text-muted-foreground text-sm">
-                @movelariaOnDemand • Inspirações e projetos
-              </p>
+              <h2 className="text-lg md:text-2xl font-roboto-bold">Siga-nos no Instagram</h2>
+              <p className="text-[10px] md:text-sm text-muted-foreground">@movelariaOnDemand</p>
             </div>
           </div>
-          <Button variant="outline" asChild>
-            <a
-              href="https://instagram.com/movelaria"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2"
-            >
-              <Instagram className="h-4 w-4" />
-              Seguir
-            </a>
+          <Button
+            variant="outline"
+            size="sm"
+            className="hidden sm:flex items-center gap-1 min-h-[44px]"
+          >
+            <Instagram className="h-4 w-4" />
+            Seguir
           </Button>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-0.5 md:gap-2">
           {instagramPosts.map((post) => (
-            <a
-              key={post.id}
-              href="https://instagram.com/movelaria"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative group aspect-square overflow-hidden rounded-lg"
-            >
+            <a key={post.id} href="#" className="group relative aspect-square overflow-hidden">
               <img
                 src={post.image}
-                alt={`Instagram post ${post.id}`}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                alt="Instagram post"
+                loading="lazy"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
               />
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <div className="flex items-center gap-2 text-white">
-                  <Heart className="h-5 w-5 fill-white" />
-                  <span className="font-semibold">{post.likes}</span>
-                </div>
+              <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/40 transition-colors flex items-center justify-center">
+                <span className="text-background text-xs font-roboto-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                  {post.likes}
+                </span>
               </div>
             </a>
           ))}
         </div>
+
+        <Button variant="outline" size="sm" className="sm:hidden w-full mt-3 min-h-[44px]">
+          <Instagram className="h-4 w-4 mr-1" />
+          Seguir no Instagram
+        </Button>
       </div>
     </section>
   );

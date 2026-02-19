@@ -34,7 +34,7 @@ export const TopProductsChart = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg font-semibold">Produtos Mais Vendidos</CardTitle>
+        <CardTitle className="text-lg font-roboto-semibold">Produtos Mais Vendidos</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">
@@ -61,9 +61,9 @@ export const TopProductsChart = () => {
                     const data = payload[0].payload;
                     return (
                       <div className="bg-popover border border-border rounded-lg p-3 shadow-lg">
-                        <p className="font-medium mb-1">{data.fullName}</p>
+                        <p className="font-roboto-medium mb-1">{data.fullName}</p>
                         <p className="text-sm">
-                          Vendidos: <span className="font-semibold">{data.sold}</span>
+                          Vendidos: <span className="font-roboto-semibold">{data.sold}</span>
                         </p>
                         <p className="text-sm text-muted-foreground">
                           Receita: R${' '}

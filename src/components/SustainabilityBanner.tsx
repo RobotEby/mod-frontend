@@ -42,7 +42,7 @@ export const SustainabilityBanner = () => {
                   <Leaf className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-primary">95%</p>
+                  <p className="text-2xl font-roboto-bold text-primary">95%</p>
                   <p className="text-sm text-muted-foreground">Materiais Reciclados</p>
                 </div>
               </div>
@@ -51,10 +51,10 @@ export const SustainabilityBanner = () => {
 
           <div className="space-y-8 order-1 lg:order-2">
             <div>
-              <span className="text-primary font-semibold text-sm uppercase tracking-wider">
+              <span className="text-primary font-roboto-semibold text-sm uppercase tracking-wider">
                 Sustentabilidade
               </span>
-              <h2 className="text-4xl font-bold mt-2 mb-4">Compromisso com o Futuro</h2>
+              <h2 className="text-4xl font-roboto-bold mt-2 mb-4">Compromisso com o Futuro</h2>
               <p className="text-lg text-muted-foreground">
                 Acreditamos que móveis bonitos não precisam custar o planeta. Cada peça é produzida
                 com responsabilidade ambiental, utilizando madeiras de reflorestamento e processos
@@ -73,7 +73,7 @@ export const SustainabilityBanner = () => {
                     <item.icon className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">{item.title}</h3>
+                    <h3 className="font-roboto-semibold mb-1">{item.title}</h3>
                     <p className="text-sm text-muted-foreground">{item.description}</p>
                   </div>
                 </div>

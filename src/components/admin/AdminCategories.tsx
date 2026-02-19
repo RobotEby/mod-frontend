@@ -178,7 +178,7 @@ export default function AdminCategories() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">Categorias</h1>
+        <h1 className="text-2xl font-roboto-bold text-foreground">Categorias</h1>
         <Button onClick={handleOpenCreate}>
           <Plus className="h-4 w-4 mr-2" />
           Nova Categoria
@@ -204,7 +204,7 @@ export default function AdminCategories() {
             <CardContent className="p-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="font-semibold text-foreground">{category.name}</h3>
+                  <h3 className="font-roboto-semibold text-foreground">{category.name}</h3>
                   <p className="text-sm text-muted-foreground">
                     {category.product_count} produto(s)
                   </p>

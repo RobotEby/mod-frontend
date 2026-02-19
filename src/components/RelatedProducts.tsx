@@ -27,7 +27,7 @@ export const RelatedProducts = ({ currentProductId, categoryId }: RelatedProduct
 
   return (
     <section className="py-12 animate-fade-in">
-      <h2 className="text-2xl font-bold mb-8">Você também pode gostar</h2>
+      <h2 className="text-2xl font-roboto-bold mb-8">Você também pode gostar</h2>
 
       <Carousel
         opts={{

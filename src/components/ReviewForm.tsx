@@ -66,7 +66,7 @@ export const ReviewForm = ({ productId, onSuccess }: ReviewFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 border rounded-lg p-6">
-      <h3 className="text-lg font-semibold">Deixe sua Avaliação</h3>
+      <h3 className="text-lg font-roboto-semibold">Deixe sua Avaliação</h3>
 
       <div>
         <Label>Avaliação *</Label>

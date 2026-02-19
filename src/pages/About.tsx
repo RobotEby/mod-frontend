@@ -2,7 +2,7 @@ const About = () => {
   return (
     <div className="min-h-screen py-12">
       <div className="container max-w-4xl">
-        <h1 className="text-4xl md:text-5xl font-bold mb-6">Sobre a Movelaria on Demand</h1>
+        <h1 className="text-4xl md:text-5xl font-roboto-bold mb-6">Sobre a Movelaria on Demand</h1>
 
         <div className="prose prose-lg max-w-none space-y-8">
           <p className="text-xl text-muted-foreground leading-relaxed">
@@ -12,7 +12,7 @@ const About = () => {
           </p>
 
           <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-8 rounded-2xl">
-            <h2 className="text-2xl font-bold mb-4">Nossa Missão</h2>
+            <h2 className="text-2xl font-roboto-bold mb-4">Nossa Missão</h2>
             <p className="text-muted-foreground leading-relaxed">
               Democratizar o acesso a móveis de alta qualidade, oferecendo designs exclusivos e
               acabamento impecável através de nossa parceria com a Marcenaria Diferente, garantindo
@@ -21,7 +21,7 @@ const About = () => {
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold mb-4">Como Trabalhamos</h2>
+            <h2 className="text-2xl font-roboto-bold mb-4">Como Trabalhamos</h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
               Cada móvel do nosso catálogo é cuidadosamente projetado por designers especializados.
               Quando você faz seu pedido, ele é enviado diretamente para nossa parceira, a
@@ -34,26 +34,26 @@ const About = () => {
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold mb-4">Nossos Diferenciais</h2>
+            <h2 className="text-2xl font-roboto-bold mb-4">Nossos Diferenciais</h2>
             <ul className="space-y-3 text-muted-foreground">
               <li className="flex items-start gap-3">
-                <span className="text-primary font-bold">•</span>
+                <span className="text-primary font-roboto-bold">•</span>
                 <span>Qualidade de marcenaria sob medida com a conveniência do e-commerce</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-primary font-bold">•</span>
+                <span className="text-primary font-roboto-bold">•</span>
                 <span>Designs exclusivos desenvolvidos por profissionais especializados</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-primary font-bold">•</span>
+                <span className="text-primary font-roboto-bold">•</span>
                 <span>Parceria com a renomada Marcenaria Diferente</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-primary font-bold">•</span>
+                <span className="text-primary font-roboto-bold">•</span>
                 <span>Acompanhamento completo do seu pedido</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-primary font-bold">•</span>
+                <span className="text-primary font-roboto-bold">•</span>
                 <span>Garantia de satisfação e suporte dedicado</span>
               </li>
             </ul>

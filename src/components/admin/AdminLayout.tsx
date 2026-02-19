@@ -33,7 +33,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
             <AdminSidebar collapsed={false} onToggle={() => setMobileOpen(false)} />
           </SheetContent>
         </Sheet>
-        <span className="ml-4 font-semibold">Admin Panel</span>
+        <span className="ml-4 font-roboto-semibold">Admin Panel</span>
       </div>
 
       <main

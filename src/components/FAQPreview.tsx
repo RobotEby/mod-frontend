@@ -38,39 +38,39 @@ const faqs = [
 
 export const FAQPreview = () => {
   return (
-    <section className="py-16 bg-muted/30">
-      <div className="container">
+    <section className="py-6 md:py-16">
+      <div className="container px-4">
         <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-10">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-              <HelpCircle className="h-8 w-8 text-primary" />
+          <div className="text-center mb-4 md:mb-8">
+            <div className="w-10 h-10 md:w-12 md:h-12 mx-auto mb-2 md:mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+              <HelpCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
             </div>
-            <h2 className="text-3xl font-bold mb-4">Perguntas Frequentes</h2>
-            <p className="text-muted-foreground">Encontre respostas para as dúvidas mais comuns</p>
+            <h2 className="text-xl md:text-3xl font-roboto-bold mb-1 md:mb-2">
+              Perguntas Frequentes
+            </h2>
+            <p className="text-xs md:text-base text-muted-foreground">
+              Encontre respostas para as dúvidas mais comuns
+            </p>
           </div>
 
-          <Accordion type="single" collapsible className="w-full space-y-3">
+          <Accordion type="single" collapsible className="w-full">
             {faqs.map((faq, index) => (
-              <AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className="bg-card border rounded-xl px-6 data-[state=open]:shadow-md transition-shadow"
-              >
-                <AccordionTrigger className="text-left hover:no-underline py-5">
-                  <span className="font-medium">{faq.question}</span>
+              <AccordionItem key={index} value={`item-${index}`}>
+                <AccordionTrigger className="text-left text-sm md:text-base py-3 md:py-4 min-h-[44px] hover:no-underline">
+                  {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-5">
+                <AccordionContent className="text-xs md:text-sm text-muted-foreground pb-3 md:pb-4">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
 
-          <div className="text-center mt-8">
-            <Button variant="outline" size="lg" asChild>
-              <Link to="/faq">
+          <div className="text-center mt-4 md:mt-8">
+            <Button asChild variant="outline" className="min-h-[44px]">
+              <Link to="/faq" className="flex items-center gap-1">
                 Ver Todas as Perguntas
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
           </div>

@@ -1,23 +1,11 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import {
-  ShoppingCart,
-  Heart,
-  Star,
-  Clock,
-  AlertTriangle,
-  ExternalLink,
-  Minus,
-  Plus,
-} from 'lucide-react';
+import { ShoppingCart, Heart, Clock, AlertTriangle, X } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { cn } from '@/lib/utils';
 
-interface Product {
+interface QuickViewProduct {
   id: string;
   name: string;
   price: number;
@@ -29,18 +17,15 @@ interface Product {
   leadTime?: string;
   stockQuantity?: number;
   lowStockThreshold?: number;
-  galleryImages?: string[];
 }
 
 interface ProductQuickViewProps {
-  product: Product | null;
+  product: QuickViewProduct | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 export const ProductQuickView = ({ product, open, onOpenChange }: ProductQuickViewProps) => {
-  const [quantity, setQuantity] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(0);
   const { addItem } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
 
@@ -52,180 +37,99 @@ export const ProductQuickView = ({ product, open, onOpenChange }: ProductQuickVi
     (product.stockQuantity ?? 10) <= (product.lowStockThreshold ?? 5);
   const pixPrice = product.price * 0.9;
 
-  const images = [product.image, ...(product.galleryImages || [])].filter(Boolean);
-
-  const handleAddToCart = () => {
-    if (!isOutOfStock) {
-      for (let i = 0; i < quantity; i++) {
-        addItem({
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-        });
-      }
-      onOpenChange(false);
-    }
-  };
-
-  const handleToggleWishlist = () => {
-    toggleWishlist(product.id);
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl p-0 overflow-hidden animate-zoom-in">
-        <div className="grid md:grid-cols-2 gap-0">
-          <div className="relative bg-muted p-6">
-            <div className="aspect-square overflow-hidden rounded-lg">
-              <img
-                src={
-                  images[selectedImage] ||
-                  'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800'
-                }
-                alt={product.name}
-                className={cn(
-                  'h-full w-full object-cover transition-all duration-500',
-                  isOutOfStock && 'grayscale opacity-70',
-                )}
-              />
-            </div>
-
-            {images.length > 1 && (
-              <div className="flex gap-2 mt-4 justify-center">
-                {images.slice(0, 4).map((img, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(index)}
-                    className={cn(
-                      'w-16 h-16 rounded-md overflow-hidden border-2 transition-all duration-200',
-                      selectedImage === index
-                        ? 'border-primary ring-2 ring-primary/20'
-                        : 'border-transparent hover:border-muted-foreground/30',
-                    )}
-                  >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
+      <DialogContent className="max-w-2xl w-[95vw] p-0 overflow-hidden">
+        <div className="flex flex-col sm:flex-row">
+          <div className="relative sm:w-64 lg:w-80 flex-shrink-0 bg-muted aspect-square sm:aspect-auto sm:min-h-64">
+            {product.isOnSale && product.discountPercent && (
+              <span className="absolute top-3 left-3 z-10 bg-destructive text-destructive-foreground text-xs font-roboto-bold-bold px-2 py-1 rounded">
+                -{product.discountPercent}%
+              </span>
             )}
-
-            <div className="absolute top-8 left-8 flex flex-col gap-2">
-              {product.isOnSale && product.discountPercent && (
-                <Badge variant="destructive" className="animate-bounce-subtle">
-                  -{product.discountPercent}%
-                </Badge>
-              )}
-              {isLowStock && !isOutOfStock && (
-                <Badge variant="secondary" className="bg-warning text-foreground">
-                  <AlertTriangle className="h-3 w-3 mr-1" />
-                  Últimas unidades
-                </Badge>
-              )}
-              {isOutOfStock && <Badge variant="secondary">Esgotado</Badge>}
-            </div>
+            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
           </div>
 
-          <div className="p-6 flex flex-col">
-            <DialogHeader className="text-left">
-              <DialogTitle className="text-2xl font-bold leading-tight">{product.name}</DialogTitle>
+          <div className="flex-1 p-5 sm:p-6 flex flex-col justify-between">
+            <DialogHeader className="text-left mb-3">
+              <DialogTitle className="text-base sm:text-lg font-roboto-semibold leading-tight pr-6">
+                {product.name}
+              </DialogTitle>
             </DialogHeader>
 
-            <div className="flex items-center gap-2 mt-3">
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} className="h-4 w-4 fill-primary text-primary" />
-                ))}
-              </div>
-              <span className="text-sm text-muted-foreground">(12 avaliações)</span>
-            </div>
-
             {product.description && (
-              <p className="text-muted-foreground mt-4 line-clamp-3">{product.description}</p>
+              <p className="text-sm text-muted-foreground mb-4">{product.description}</p>
             )}
 
-            <div className="mt-6 space-y-1">
+            <div className="flex flex-wrap gap-2 mb-4">
+              {isLowStock && !isOutOfStock && (
+                <span className="inline-flex items-center gap-1 text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded-full font-roboto-medium">
+                  <AlertTriangle className="h-3 w-3" /> Últimas unidades
+                </span>
+              )}
+              {isOutOfStock && (
+                <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                  Esgotado
+                </span>
+              )}
+              {product.leadTime && (
+                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                  <Clock className="h-3 w-3" />
+                  {product.leadTime}
+                </span>
+              )}
+            </div>
+
+            <div className="mb-5">
               {product.isOnSale && product.originalPrice && (
-                <p className="text-lg text-muted-foreground line-through">
+                <p className="text-sm text-muted-foreground line-through">
                   R$ {product.originalPrice.toFixed(2).replace('.', ',')}
                 </p>
               )}
-              <p className="text-3xl font-bold text-primary">
+              <p className="text-2xl font-roboto-bold-bold text-foreground">
                 R$ {product.price.toFixed(2).replace('.', ',')}
               </p>
-              <p className="text-lg text-success font-medium">
+              <p className="text-sm font-roboto-medium text-green-600 mt-0.5">
                 R$ {pixPrice.toFixed(2).replace('.', ',')} no PIX
               </p>
             </div>
 
-            {product.leadTime && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mt-4">
-                <Clock className="h-4 w-4" />
-                <span>Prazo de produção: {product.leadTime}</span>
-              </div>
-            )}
-
-            <div className="flex items-center gap-4 mt-6">
-              <span className="text-sm font-medium">Quantidade:</span>
-              <div className="flex items-center border rounded-md">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-10 w-10 rounded-r-none"
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  disabled={quantity <= 1}
-                >
-                  <Minus className="h-4 w-4" />
-                </Button>
-                <span className="w-12 text-center font-medium">{quantity}</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-10 w-10 rounded-l-none"
-                  onClick={() => setQuantity(quantity + 1)}
-                  disabled={isOutOfStock}
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex gap-3 mt-6">
+            <div className="flex gap-2">
               <Button
-                onClick={handleAddToCart}
-                className="flex-1 group"
-                size="lg"
+                onClick={() => {
+                  if (!isOutOfStock) {
+                    addItem({
+                      id: product.id,
+                      name: product.name,
+                      price: product.price,
+                      image: product.image,
+                    });
+                    onOpenChange(false);
+                  }
+                }}
                 disabled={isOutOfStock}
+                className="flex-1 min-h-[44px]"
               >
-                <ShoppingCart className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
+                <ShoppingCart className="h-4 w-4 mr-2" />
                 {isOutOfStock ? 'Esgotado' : 'Adicionar ao Carrinho'}
               </Button>
               <Button
                 variant="outline"
-                size="lg"
-                onClick={handleToggleWishlist}
-                className={cn(
-                  'transition-all duration-300',
-                  isInWishlist(product.id) && 'border-primary text-primary',
-                )}
+                size="icon"
+                onClick={() => toggleWishlist(product.id)}
+                className="min-h-[44px] min-w-[44px]"
+                aria-label="Favoritar"
               >
                 <Heart
                   className={cn(
-                    'h-5 w-5 transition-all',
-                    isInWishlist(product.id) && 'fill-primary animate-heartbeat',
+                    'h-4 w-4',
+                    isInWishlist(product.id)
+                      ? 'fill-destructive text-destructive'
+                      : 'text-muted-foreground',
                   )}
                 />
               </Button>
             </div>
-
-            <Link
-              to={`/produto/${product.id}`}
-              onClick={() => onOpenChange(false)}
-              className="mt-4 flex items-center justify-center gap-2 text-sm text-primary hover:underline transition-all"
-            >
-              <span>Ver detalhes completos</span>
-              <ExternalLink className="h-4 w-4" />
-            </Link>
           </div>
         </div>
       </DialogContent>

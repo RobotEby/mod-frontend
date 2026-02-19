@@ -50,7 +50,7 @@ const Checkout = () => {
   return (
     <div className="min-h-screen py-12">
       <div className="container max-w-2xl">
-        <h1 className="text-4xl font-bold mb-8">Finalizar Compra</h1>
+        <h1 className="text-4xl font-roboto-bold mb-8">Finalizar Compra</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <Card>
@@ -84,13 +84,13 @@ const Checkout = () => {
                   <span>
                     {item.name} x {item.quantity}
                   </span>
-                  <span className="font-semibold">
+                  <span className="font-roboto-semibold">
                     R$ {(item.price * item.quantity).toFixed(2).replace('.', ',')}
                   </span>
                 </div>
               ))}
               <div className="border-t pt-4">
-                <div className="flex justify-between text-xl font-bold">
+                <div className="flex justify-between text-xl font-roboto-bold">
                   <span>Total</span>
                   <span className="text-primary">R$ {total.toFixed(2).replace('.', ',')}</span>
                 </div>

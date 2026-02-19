@@ -113,10 +113,12 @@ export const ExitIntentPopup = () => {
           <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
             <Gift className="h-8 w-8 text-primary" />
           </div>
-          <DialogTitle className="text-2xl font-bold">Espere! Não perca esta oferta</DialogTitle>
+          <DialogTitle className="text-2xl font-roboto-roboto">
+            Espere! Não perca esta oferta
+          </DialogTitle>
           <DialogDescription className="text-base">
-            Cadastre-se na nossa newsletter e ganhe{' '}
-            <span className="font-bold text-primary">10% OFF</span> na sua primeira compra!
+            Cadastre-se na nossa newsletter e ganhe
+            <span className="font-roboto-roboto text-primary">10% OFF</span> na sua primeira compra!
           </DialogDescription>
         </DialogHeader>
 
@@ -131,7 +133,7 @@ export const ExitIntentPopup = () => {
           />
           <Button
             type="submit"
-            className="w-full h-12 text-base font-semibold"
+            className="w-full h-12 text-base font-roboto-roboto"
             disabled={isSubmitting}
           >
             {isSubmitting ? 'Enviando...' : 'Quero meu desconto!'}

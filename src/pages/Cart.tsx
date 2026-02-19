@@ -24,7 +24,7 @@ const Cart = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center space-y-6">
           <ShoppingBag className="h-24 w-24 mx-auto text-muted-foreground" />
-          <h2 className="text-3xl font-bold">Seu carrinho está vazio</h2>
+          <h2 className="text-3xl font-roboto-bold">Seu carrinho está vazio</h2>
           <p className="text-muted-foreground">Adicione produtos para começar suas compras</p>
           <Button asChild size="lg">
             <Link to="/catalogo">Ver Catálogo</Link>
@@ -37,7 +37,7 @@ const Cart = () => {
   return (
     <div className="min-h-screen py-12">
       <div className="container max-w-4xl">
-        <h1 className="text-4xl font-bold mb-8">Carrinho de Compras</h1>
+        <h1 className="text-4xl font-roboto-bold mb-8">Carrinho de Compras</h1>
 
         <div className="space-y-4">
           {items.map((item) => (
@@ -56,8 +56,8 @@ const Cart = () => {
                   </div>
 
                   <div className="flex-1 space-y-2">
-                    <h3 className="font-semibold text-lg">{item.name}</h3>
-                    <p className="text-2xl font-bold text-primary">
+                    <h3 className="font-roboto-semibold text-lg">{item.name}</h3>
+                    <p className="text-2xl font-roboto-bold text-primary">
                       R$ {item.price.toFixed(2).replace('.', ',')}
                     </p>
 
@@ -69,7 +69,7 @@ const Cart = () => {
                       >
                         <Minus className="h-4 w-4" />
                       </Button>
-                      <span className="w-12 text-center font-semibold">{item.quantity}</span>
+                      <span className="w-12 text-center font-roboto-semibold">{item.quantity}</span>
                       <Button
                         variant="outline"
                         size="icon"
@@ -84,7 +84,7 @@ const Cart = () => {
                     <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)}>
                       <Trash2 className="h-5 w-5 text-destructive" />
                     </Button>
-                    <p className="text-xl font-bold">
+                    <p className="text-xl font-roboto-bold">
                       R$ {(item.price * item.quantity).toFixed(2).replace('.', ',')}
                     </p>
                   </div>
@@ -97,10 +97,10 @@ const Cart = () => {
         <Card className="mt-8">
           <CardContent className="p-6 space-y-4">
             <div className="flex justify-between items-center text-lg">
-              <span className="font-semibold">Subtotal</span>
+              <span className="font-roboto-semibold">Subtotal</span>
               <span>R$ {total.toFixed(2).replace('.', ',')}</span>
             </div>
-            <div className="flex justify-between items-center text-2xl font-bold">
+            <div className="flex justify-between items-center text-2xl font-roboto-bold">
               <span>Total</span>
               <span className="text-primary">R$ {total.toFixed(2).replace('.', ',')}</span>
             </div>

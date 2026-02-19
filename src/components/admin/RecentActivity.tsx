@@ -66,7 +66,7 @@ export const RecentActivity = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg font-semibold flex items-center gap-2">
+        <CardTitle className="text-lg font-roboto-semibold flex items-center gap-2">
           <Clock className="h-5 w-5 text-primary" />
           Atividade Recente
         </CardTitle>
@@ -86,7 +86,7 @@ export const RecentActivity = () => {
                     <Icon className={`h-4 w-4 ${color}`} />
                   </div>
                   <div className="flex-1 pt-1">
-                    <p className="font-medium text-sm">{activity.title}</p>
+                    <p className="font-roboto-medium text-sm">{activity.title}</p>
                     <p className="text-sm text-muted-foreground">{activity.description}</p>
                     <p className="text-xs text-muted-foreground/70 mt-1">{activity.time}</p>
                   </div>

@@ -60,7 +60,7 @@ export const RecentlyViewed = () => {
             <Clock className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h2 className="text-xl md:text-2xl font-bold">Vistos Recentemente</h2>
+            <h2 className="text-xl md:text-2xl font-roboto-bold">Vistos Recentemente</h2>
             <p className="text-muted-foreground text-sm">Continue de onde você parou</p>
           </div>
         </div>

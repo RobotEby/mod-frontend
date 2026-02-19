@@ -48,7 +48,7 @@ const Terms = () => {
     <div className="min-h-screen py-8 md:py-12 lg:py-16">
       <div className="container max-w-6xl px-4">
         <div className="mb-8 lg:mb-12">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">Termos de Uso</h1>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-roboto-bold mb-4">Termos de Uso</h1>
           <p className="text-muted-foreground text-sm md:text-base">
             Última atualização: 12/01/2026
           </p>
@@ -86,7 +86,9 @@ const Terms = () => {
               </div>
 
               <section id="aceitacao" className="scroll-mt-28 mb-8">
-                <h2 className="text-xl md:text-2xl font-bold mb-4">1. Aceitação dos Termos</h2>
+                <h2 className="text-xl md:text-2xl font-roboto-bold mb-4">
+                  1. Aceitação dos Termos
+                </h2>
                 <p className="text-muted-foreground">
                   Ao acessar e usar este site, você aceita e concorda em cumprir os termos e
                   condições aqui estabelecidos. Se você não concordar com qualquer parte destes
@@ -95,7 +97,7 @@ const Terms = () => {
               </section>
 
               <section id="definicoes" className="scroll-mt-28 mb-8">
-                <h2 className="text-xl md:text-2xl font-bold mb-4">2. Definições</h2>
+                <h2 className="text-xl md:text-2xl font-roboto-bold mb-4">2. Definições</h2>
                 <p className="text-muted-foreground mb-4">
                   Para que você, Usuário, tenha uma melhor compreensão deste documento, precisamos
                   que se atente para algumas definições:
@@ -129,7 +131,9 @@ const Terms = () => {
               </section>
 
               <section id="servicos" className="scroll-mt-28 mb-8">
-                <h2 className="text-xl md:text-2xl font-bold mb-4">3. Sobre Nossos Serviços</h2>
+                <h2 className="text-xl md:text-2xl font-roboto-bold mb-4">
+                  3. Sobre Nossos Serviços
+                </h2>
                 <p className="text-muted-foreground">
                   Objetivando facilitar o dia a dia dos profissionais da marcenaria, madeireiras,
                   profissionais da construção civil e de todas as pessoas que desejam projetar,
@@ -145,7 +149,9 @@ const Terms = () => {
               </section>
 
               <section id="responsabilidades" className="scroll-mt-28 mb-8">
-                <h2 className="text-xl md:text-2xl font-bold mb-4">4. Suas Responsabilidades</h2>
+                <h2 className="text-xl md:text-2xl font-roboto-bold mb-4">
+                  4. Suas Responsabilidades
+                </h2>
                 <p className="text-muted-foreground">
                   Você se compromete a fornecer suas informações de forma verdadeira e precisa e a
                   utilizar nossa Plataforma de maneira coerente com os fins para os quais ela foi
@@ -159,7 +165,9 @@ const Terms = () => {
               </section>
 
               <section id="dados" className="scroll-mt-28 mb-8">
-                <h2 className="text-xl md:text-2xl font-bold mb-4">5. Dados Pessoais Coletados</h2>
+                <h2 className="text-xl md:text-2xl font-roboto-bold mb-4">
+                  5. Dados Pessoais Coletados
+                </h2>
                 <p className="text-muted-foreground mb-4">
                   Coletamos Dados Pessoais fornecidos diretamente por você e, também,
                   automaticamente, a partir das suas atividades de navegação. Prezamos por manter os
@@ -171,9 +179,13 @@ const Terms = () => {
                   <table className="w-full text-sm border-collapse min-w-[600px]">
                     <thead>
                       <tr className="bg-muted">
-                        <th className="border p-3 text-left font-semibold">Dados Pessoais</th>
-                        <th className="border p-3 text-left font-semibold">Finalidade</th>
-                        <th className="border p-3 text-left font-semibold">Momento da Coleta</th>
+                        <th className="border p-3 text-left font-roboto-semibold">
+                          Dados Pessoais
+                        </th>
+                        <th className="border p-3 text-left font-roboto-semibold">Finalidade</th>
+                        <th className="border p-3 text-left font-roboto-semibold">
+                          Momento da Coleta
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -199,28 +211,28 @@ const Terms = () => {
               </section>
 
               <section id="cookies" className="scroll-mt-28 mb-8">
-                <h2 className="text-xl md:text-2xl font-bold mb-4">6. Cookies</h2>
+                <h2 className="text-xl md:text-2xl font-roboto-bold mb-4">6. Cookies</h2>
                 <p className="text-muted-foreground mb-4">
                   Cookies são pequenos arquivos de texto dos sites que, quando visitados por você,
                   permitem manter uma memória sobre sua navegação. Nós utilizamos Cookies mantidos
                   por nós e, também, mantidos e administrados por outras empresas.
                 </p>
 
-                <h3 className="text-lg font-semibold mt-6 mb-3">Cookies Necessários</h3>
+                <h3 className="text-lg font-roboto-semibold mt-6 mb-3">Cookies Necessários</h3>
                 <p className="text-muted-foreground">
                   Esses Cookies são essenciais para que as nossas páginas funcionem adequadamente.
                   Eles não podem ser desabilitados, pois a disponibilização das nossas páginas
                   ficará comprometida.
                 </p>
 
-                <h3 className="text-lg font-semibold mt-6 mb-3">Cookies Analíticos</h3>
+                <h3 className="text-lg font-roboto-semibold mt-6 mb-3">Cookies Analíticos</h3>
                 <p className="text-muted-foreground">
                   Os cookies analíticos nos permitem manter controle sobre as visitas e as fontes de
                   tráfego dentro de nossas páginas, para que possamos medir e melhorar a performance
                   dos nossos sites.
                 </p>
 
-                <h3 className="text-lg font-semibold mt-6 mb-3">Cookies de Marketing</h3>
+                <h3 className="text-lg font-roboto-semibold mt-6 mb-3">Cookies de Marketing</h3>
                 <p className="text-muted-foreground">
                   Os cookies de marketing podem ser utilizados por parceiros de publicidade para
                   entender as suas preferências e mostrar quais os anúncios fazem mais sentido e são
@@ -229,7 +241,9 @@ const Terms = () => {
               </section>
 
               <section id="armazenamento" className="scroll-mt-28 mb-8">
-                <h2 className="text-xl md:text-2xl font-bold mb-4">7. Tempo de Armazenamento</h2>
+                <h2 className="text-xl md:text-2xl font-roboto-bold mb-4">
+                  7. Tempo de Armazenamento
+                </h2>
                 <p className="text-muted-foreground">
                   Todos os Dados Pessoais coletados pela MOD são armazenados pelo tempo necessário
                   para atender as finalidades descritas neste documento, para cumprimento dos
@@ -244,7 +258,7 @@ const Terms = () => {
               </section>
 
               <section id="direitos" className="scroll-mt-28 mb-8">
-                <h2 className="text-xl md:text-2xl font-bold mb-4">8. Seus Direitos</h2>
+                <h2 className="text-xl md:text-2xl font-roboto-bold mb-4">8. Seus Direitos</h2>
                 <p className="text-muted-foreground mb-4">
                   Você pode solicitar, a qualquer momento, mediante envio de e-mail ao endereço{' '}
                   <a
@@ -268,19 +282,21 @@ const Terms = () => {
               </section>
 
               <section id="compartilhamento" className="scroll-mt-28 mb-8">
-                <h2 className="text-xl md:text-2xl font-bold mb-4">9. Compartilhamento de Dados</h2>
+                <h2 className="text-xl md:text-2xl font-roboto-bold mb-4">
+                  9. Compartilhamento de Dados
+                </h2>
                 <p className="text-muted-foreground">
                   Nós apenas compartilhamos suas informações com nossos colaboradores, prestadores
                   de serviços e fornecedores, mediante o uso de ferramentas seguras, para que possam
                   executar as finalidades mencionadas acima.
                 </p>
-                <p className="text-muted-foreground mt-4 font-semibold">
+                <p className="text-muted-foreground mt-4 font-roboto-semibold">
                   Em hipótese nenhuma nós vendemos seus Dados Pessoais para terceiros.
                 </p>
               </section>
 
               <section id="seguranca" className="scroll-mt-28 mb-8">
-                <h2 className="text-xl md:text-2xl font-bold mb-4">
+                <h2 className="text-xl md:text-2xl font-roboto-bold mb-4">
                   10. Segurança das Informações
                 </h2>
                 <p className="text-muted-foreground">
@@ -295,7 +311,9 @@ const Terms = () => {
               </section>
 
               <section id="terceiros" className="scroll-mt-28 mb-8">
-                <h2 className="text-xl md:text-2xl font-bold mb-4">11. Links de Terceiros</h2>
+                <h2 className="text-xl md:text-2xl font-roboto-bold mb-4">
+                  11. Links de Terceiros
+                </h2>
                 <p className="text-muted-foreground">
                   Nossos sites podem fornecer links para sites de terceiros. Como não temos controle
                   sobre esses sites, o Usuário reconhece e concorda que a MOD não é responsável pela
@@ -305,7 +323,9 @@ const Terms = () => {
               </section>
 
               <section id="atualizacoes" className="scroll-mt-28 mb-8">
-                <h2 className="text-xl md:text-2xl font-bold mb-4">12. Atualizações dos Termos</h2>
+                <h2 className="text-xl md:text-2xl font-roboto-bold mb-4">
+                  12. Atualizações dos Termos
+                </h2>
                 <p className="text-muted-foreground">
                   Estes Termos podem ser alterados a qualquer momento, a critério da MOD, informando
                   as principais alterações ao Usuário por meio de nota em destaque na Plataforma.

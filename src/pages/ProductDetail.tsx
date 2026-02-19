@@ -114,7 +114,7 @@ const ProductDetail = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Produto não encontrado</h2>
+          <h2 className="text-2xl font-roboto-bold mb-4">Produto não encontrado</h2>
           <Button onClick={() => navigate('/catalogo')}>Voltar ao Catálogo</Button>
         </div>
       </div>
@@ -206,7 +206,7 @@ const ProductDetail = () => {
               />
             </div>
 
-            <h1 className="text-4xl font-bold">{product.name}</h1>
+            <h1 className="text-4xl font-roboto-bold">{product.name}</h1>
 
             <div className="space-y-2">
               <div className="flex items-baseline gap-3">
@@ -218,11 +218,11 @@ const ProductDetail = () => {
                     })}
                   </span>
                 )}
-                <span className="text-4xl font-bold text-primary">
+                <span className="text-4xl font-roboto-bold text-primary">
                   R$ {Number(product.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                 </span>
                 {product.discountPercent && (
-                  <span className="text-sm font-medium text-destructive bg-destructive/10 px-2 py-1 rounded">
+                  <span className="text-sm font-roboto-medium text-destructive bg-destructive/10 px-2 py-1 rounded">
                     -{product.discountPercent}%
                   </span>
                 )}
@@ -249,7 +249,7 @@ const ProductDetail = () => {
                 <div className="flex items-start gap-3">
                   <Package className="h-5 w-5 text-primary mt-0.5" />
                   <div>
-                    <p className="font-semibold">Dimensões</p>
+                    <p className="font-roboto-semibold">Dimensões</p>
                     <p className="text-sm text-muted-foreground">{product.dimensions}</p>
                   </div>
                 </div>
@@ -259,7 +259,7 @@ const ProductDetail = () => {
                 <div className="flex items-start gap-3">
                   <Clock className="h-5 w-5 text-primary mt-0.5" />
                   <div>
-                    <p className="font-semibold">Prazo de Produção</p>
+                    <p className="font-roboto-semibold">Prazo de Produção</p>
                     <p className="text-sm text-muted-foreground">{product.lead_time}</p>
                   </div>
                 </div>
@@ -268,7 +268,7 @@ const ProductDetail = () => {
 
             <div className="space-y-4">
               <div className="flex items-center gap-4">
-                <label className="font-semibold">Quantidade:</label>
+                <label className="font-roboto-semibold">Quantidade:</label>
                 <div className="flex items-center gap-2">
                   <Button
                     variant="outline"
@@ -277,7 +277,7 @@ const ProductDetail = () => {
                   >
                     -
                   </Button>
-                  <span className="w-12 text-center font-semibold">{quantity}</span>
+                  <span className="w-12 text-center font-roboto-semibold">{quantity}</span>
                   <Button variant="outline" size="icon" onClick={() => setQuantity(quantity + 1)}>
                     +
                   </Button>

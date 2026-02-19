@@ -25,8 +25,8 @@ export const StickyAddToCart = ({
     >
       <div className="flex items-center justify-between gap-3 max-w-lg mx-auto">
         <div className="flex-1 min-w-0">
-          <p className="font-semibold truncate text-sm">{productName}</p>
-          <p className="text-primary font-bold">
+          <p className="font-roboto-semibold truncate text-sm">{productName}</p>
+          <p className="text-primary font-roboto-bold">
             R$ {price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </p>
         </div>

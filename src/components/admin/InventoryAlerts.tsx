@@ -19,7 +19,7 @@ export const InventoryAlerts = () => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-lg font-semibold flex items-center gap-2">
+        <CardTitle className="text-lg font-roboto-semibold flex items-center gap-2">
           <AlertTriangle className="h-5 w-5 text-amber-500" />
           Alertas de Estoque
         </CardTitle>
@@ -40,7 +40,7 @@ export const InventoryAlerts = () => {
           <div className="space-y-4">
             {outOfStock.length > 0 && (
               <div className="space-y-2">
-                <p className="text-xs font-medium text-destructive uppercase tracking-wide">
+                <p className="text-xs font-roboto-medium text-destructive uppercase tracking-wide">
                   Sem Estoque ({outOfStock.length})
                 </p>
                 {outOfStock.map((product) => (
@@ -57,7 +57,9 @@ export const InventoryAlerts = () => {
                         />
                       </div>
                       <div>
-                        <p className="font-medium text-sm truncate max-w-[200px]">{product.name}</p>
+                        <p className="font-roboto-medium text-sm truncate max-w-[200px]">
+                          {product.name}
+                        </p>
                         <p className="text-xs text-muted-foreground">SKU: {product.sku}</p>
                       </div>
                     </div>
@@ -69,7 +71,7 @@ export const InventoryAlerts = () => {
 
             {lowStock.length > 0 && (
               <div className="space-y-2">
-                <p className="text-xs font-medium text-amber-600 uppercase tracking-wide">
+                <p className="text-xs font-roboto-medium text-amber-600 uppercase tracking-wide">
                   Estoque Baixo ({lowStock.length})
                 </p>
                 {lowStock.map((product) => {
@@ -88,7 +90,7 @@ export const InventoryAlerts = () => {
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm truncate">{product.name}</p>
+                          <p className="font-roboto-medium text-sm truncate">{product.name}</p>
                           <div className="flex items-center gap-2">
                             <Progress
                               value={stockPercent}

@@ -32,11 +32,7 @@ export const ScrollToTop = () => {
 
   useEffect(() => {
     const toggleVisibility = () => {
-      if (window.scrollY > 300) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
+      setIsVisible(window.scrollY > 300);
     };
 
     window.addEventListener('scroll', toggleVisibility, { passive: true });
@@ -57,7 +53,7 @@ export const ScrollToTop = () => {
       onClick={scrollToTop}
       size="icon"
       className={cn(
-        'fixed bottom-20 lg:bottom-6 right-6 z-60 h-12 w-12 rounded-full shadow-lg transition-all duration-300',
+        'fixed bottom-20 lg:bottom-6 right-6 z-[9999] h-12 w-12 rounded-full shadow-xl transition-all duration-300 pointer-events-auto',
         'bg-primary hover:bg-primary/90 text-primary-foreground',
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none',
       )}

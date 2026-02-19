@@ -21,7 +21,7 @@ export const StockUrgency = ({
     return (
       <div className="flex items-center gap-2 p-3 bg-destructive/10 rounded-lg border border-destructive/20">
         <AlertTriangle className="h-5 w-5 text-destructive" />
-        <span className="font-medium text-destructive">Produto indisponível</span>
+        <span className="font-roboto-medium text-destructive">Produto indisponível</span>
       </div>
     );
   }
@@ -31,7 +31,7 @@ export const StockUrgency = ({
       <div className="space-y-2 p-3 bg-amber-500/10 rounded-lg border border-amber-500/20">
         <div className="flex items-center gap-2">
           <Package className="h-5 w-5 text-amber-600 animate-pulse" />
-          <span className="font-medium text-amber-700">
+          <span className="font-roboto-medium text-amber-700">
             Apenas {stockQuantity} unidade{stockQuantity > 1 ? 's' : ''} disponível
             {stockQuantity > 1 ? 'is' : ''}!
           </span>
@@ -43,8 +43,8 @@ export const StockUrgency = ({
             stockPercentage <= 20
               ? '[&>div]:bg-destructive'
               : stockPercentage <= 50
-              ? '[&>div]:bg-amber-500'
-              : '[&>div]:bg-primary',
+                ? '[&>div]:bg-amber-500'
+                : '[&>div]:bg-primary',
           )}
         />
         <p className="text-xs text-muted-foreground">Compre agora para garantir o seu!</p>
