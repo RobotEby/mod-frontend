@@ -1,14 +1,7 @@
-import React from 'react';
 import { Shield, Award, Truck, RefreshCcw, CreditCard, Headphones } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface TrustBadge {
-  icon: React.ElementType;
-  title: string;
-  description: string;
-}
-
-const BADGES: TrustBadge[] = [
+const badges = [
   { icon: Shield, title: 'Pagamento Seguro', description: 'Seus dados protegidos' },
   { icon: Award, title: 'Garantia de Qualidade', description: 'Móveis de alta qualidade' },
   { icon: Truck, title: 'Frete Rastreável', description: 'Acompanhe sua entrega' },
@@ -23,82 +16,46 @@ interface TrustBadgesProps {
   maxItems?: number;
 }
 
-const BadgeItem = ({ badge, variant }: { badge: TrustBadge; variant: 'compact' | 'full' }) => {
-  const Icon = badge.icon;
+export const TrustBadges = ({ variant = 'compact', className, maxItems = 4 }: TrustBadgesProps) => {
+  const displayBadges = badges.slice(0, variant === 'full' ? badges.length : maxItems);
 
   if (variant === 'compact') {
     return (
-      <div
-        className={cn(
-          'group flex items-center gap-3 rounded-2xl border bg-card/60 p-3',
-          'shadow-sm transition-all duration-300',
-          'hover:-translate-y-0.5 hover:bg-card hover:shadow-md',
-          'active:translate-y-0 active:shadow-sm',
-          'focus-within:ring-2 focus-within:ring-primary/30',
-        )}
-      >
-        <div
-          className={cn(
-            'grid h-10 w-10 place-items-center rounded-xl bg-primary/10',
-            'transition-colors duration-300 group-hover:bg-primary/15',
-            'flex-shrink-0',
-          )}
-        >
-          <Icon className="h-5 w-5 text-primary" />
-        </div>
-
-        <div className="min-w-0">
-          <p className="text-sm font-roboto-medium text-foreground leading-tight">{badge.title}</p>
-          <p className="text-xs text-muted-foreground leading-snug">{badge.description}</p>
-        </div>
+      <div className={cn('grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4', className)}>
+        {displayBadges.map((badge) => (
+          <div
+            key={badge.title}
+            className="flex items-center gap-2 p-2 md:p-3 rounded-lg border border-border bg-card"
+          >
+            <div className="w-7 h-7 md:w-9 md:h-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <badge.icon className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[10px] md:text-xs font-roboto-semibold truncate">{badge.title}</p>
+              <p className="text-[9px] md:text-[10px] text-muted-foreground truncate">
+                {badge.description}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
 
-  // full
   return (
-    <div
-      className={cn(
-        'group relative overflow-hidden rounded-2xl border bg-card p-6 text-center',
-        'shadow-sm transition-all duration-300',
-        'hover:-translate-y-1 hover:shadow-lg',
-        'active:translate-y-0 active:shadow-md',
-        'focus-within:ring-2 focus-within:ring-primary/30',
-      )}
-    >
-      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-        <div className="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-primary/10 blur-2xl" />
-      </div>
-
-      <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-primary/10 transition-colors duration-300 group-hover:bg-primary/15">
-        <Icon className="h-7 w-7 text-primary" />
-      </div>
-
-      <h3 className="font-roboto-semibold text-foreground leading-tight">{badge.title}</h3>
-      <p className="mt-1 text-sm text-muted-foreground">{badge.description}</p>
-    </div>
-  );
-};
-
-export const TrustBadges = ({ variant = 'compact', className, maxItems = 4 }: TrustBadgesProps) => {
-  const list = variant === 'compact' ? BADGES.slice(0, maxItems) : BADGES;
-
-  return (
-    <div
-      className={cn(
-        variant === 'compact'
-          ? // 2 col no mobile, 3 em telas médias, 4 no desktop
-            'grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4'
-          : // 1 col no mobile, 2 no sm, 3 no lg
-            'grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6',
-        className,
-      )}
-    >
-      {list.map((badge) => (
-        <BadgeItem key={badge.title} badge={badge} variant={variant} />
+    <div className={cn('grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4', className)}>
+      {displayBadges.map((badge) => (
+        <div
+          key={badge.title}
+          className="text-center p-3 md:p-4 rounded-lg border border-border bg-card"
+        >
+          <div className="w-10 h-10 md:w-12 md:h-12 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center">
+            <badge.icon className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+          </div>
+          <p className="text-xs md:text-sm font-roboto-semibold">{badge.title}</p>
+          <p className="text-[10px] md:text-xs text-muted-foreground">{badge.description}</p>
+        </div>
       ))}
     </div>
   );
 };
-
-export default TrustBadges;
