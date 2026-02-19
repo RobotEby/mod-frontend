@@ -58,7 +58,7 @@ export const CustomizationShowcase = () => {
             </Button>
           </div>
 
-          <div className="flex-1 w-full hidden md:block">
+          <div className="flex-1 w-full ">
             <div className="grid grid-cols-2 gap-2 md:gap-4">
               <div className="space-y-2 md:space-y-4">
                 <div className="rounded-lg overflow-hidden aspect-square">

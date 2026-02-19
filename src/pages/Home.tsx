@@ -30,8 +30,28 @@ import { FeaturedCollections } from '@/components/FeaturedCollections';
 import { ServicesBanner } from '@/components/ServicesBanner';
 import { VideoTestimonials } from '@/components/VideoTestimonials';
 import { FAQPreview } from '@/components/FAQPreview';
-import { SustainabilityBanner } from '@/components/SustainabilityBanner';
-import { cn } from '@/lib/utils';
+// import { SustainabilityBanner } from '@/components/SustainabilityBanner';
+
+const testimonials = [
+  {
+    name: 'Maria Clara',
+    location: 'São Paulo, SP',
+    initials: 'MC',
+    text: 'A qualidade dos móveis superou minhas expectativas. O acabamento é impecável.',
+  },
+  {
+    name: 'Roberto Silva',
+    location: 'Rio de Janeiro, RJ',
+    initials: 'RS',
+    text: 'Processo simples e transparente. Recebi exatamente no prazo prometido.',
+  },
+  {
+    name: 'Ana Fernandes',
+    location: 'Belo Horizonte, MG',
+    initials: 'AF',
+    text: 'Móveis de verdadeira alta qualidade. O investimento valeu cada centavo.',
+  },
+];
 
 const Home = () => {
   const { data: products, isLoading } = useQuery({
@@ -85,63 +105,52 @@ const Home = () => {
 
       <section className="py-6 md:py-12">
         <div className="container px-4">
-          <div className="mb-4 md:mb-7 flex items-end justify-between gap-3">
-            <div className="space-y-1">
-              <h2 className="text-lg md:text-2xl lg:text-3xl font-roboto-bold tracking-tight">
+          <div className="flex items-end justify-between mb-3 md:mb-6">
+            <div>
+              <h2 className="text-lg md:text-2xl lg:text-3xl font-roboto-bold">
                 Produtos em Destaque
               </h2>
-
-              <p className="text-xs md:text-sm text-muted-foreground">
+              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
                 Conheça nossa seleção de móveis exclusivos
               </p>
             </div>
-
-            <div className="hidden md:flex items-center gap-2"></div>
           </div>
 
           {isLoading ? (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-              {[...Array(18)].map((_, i) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+              {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
-                  className={cn(
-                    'rounded-2xl border border-border bg-card overflow-hidden',
-                    i >= 4 && 'max-lg:hidden',
-                  )}
+                  className="flex gap-3 md:flex-col md:gap-0 p-3 border border-border rounded-lg"
                 >
-                  <Skeleton className="aspect-square w-full" />
-                  <div className="p-3 sm:p-4 space-y-2">
-                    <Skeleton className="h-4 w-4/5" />
-                    <Skeleton className="h-4 w-2/5" />
-                    <Skeleton className="h-9 w-full mt-2 rounded-xl" />
+                  <Skeleton className="w-28 h-28 md:w-full md:h-48 rounded-md flex-shrink-0" />
+                  <div className="flex-1 space-y-2 pt-1">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-8 w-full mt-2" />
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-              {products?.map((product, i) => (
-                <div
-                  key={product.id}
-                  className={cn(i >= 4 && 'max-lg:hidden', i >= 18 && 'lg:hidden')}
-                >
-                  <ProductCard
-                    id={product.id}
-                    name={product.name}
-                    price={Number(product.price)}
-                    image={product.main_image_url || ''}
-                    leadTime={product.lead_time || undefined}
-                  />
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+              {products?.map((product) => (
+                <ProductCard
+                  id={product.id}
+                  name={product.name}
+                  price={Number(product.price)}
+                  image={product.main_image_url || ''}
+                  leadTime={product.lead_time || undefined}
+                />
               ))}
             </div>
           )}
 
-          <div className="mt-5 md:mt-9 text-center">
-            <Button asChild variant="outline" size="lg" className="h-11 min-h-[44px] rounded-xl">
-              <Link to="/catalogo" className="inline-flex items-center gap-1">
+          <div className="mt-4 md:mt-8 text-center">
+            <Button asChild variant="outline" size="lg" className="h-11 min-h-[44px]">
+              <Link to="/catalogo">
                 Ver Todos os Produtos
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </Button>
           </div>
@@ -153,10 +162,10 @@ const Home = () => {
       <section className="py-6 md:py-12">
         <div className="container px-4">
           <div className="mb-3 md:mb-6">
-            <h2 className="text-lg md:text-2xl lg:text-3xl font-roboto-medium-bold">
+            <h2 className="text-lg md:text-2xl lg:text-3xl font-roboto-bold">
               Explore por Categoria
             </h2>
-            <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+            <p className="text-xs md:text-sm text-muted-foreground mt-0.5 hidden sm:block">
               Encontre o móvel perfeito para cada ambiente
             </p>
           </div>
@@ -175,94 +184,89 @@ const Home = () => {
       </section>
 
       <BestSellers />
-
       <RoomGallery />
-
       <CustomizationShowcase />
-
       <FeaturedCollections />
 
-      <section className="py-20 bg-gradient-to-b from-muted/30 to-background">
-        <div className="container">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-roboto-bold mb-4">O Que Nossos Clientes Dizem</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+      <section className="py-6 md:py-12 bg-muted/30">
+        <div className="container px-4">
+          <div className="text-center mb-4 md:mb-8">
+            <h2 className="text-lg md:text-2xl lg:text-3xl font-roboto-bold">
+              O Que Nossos Clientes Dizem
+            </h2>
+            <p className="text-xs md:text-sm text-muted-foreground mt-0.5 hidden sm:block">
               Experiências reais de quem transformou seus ambientes
             </p>
           </div>
 
-          <div className="max-w-4xl mx-auto">
+          <div className="md:hidden">
             <Carousel opts={{ align: 'start', loop: true }} className="w-full">
               <CarouselContent>
-                {[
-                  {
-                    name: 'Maria Clara',
-                    location: 'São Paulo, SP',
-                    initials: 'MC',
-                    text: 'A qualidade dos móveis superou minhas expectativas. O acabamento é impecável.',
-                  },
-                  {
-                    name: 'Roberto Silva',
-                    location: 'Rio de Janeiro, RJ',
-                    initials: 'RS',
-                    text: 'Processo simples e transparente. Recebi exatamente no prazo prometido.',
-                  },
-                  {
-                    name: 'Ana Fernandes',
-                    location: 'Belo Horizonte, MG',
-                    initials: 'AF',
-                    text: 'Móveis de verdadeira alta qualidade. O investimento valeu cada centavo.',
-                  },
-                ].map((testimonial, idx) => (
-                  <CarouselItem key={idx}>
-                    <div className="bg-card p-8 rounded-2xl border border-border">
-                      <div className="flex gap-1 mb-4">
-                        {[...Array(5)].map((_, i) => (
-                          <span key={i} className="text-primary">
-                            ★
-                          </span>
-                        ))}
-                      </div>
-                      <p className="text-muted-foreground mb-6">"{testimonial.text}"</p>
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-primary font-roboto-semibold">
-                            {testimonial.initials}
-                          </span>
-                        </div>
-                        <div>
-                          <p className="font-roboto-semibold">{testimonial.name}</p>
-                          <p className="text-sm text-muted-foreground">{testimonial.location}</p>
-                        </div>
-                      </div>
-                    </div>
+                {testimonials.map((testimonial, idx) => (
+                  <CarouselItem key={idx} className="basis-full sm:basis-[80%]">
+                    <TestimonialCard testimonial={testimonial} />
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
+              <CarouselPrevious className="left-0" />
+              <CarouselNext className="right-0" />
             </Carousel>
+          </div>
+
+          <div className="hidden md:grid md:grid-cols-3 gap-4 lg:gap-6">
+            {testimonials.map((testimonial, idx) => (
+              <TestimonialCard key={idx} testimonial={testimonial} />
+            ))}
           </div>
         </div>
       </section>
 
       <HowItWorks />
       <SocialProof />
-
       <ServicesBanner />
       <VideoTestimonials />
-
-      <SustainabilityBanner />
       <InstagramFeed />
-      <section className="py-12">
-        <div className="container">
-          <TrustBadges variant="full" />
+      <section className="py-4 md:py-8">
+        <div className="container px-4">
+          <TrustBadges variant="full" maxItems={6} />
         </div>
       </section>
       <FAQPreview />
+
       <RecentlyViewed />
     </div>
   );
 };
+
+interface TestimonialCardProps {
+  testimonial: {
+    name: string;
+    location: string;
+    initials: string;
+    text: string;
+  };
+}
+
+const TestimonialCard = ({ testimonial }: TestimonialCardProps) => (
+  <div className="bg-background border border-border rounded-xl p-4 md:p-6 flex flex-col gap-3">
+    <div className="flex gap-0.5">
+      {[...Array(5)].map((_, i) => (
+        <span key={i} className="text-yellow-400 text-sm">
+          ★
+        </span>
+      ))}
+    </div>
+    <p className="text-sm md:text-base text-foreground italic">"{testimonial.text}"</p>
+    <div className="flex items-center gap-2.5 mt-auto pt-2 border-t border-border">
+      <div className="w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-roboto-bold shrink-0">
+        {testimonial.initials}
+      </div>
+      <div>
+        <p className="text-sm font-roboto-semibold text-foreground">{testimonial.name}</p>
+        <p className="text-xs text-muted-foreground">{testimonial.location}</p>
+      </div>
+    </div>
+  </div>
+);
 
 export default Home;

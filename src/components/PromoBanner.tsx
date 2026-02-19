@@ -131,7 +131,7 @@ export const PromoBanner = () => {
         </div>
       </div>
 
-      <div className="absolute bottom-2 md:bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+      <div className="absolute inset-x-0 bottom-0 pb-2 md:pb-4 flex justify-center gap-2 z-10">
         {banners.map((_, index) => (
           <button
             key={index}
@@ -140,7 +140,7 @@ export const PromoBanner = () => {
               lock();
               setCurrentIndex(index);
             }}
-            className={`h-2 rounded-full transition-all duration-300 min-w-[44px] min-h-[44px] flex items-center justify-center p-0 bg-transparent md:min-w-0 md:min-h-0`}
+            className="h-2 rounded-full transition-all duration-300 min-w-[44px] min-h-[44px] flex items-center justify-center p-0 bg-transparent md:min-w-0 md:min-h-0"
             aria-label={`Ir para slide ${index + 1}`}
             type="button"
           >

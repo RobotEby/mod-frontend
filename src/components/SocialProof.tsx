@@ -2,10 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import { Users, Package, Star, ThumbsUp } from 'lucide-react';
 
 const stats = [
-  { icon: Users, value: 5000, suffix: '+', label: 'Clientes Satisfeitos' },
-  { icon: Package, value: 10000, suffix: '+', label: 'Móveis Entregues' },
-  { icon: Star, value: 4.9, suffix: '', label: 'Avaliação Média', decimals: 1 },
-  { icon: ThumbsUp, value: 98, suffix: '%', label: 'Recomendam' },
+  { icon: Users, value: 10000, suffix: '+', label: 'Mais de 10 mil Clientes Satisfeitos' },
+  { icon: Package, value: 10000, suffix: '+', label: '10.000+ Móveis Entregues ' },
+  { icon: Star, value: 4.9, suffix: '', label: '4.9/5 Avaliação Média ', decimals: 1 },
+  { icon: ThumbsUp, value: 98, suffix: '%', label: '98% dos Clientes Recomendam' },
 ];
 
 const useCountUp = (end: number, duration = 2000, decimals = 0) => {

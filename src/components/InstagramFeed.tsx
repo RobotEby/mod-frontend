@@ -36,7 +36,7 @@ const instagramPosts = [
 
 export const InstagramFeed = () => {
   return (
-    <section className="hidden md:block py-6 md:py-16 bg-muted/30">
+    <section className="py-6 md:py-16 bg-muted/30">
       <div className="container px-4">
         <div className="flex items-center justify-between mb-4 md:mb-8">
           <div className="flex items-center gap-2 md:gap-3">
