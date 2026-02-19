@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { ShoppingCart, Heart, Eye, Clock, AlertTriangle } from 'lucide-react';
+import { ShoppingCart, Heart, Clock, AlertTriangle, Eye } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { cn } from '@/lib/utils';
@@ -15,10 +14,10 @@ interface ProductCardListProps {
   discountPercent?: number;
   isOnSale?: boolean;
   image: string;
-  description?: string;
   leadTime?: string;
   stockQuantity?: number;
   lowStockThreshold?: number;
+  description?: string;
   onQuickView?: () => void;
 }
 
@@ -30,36 +29,28 @@ export const ProductCardList = ({
   discountPercent,
   isOnSale,
   image,
-  description,
   leadTime,
-  stockQuantity,
+  stockQuantity = 10,
   lowStockThreshold = 5,
+  description,
   onQuickView,
 }: ProductCardListProps) => {
   const { addItem } = useCart();
-  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
-
-  const isLowStock =
-    stockQuantity !== undefined && stockQuantity <= lowStockThreshold && stockQuantity > 0;
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const isOutOfStock = stockQuantity === 0;
-  const inWishlist = isInWishlist(id);
+  const isLowStock = stockQuantity > 0 && stockQuantity <= lowStockThreshold;
+  const pixPrice = price * 0.9;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!isOutOfStock) {
-      addItem({ id, name, price, image, quantity: 1 });
-    }
+    if (!isOutOfStock) addItem({ id, name, price, image });
   };
 
-  const handleWishlistToggle = (e: React.MouseEvent) => {
+  const handleToggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (inWishlist) {
-      removeFromWishlist(id);
-    } else {
-      addToWishlist(id);
-    }
+    toggleWishlist(id);
   };
 
   const handleQuickView = (e: React.MouseEvent) => {
@@ -69,95 +60,107 @@ export const ProductCardList = ({
   };
 
   return (
-    <Card className="group overflow-hidden transition-all duration-300 hover:shadow-lg">
-      <div className="flex flex-col sm:flex-row">
-        <div className="relative w-full sm:w-48 md:w-64 flex-shrink-0">
-          <Link to={`/produto/${id}`}>
-            <div className="aspect-square sm:h-full overflow-hidden bg-muted">
-              <img
-                src={image || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400'}
-                alt={name}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
-          </Link>
-
-          <div className="absolute top-2 left-2 flex flex-col gap-1">
+    <Link to={`/produto/${id}`} className="block group">
+      <Card className="overflow-hidden border border-border hover:shadow-medium transition-shadow duration-300">
+        <div className="flex flex-row gap-0">
+          <div className="relative w-32 h-32 sm:w-44 sm:h-44 flex-shrink-0 overflow-hidden bg-muted">
             {isOnSale && discountPercent && (
-              <Badge className="bg-destructive text-destructive-foreground">
+              <span className="absolute top-2 left-2 z-10 bg-destructive text-destructive-foreground text-[10px] font-roboto-bold-bold px-1.5 py-0.5 rounded">
                 -{discountPercent}%
-              </Badge>
-            )}
-            {isLowStock && (
-              <Badge variant="outline" className="bg-warning/90 text-foreground border-warning">
-                <AlertTriangle className="h-3 w-3 mr-1" />
-                Últimas unidades
-              </Badge>
-            )}
-            {isOutOfStock && (
-              <Badge variant="secondary" className="bg-muted">
-                Esgotado
-              </Badge>
-            )}
-          </div>
-        </div>
-
-        <div className="flex-1 p-4 sm:p-6 flex flex-col justify-between">
-          <div className="space-y-3">
-            <Link to={`/produto/${id}`}>
-              <h3 className="font-semibold text-lg hover:text-primary transition-colors line-clamp-2">
-                {name}
-              </h3>
-            </Link>
-
-            {description && (
-              <p className="text-sm text-muted-foreground line-clamp-2">{description}</p>
-            )}
-
-            {leadTime && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Clock className="h-4 w-4" />
-                <span>{leadTime}</span>
-              </div>
-            )}
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-4">
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-primary">
-                R$ {price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </span>
-              {originalPrice && originalPrice > price && (
-                <span className="text-sm text-muted-foreground line-through">
-                  R$ {originalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                </span>
-              )}
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleWishlistToggle}
-                className={cn(inWishlist && 'text-destructive')}
-              >
-                <Heart className={cn('h-5 w-5', inWishlist && 'fill-current')} />
-              </Button>
-
-              {onQuickView && (
-                <Button variant="ghost" size="icon" onClick={handleQuickView}>
-                  <Eye className="h-5 w-5" />
-                </Button>
-              )}
-
-              <Button onClick={handleAddToCart} disabled={isOutOfStock} className="gap-2">
-                <ShoppingCart className="h-4 w-4" />
-                <span className="hidden sm:inline">Adicionar</span>
-              </Button>
-            </div>
+            )}
+            <img
+              src={image}
+              alt={name}
+              loading="lazy"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
           </div>
+
+          <CardContent className="flex-1 p-3 sm:p-4 flex flex-col justify-between min-w-0">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <h3 className="text-sm sm:text-base font-roboto-medium text-foreground line-clamp-2 leading-tight mb-1">
+                  {name}
+                </h3>
+                {description && (
+                  <p className="text-xs text-muted-foreground line-clamp-2 mb-2 hidden sm:block">
+                    {description}
+                  </p>
+                )}
+                {isLowStock && !isOutOfStock && (
+                  <span className="inline-flex items-center gap-1 text-[10px] text-orange-600 font-roboto-medium">
+                    <AlertTriangle className="h-3 w-3" /> Últimas unidades
+                  </span>
+                )}
+                {isOutOfStock && (
+                  <span className="inline-flex text-[10px] text-muted-foreground font-roboto-medium">
+                    Esgotado
+                  </span>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1.5 flex-shrink-0">
+                <button
+                  onClick={handleToggleWishlist}
+                  className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-accent transition-colors"
+                  aria-label="Favoritar"
+                >
+                  <Heart
+                    className={cn(
+                      'h-4 w-4',
+                      isInWishlist(id)
+                        ? 'fill-destructive text-destructive'
+                        : 'text-muted-foreground',
+                    )}
+                  />
+                </button>
+                {onQuickView && (
+                  <button
+                    onClick={handleQuickView}
+                    className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-accent transition-colors"
+                    aria-label="Ver rápido"
+                  >
+                    <Eye className="h-4 w-4 text-muted-foreground" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mt-2">
+              <div>
+                {isOnSale && originalPrice && (
+                  <p className="text-xs text-muted-foreground line-through">
+                    R$ {originalPrice.toFixed(2).replace('.', ',')}
+                  </p>
+                )}
+                <p className="text-base sm:text-lg font-roboto-bold-bold text-foreground leading-none">
+                  R$ {price.toFixed(2).replace('.', ',')}
+                </p>
+                <p className="text-xs font-roboto-medium text-green-600 mt-0.5">
+                  R$ {pixPrice.toFixed(2).replace('.', ',')} no PIX
+                </p>
+                {leadTime && (
+                  <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-1">
+                    <Clock className="h-3 w-3" />
+                    {leadTime}
+                  </p>
+                )}
+              </div>
+
+              <Button
+                size="sm"
+                onClick={handleAddToCart}
+                disabled={isOutOfStock}
+                className="w-full sm:w-auto min-h-[44px] text-xs sm:text-sm"
+              >
+                <ShoppingCart className="h-3.5 w-3.5 mr-1" />
+                {isOutOfStock ? 'Esgotado' : 'Adicionar'}
+              </Button>
+            </div>
+          </CardContent>
         </div>
-      </div>
-    </Card>
+      </Card>
+    </Link>
   );
 };

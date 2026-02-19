@@ -36,7 +36,7 @@ export const AdminSidebar = ({ collapsed, onToggle }: AdminSidebarProps) => {
     >
       <div className="flex flex-col h-full">
         <div className="h-16 flex items-center justify-between px-4 border-b border-border">
-          {!collapsed && <span className="font-semibold text-foreground">Admin Panel</span>}
+          {!collapsed && <span className="font-roboto-semibold text-foreground">Admin Panel</span>}
           <Button
             variant="ghost"
             size="icon"
@@ -68,7 +68,7 @@ export const AdminSidebar = ({ collapsed, onToggle }: AdminSidebarProps) => {
                 )}
               >
                 <item.icon className="h-5 w-5 flex-shrink-0" />
-                {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
+                {!collapsed && <span className="text-sm font-roboto-medium">{item.label}</span>}
               </NavLink>
             );
           })}
@@ -83,7 +83,7 @@ export const AdminSidebar = ({ collapsed, onToggle }: AdminSidebarProps) => {
             )}
           >
             <Home className="h-5 w-5 flex-shrink-0" />
-            {!collapsed && <span className="text-sm font-medium">Voltar ao Site</span>}
+            {!collapsed && <span className="text-sm font-roboto-medium">Voltar ao Site</span>}
           </NavLink>
         </div>
       </div>

@@ -42,44 +42,47 @@ const collections = [
 
 export const FeaturedCollections = () => {
   return (
-    <section className="py-16">
-      <div className="container">
-        <div className="flex items-center justify-between mb-8">
+    <section className="py-6 md:py-16">
+      <div className="container px-4">
+        <div className="flex items-center justify-between mb-4 md:mb-10">
           <div>
-            <h2 className="text-3xl font-bold mb-2">Coleções em Destaque</h2>
-            <p className="text-muted-foreground">Explore nossos estilos exclusivos</p>
+            <h2 className="text-xl md:text-3xl lg:text-4xl font-roboto-bold">
+              Coleções em Destaque
+            </h2>
+            <p className="text-xs md:text-base text-muted-foreground hidden sm:block">
+              Explore nossos estilos exclusivos
+            </p>
           </div>
           <Link
             to="/catalogo"
-            className="hidden md:flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all"
+            className="hidden sm:flex items-center gap-1 text-sm text-primary font-roboto-medium hover:underline"
           >
-            Ver Todas
-            <ArrowRight className="h-4 w-4" />
+            Ver Todas <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
 
-        <ScrollArea className="w-full whitespace-nowrap">
-          <div className="flex gap-6 pb-4">
-            {collections.map((collection, index) => (
+        <ScrollArea className="w-full">
+          <div className="flex gap-3 md:gap-4 pb-4">
+            {collections.map((c) => (
               <Link
-                key={collection.id}
-                to={`/catalogo`}
-                className="flex-shrink-0 w-72 group animate-fade-in"
-                style={{ animationDelay: `${index * 100}ms` }}
+                key={c.id}
+                to={`/catalogo?colecao=${c.id}`}
+                className="group flex-shrink-0 w-[200px] sm:w-[240px] md:w-[280px]"
               >
-                <div className="relative overflow-hidden rounded-2xl aspect-[3/4]">
+                <div className="relative overflow-hidden rounded-lg aspect-[3/4]">
                   <img
-                    src={collection.image}
-                    alt={collection.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    src={c.image}
+                    alt={c.name}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-t ${collection.color} via-transparent to-transparent`}
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                    <h3 className="text-xl font-bold mb-1 whitespace-normal">{collection.name}</h3>
-                    <p className="text-white/80 text-sm whitespace-normal">
-                      {collection.description}
+                  <div className={`absolute inset-0 bg-gradient-to-t ${c.color} to-transparent`} />
+                  <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
+                    <h3 className="text-sm md:text-lg font-roboto-bold text-background">
+                      {c.name}
+                    </h3>
+                    <p className="text-[10px] md:text-sm text-background/70 hidden sm:block">
+                      {c.description}
                     </p>
                   </div>
                 </div>
@@ -91,10 +94,9 @@ export const FeaturedCollections = () => {
 
         <Link
           to="/catalogo"
-          className="flex md:hidden items-center justify-center gap-2 text-primary font-medium mt-6"
+          className="sm:hidden flex items-center justify-center gap-1 text-sm text-primary font-roboto-medium mt-2 min-h-[44px]"
         >
-          Ver Todas as Coleções
-          <ArrowRight className="h-4 w-4" />
+          Ver Todas as Coleções <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
     </section>

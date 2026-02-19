@@ -33,7 +33,7 @@ export const CategoryChart = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg font-semibold">Vendas por Categoria</CardTitle>
+        <CardTitle className="text-lg font-roboto-semibold">Vendas por Categoria</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">
@@ -58,10 +58,10 @@ export const CategoryChart = () => {
                     const data = payload[0].payload;
                     return (
                       <div className="bg-popover border border-border rounded-lg p-3 shadow-lg">
-                        <p className="font-medium mb-1">{data.name}</p>
+                        <p className="font-roboto-medium mb-1">{data.name}</p>
                         <p className="text-sm">
                           Receita:{' '}
-                          <span className="font-semibold">{formatCurrency(data.value)}</span>
+                          <span className="font-roboto-semibold">{formatCurrency(data.value)}</span>
                         </p>
                         <p className="text-sm text-muted-foreground">{data.count} produto(s)</p>
                       </div>

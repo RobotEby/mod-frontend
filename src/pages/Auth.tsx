@@ -65,7 +65,7 @@ const Auth = () => {
       <div className="container max-w-md animate-fade-in">
         <Card className="backdrop-blur-sm border-border/50 shadow-large">
           <CardHeader className="text-center">
-            <CardTitle className="text-3xl font-bold">Bem-vindo</CardTitle>
+            <CardTitle className="text-3xl font-roboto-bold">Bem-vindo</CardTitle>
             <CardDescription>Entre ou crie sua conta para continuar</CardDescription>
           </CardHeader>
           <CardContent>

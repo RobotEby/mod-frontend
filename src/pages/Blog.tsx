@@ -22,7 +22,7 @@ const Blog = () => {
     <div className="min-h-screen py-12 md:py-16">
       <div className="container px-4 md:px-6">
         <div className="text-center mb-8 md:mb-12">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">Blog</h1>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-roboto-bold mb-3 md:mb-4">Blog</h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
             Dicas, tendências e inspirações para transformar seu espaço em um ambiente único
           </p>
@@ -68,7 +68,7 @@ const Blog = () => {
                   <Badge variant="secondary" className="w-fit mb-3 md:mb-4">
                     {featuredPost.category}
                   </Badge>
-                  <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4 group-hover:text-primary transition-colors line-clamp-2">
+                  <h2 className="text-xl md:text-2xl lg:text-3xl font-roboto-bold mb-3 md:mb-4 group-hover:text-primary transition-colors line-clamp-2">
                     {featuredPost.title}
                   </h2>
                   <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-6 line-clamp-2 md:line-clamp-3">
@@ -123,7 +123,7 @@ const Blog = () => {
                       </div>
                     </div>
 
-                    <h2 className="text-lg md:text-xl font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                    <h2 className="text-lg md:text-xl font-roboto-bold mb-2 group-hover:text-primary transition-colors line-clamp-2">
                       {post.title}
                     </h2>
 

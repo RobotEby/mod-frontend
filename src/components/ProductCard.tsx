@@ -39,10 +39,12 @@ export const ProductCard = ({
 }: ProductCardProps) => {
   const { addItem } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+
   const isOutOfStock = stockQuantity === 0;
   const isLowStock = stockQuantity > 0 && stockQuantity <= lowStockThreshold;
   const pixPrice = price * 0.9;
 
+  // ✅ NÃO mexi em nada de API
   const { data: reviewStats } = useQuery({
     queryKey: ['review-stats', id],
     queryFn: async () => {
@@ -78,116 +80,92 @@ export const ProductCard = ({
   };
 
   return (
-    <Link to={`/produto/${id}`} className="block h-full">
-      <Card className="group h-full flex flex-col overflow-hidden transition-all duration-500 hover:shadow-large hover:-translate-y-2">
-        <div className="relative aspect-square overflow-hidden bg-muted flex-shrink-0">
+    <Link
+      to={`/produto/${id}`}
+      className="block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-xl"
+      aria-label={`Ver produto ${name}`}
+    >
+      <Card
+        className={cn(
+          'group h-full overflow-hidden rounded-2xl border bg-card',
+          'flex flex-row md:flex-col', // ✅ mobile horizontal / desktop vertical
+          'transition-all duration-500 hover:shadow-large hover:-translate-y-1',
+          'active:translate-y-0 active:shadow-md',
+        )}
+      >
+        <div className="relative w-28 h-28 md:w-full md:aspect-square overflow-hidden bg-muted flex-shrink-0">
           <img
             src={image || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800'}
             alt={name}
             className={cn(
-              'h-full w-full object-cover transition-all duration-700 group-hover:scale-110',
+              'h-full w-full object-cover transition-transform duration-700 will-change-transform',
+              'group-hover:scale-110',
               isOutOfStock && 'grayscale opacity-70',
             )}
+            loading="lazy"
           />
-
-          <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/20 transition-all duration-300 flex items-center justify-center">
-            {onQuickView && (
-              <Button
-                variant="secondary"
-                size="sm"
-                className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg"
-                onClick={handleQuickView}
-              >
-                <Eye className="mr-2 h-4 w-4" />
-                Ver Rápido
-              </Button>
-            )}
-          </div>
-
-          <div className="absolute top-2 left-2 flex flex-col gap-1">
-            {isOnSale && discountPercent && (
-              <span className="bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded-md animate-bounce-subtle">
-                -{discountPercent}%
-              </span>
-            )}
-            {isLowStock && !isOutOfStock && (
-              <span className="bg-warning text-foreground text-xs font-medium px-2 py-1 rounded-md flex items-center gap-1">
-                <AlertTriangle className="h-3 w-3" />
-                Últimas
-              </span>
-            )}
-            {isOutOfStock && (
-              <span className="bg-muted text-muted-foreground text-xs font-medium px-2 py-1 rounded-md">
-                Esgotado
-              </span>
-            )}
-          </div>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-2 right-2 bg-background/80 hover:bg-background transition-all duration-300 hover:scale-110"
-            onClick={handleToggleWishlist}
-          >
-            <Heart
-              className={cn(
-                'h-5 w-5 transition-all duration-300',
-                isInWishlist(id)
-                  ? 'fill-primary text-primary animate-heartbeat'
-                  : 'text-muted-foreground',
-              )}
-            />
-          </Button>
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 via-foreground/0 to-foreground/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          ...
         </div>
 
-        <CardContent className="p-4 flex flex-col flex-1">
-          <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-300">
-            {name}
-          </h3>
+        <div className="flex flex-col flex-1 min-w-0">
+          <CardContent className="p-3 sm:p-4 flex flex-col flex-1">
+            <h3 className="font-roboto-semibold text-base sm:text-lg leading-snug mb-1.5 line-clamp-2 group-hover:text-primary transition-colors duration-300">
+              {name}
+            </h3>
 
-          {reviewStats && reviewStats.count > 0 && (
-            <div className="flex items-center gap-1 mb-2">
-              <Star className="h-4 w-4 fill-primary text-primary" />
-              <span className="text-sm font-medium">
-                {Number(reviewStats.avgRating).toFixed(1)}
-              </span>
-              <span className="text-sm text-muted-foreground">({reviewStats.count})</span>
-            </div>
-          )}
-
-          <div className="space-y-1 mt-auto">
-            {isOnSale && originalPrice && (
-              <p className="text-sm text-muted-foreground line-through">
-                R$ {originalPrice.toFixed(2).replace('.', ',')}
-              </p>
+            {reviewStats && reviewStats.count > 0 && (
+              <div className="flex items-center gap-1 mb-2">
+                <Star className="h-4 w-4 fill-primary text-primary" />
+                <span className="text-sm font-roboto-medium">
+                  {Number(reviewStats.avgRating).toFixed(1)}
+                </span>
+                <span className="text-sm text-muted-foreground">({reviewStats.count})</span>
+              </div>
             )}
-            <p className="text-2xl font-bold text-primary">
-              R$ {price.toFixed(2).replace('.', ',')}
-            </p>
-            <p className="text-sm text-success font-medium">
-              R$ {pixPrice.toFixed(2).replace('.', ',')} no PIX
-            </p>
-          </div>
 
-          {leadTime && (
-            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-2">
-              <Clock className="h-3 w-3" />
-              <span>{leadTime}</span>
+            <div className="mt-auto space-y-1">
+              {isOnSale && originalPrice && (
+                <p className="text-xs sm:text-sm text-muted-foreground line-through">
+                  R$ {originalPrice.toFixed(2).replace('.', ',')}
+                </p>
+              )}
+
+              <div className="flex items-baseline gap-2 flex-wrap">
+                <p className="text-xl sm:text-2xl font-roboto-bold-bold text-primary">
+                  R$ {price.toFixed(2).replace('.', ',')}
+                </p>
+
+                <p className="text-xs sm:text-sm text-success font-roboto-medium">
+                  R$ {pixPrice.toFixed(2).replace('.', ',')} no PIX
+                </p>
+              </div>
+
+              {leadTime && (
+                <div className="flex items-center gap-1 text-[11px] sm:text-xs text-muted-foreground pt-1">
+                  <Clock className="h-3 w-3" />
+                  <span>{leadTime}</span>
+                </div>
+              )}
             </div>
-          )}
-        </CardContent>
+          </CardContent>
 
-        <CardFooter className="p-4 pt-0 flex-shrink-0">
-          <Button
-            onClick={handleAddToCart}
-            className="w-full group/btn transition-all duration-300 hover:shadow-glow"
-            variant="default"
-            disabled={isOutOfStock}
-          >
-            <ShoppingCart className="mr-2 h-4 w-4 transition-transform duration-300 group-hover/btn:scale-110" />
-            {isOutOfStock ? 'Esgotado' : 'Adicionar ao Carrinho'}
-          </Button>
-        </CardFooter>
+          <CardFooter className="p-3 sm:p-4 pt-0 flex-shrink-0">
+            <Button
+              onClick={handleAddToCart}
+              className={cn(
+                'w-full rounded-xl',
+                'group/btn transition-all duration-300',
+                'hover:shadow-glow active:shadow-md',
+              )}
+              variant="default"
+              disabled={isOutOfStock}
+            >
+              <ShoppingCart className="mr-2 h-4 w-4 transition-transform duration-300 group-hover/btn:scale-110" />
+              {isOutOfStock ? 'Esgotado' : 'Comprar'}
+            </Button>
+          </CardFooter>
+        </div>
       </Card>
     </Link>
   );

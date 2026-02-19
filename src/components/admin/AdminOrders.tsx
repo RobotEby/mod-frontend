@@ -125,7 +125,7 @@ export default function AdminOrders() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">Pedidos</h1>
+        <h1 className="text-2xl font-roboto-bold text-foreground">Pedidos</h1>
         <div className="flex items-center gap-2">
           <Button
             variant={viewMode === 'kanban' ? 'default' : 'outline'}
@@ -170,12 +170,12 @@ export default function AdminOrders() {
             <TableBody>
               {orders?.map((order) => (
                 <TableRow key={order.id} className="hover:bg-muted/30">
-                  <TableCell className="font-medium">#{order.id.slice(0, 8)}</TableCell>
+                  <TableCell className="font-roboto-medium">#{order.id.slice(0, 8)}</TableCell>
                   <TableCell>{order.customer_name}</TableCell>
                   <TableCell className="text-muted-foreground">
                     {new Date(order.created_at).toLocaleDateString('pt-BR')}
                   </TableCell>
-                  <TableCell className="text-right font-bold">
+                  <TableCell className="text-right font-roboto-bold">
                     R${' '}
                     {Number(order.total_amount).toLocaleString('pt-BR', {
                       minimumFractionDigits: 2,

@@ -46,7 +46,7 @@ const BlogPost = () => {
     return (
       <div className="min-h-screen py-16">
         <div className="container text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Post não encontrado</h1>
+          <h1 className="text-3xl md:text-4xl font-roboto-bold mb-4">Post não encontrado</h1>
           <p className="text-muted-foreground mb-6">
             O artigo que você procura não existe ou foi removido.
           </p>
@@ -94,7 +94,7 @@ const BlogPost = () => {
             {post.category}
           </Badge>
 
-          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 leading-tight">
+          <h1 className="text-2xl md:text-4xl lg:text-5xl font-roboto-bold mb-4 md:mb-6 leading-tight">
             {post.title}
           </h1>
 
@@ -124,7 +124,7 @@ const BlogPost = () => {
                 {post.excerpt}
               </p>
 
-              <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-foreground prose-p:text-muted-foreground prose-p:leading-relaxed prose-h2:text-xl prose-h2:md:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3 prose-ul:text-muted-foreground prose-li:marker:text-primary">
+              <div className="prose prose-lg max-w-none prose-headings:font-roboto-bold prose-headings:text-foreground prose-p:text-muted-foreground prose-p:leading-relaxed prose-h2:text-xl prose-h2:md:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3 prose-ul:text-muted-foreground prose-li:marker:text-primary">
                 {post.content.split('\n\n').map((paragraph, index) => {
                   if (paragraph.startsWith('## ')) {
                     const id = paragraph.replace('## ', '').toLowerCase().replace(/\s+/g, '-');
@@ -156,7 +156,7 @@ const BlogPost = () => {
               <aside className="hidden lg:block">
                 <div className="sticky top-24 space-y-6">
                   <div className="p-5 bg-muted/50 rounded-xl">
-                    <h4 className="font-semibold mb-4 text-sm">Neste artigo:</h4>
+                    <h4 className="font-roboto-semibold mb-4 text-sm">Neste artigo:</h4>
                     <nav className="space-y-2">
                       {headings.map((heading, index) => (
                         <a
@@ -177,7 +177,9 @@ const BlogPost = () => {
 
         {relatedPosts.length > 0 && (
           <section className="mt-12 md:mt-20 pt-8 md:pt-12 border-t max-w-4xl mx-auto">
-            <h3 className="text-xl md:text-2xl font-bold mb-6 md:mb-8">Artigos relacionados</h3>
+            <h3 className="text-xl md:text-2xl font-roboto-bold mb-6 md:mb-8">
+              Artigos relacionados
+            </h3>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {relatedPosts.map((relatedPost, index) => (
                 <Link
@@ -195,7 +197,7 @@ const BlogPost = () => {
                       />
                     </div>
                     <div className="p-4">
-                      <h4 className="font-bold group-hover:text-primary transition-colors line-clamp-2 text-sm md:text-base">
+                      <h4 className="font-roboto-bold group-hover:text-primary transition-colors line-clamp-2 text-sm md:text-base">
                         {relatedPost.title}
                       </h4>
                     </div>
@@ -208,7 +210,9 @@ const BlogPost = () => {
 
         <section className="mt-12 md:mt-16 max-w-4xl mx-auto">
           <div className="bg-primary text-primary-foreground rounded-xl md:rounded-2xl p-6 md:p-10 text-center">
-            <h3 className="text-xl md:text-2xl font-bold mb-2 md:mb-3">Gostou do conteúdo?</h3>
+            <h3 className="text-xl md:text-2xl font-roboto-bold mb-2 md:mb-3">
+              Gostou do conteúdo?
+            </h3>
             <p className="text-sm md:text-base opacity-90 mb-4 md:mb-6">
               Explore nosso catálogo e encontre o móvel perfeito para seu espaço.
             </p>

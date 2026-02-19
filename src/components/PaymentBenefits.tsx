@@ -36,51 +36,34 @@ const benefits = [
     color: 'text-orange-500',
     bgColor: 'bg-orange-500/10',
   },
-  {
-    icon: Truck,
-    title: 'Frete Grátis',
-    highlight: 'Todo Brasil',
-    description: 'Sem mínimo',
-    color: 'text-primary',
-    bgColor: 'bg-primary/10',
-  },
-  {
-    icon: Shield,
-    title: 'Garantia',
-    highlight: '2 anos',
-    description: 'Em todos os móveis',
-    color: 'text-emerald-500',
-    bgColor: 'bg-emerald-500/10',
-  },
 ];
 
 export const PaymentBenefits = () => {
   const plugin = useRef(Autoplay({ delay: 3000, stopOnInteraction: false }));
 
   return (
-    <div className="border-y border-border bg-gradient-to-r from-primary/5 via-background to-primary/5">
-      <div className="container py-4">
+    <section className="py-4 md:py-8">
+      <div className="container px-4">
         <div className="md:hidden">
           <Carousel
-            opts={{
-              align: 'start',
-              loop: true,
-            }}
             plugins={[plugin.current]}
+            opts={{ align: 'start', loop: true }}
             className="w-full"
           >
-            <CarouselContent>
-              {benefits.map((benefit) => (
-                <CarouselItem key={benefit.title} className="basis-1/2">
-                  <div className="flex items-center gap-3 p-2">
-                    <div className={`p-2 rounded-lg ${benefit.bgColor}`}>
-                      <benefit.icon className={`h-5 w-5 ${benefit.color}`} />
+            <CarouselContent className="-ml-2">
+              {benefits.map((b) => (
+                <CarouselItem key={b.title} className="pl-2 basis-[45%] sm:basis-1/3">
+                  <div className="flex items-center gap-2 p-3 rounded-lg border border-border bg-card">
+                    <div
+                      className={`w-8 h-8 rounded-full ${b.bgColor} flex items-center justify-center flex-shrink-0`}
+                    >
+                      <b.icon className={`h-4 w-4 ${b.color}`} />
                     </div>
-                    <div>
-                      <p className="font-bold text-sm">
-                        {benefit.title} <span className={benefit.color}>{benefit.highlight}</span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-roboto-semibold truncate">
+                        {b.title} <span className={b.color}>{b.highlight}</span>
                       </p>
-                      <p className="text-xs text-muted-foreground">{benefit.description}</p>
+                      <p className="text-[10px] text-muted-foreground truncate">{b.description}</p>
                     </div>
                   </div>
                 </CarouselItem>
@@ -89,25 +72,27 @@ export const PaymentBenefits = () => {
           </Carousel>
         </div>
 
-        <div className="hidden md:grid md:grid-cols-6 gap-4">
-          {benefits.map((benefit) => (
+        <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {benefits.map((b) => (
             <div
-              key={benefit.title}
-              className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
+              key={b.title}
+              className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card hover:shadow-md transition-shadow"
             >
-              <div className={`p-2 rounded-lg ${benefit.bgColor}`}>
-                <benefit.icon className={`h-5 w-5 ${benefit.color}`} />
+              <div
+                className={`w-10 h-10 rounded-full ${b.bgColor} flex items-center justify-center flex-shrink-0`}
+              >
+                <b.icon className={`h-5 w-5 ${b.color}`} />
               </div>
               <div>
-                <p className="font-bold text-sm">
-                  {benefit.title} <span className={benefit.color}>{benefit.highlight}</span>
+                <p className="text-sm font-roboto-semibold">
+                  {b.title} <span className={b.color}>{b.highlight}</span>
                 </p>
-                <p className="text-xs text-muted-foreground">{benefit.description}</p>
+                <p className="text-xs text-muted-foreground">{b.description}</p>
               </div>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };

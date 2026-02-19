@@ -35,7 +35,7 @@ export const InstallmentCalculator = ({
         <CreditCard className="h-4 w-4 text-primary" />
         <span>
           ou{' '}
-          <span className="font-bold text-primary">
+          <span className="font-roboto-bold text-primary">
             {mainInstallment.num}x de {formatCurrency(mainInstallment.value)}
           </span>{' '}
           sem juros
@@ -50,7 +50,7 @@ export const InstallmentCalculator = ({
         </PopoverTrigger>
         <PopoverContent className="w-72" align="start">
           <div className="space-y-3">
-            <h4 className="font-semibold text-sm">Opções de Parcelamento</h4>
+            <h4 className="font-roboto-semibold text-sm">Opções de Parcelamento</h4>
             <div className="space-y-1 max-h-60 overflow-y-auto">
               {installments.map((inst) => (
                 <div
@@ -59,10 +59,10 @@ export const InstallmentCalculator = ({
                 >
                   <span>
                     {inst.num}x de{' '}
-                    <span className="font-semibold">{formatCurrency(inst.value)}</span>
+                    <span className="font-roboto-semibold">{formatCurrency(inst.value)}</span>
                   </span>
                   {inst.noInterest && (
-                    <span className="text-xs text-primary font-medium">sem juros</span>
+                    <span className="text-xs text-primary font-roboto-medium">sem juros</span>
                   )}
                 </div>
               ))}

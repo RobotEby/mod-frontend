@@ -81,7 +81,7 @@ export const OrderKanban = ({ orders, onStatusChange }: OrderKanbanProps) => {
           >
             <div className="mb-3 flex items-center gap-2">
               <div className={cn('w-3 h-3 rounded-full', column.color)} />
-              <h3 className="font-medium text-foreground">{column.title}</h3>
+              <h3 className="font-roboto-medium text-foreground">{column.title}</h3>
               <Badge variant="secondary" className="ml-auto">
                 {columnOrders.length}
               </Badge>
@@ -102,9 +102,9 @@ export const OrderKanban = ({ orders, onStatusChange }: OrderKanbanProps) => {
                     )}
                   >
                     <CardHeader className="p-3 pb-2">
-                      <CardTitle className="text-sm font-medium flex items-center justify-between">
+                      <CardTitle className="text-sm font-roboto-medium flex items-center justify-between">
                         <span className="text-muted-foreground">#{order.id.slice(0, 8)}</span>
-                        <span className="font-bold text-foreground">
+                        <span className="font-roboto-bold text-foreground">
                           R${' '}
                           {order.total_amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                         </span>

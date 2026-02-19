@@ -72,7 +72,7 @@ export default function AdminInventory() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-foreground">Controle de Estoque</h1>
+      <h1 className="text-2xl font-roboto-bold text-foreground">Controle de Estoque</h1>
       <InventoryTable products={products || []} onUpdateStock={handleUpdateStock} />
     </div>
   );

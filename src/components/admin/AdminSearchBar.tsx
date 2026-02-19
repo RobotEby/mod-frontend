@@ -202,7 +202,7 @@ export const AdminSearchBar = ({
                 >
                   <Search className="h-4 w-4 text-muted-foreground" />
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{result.name}</p>
+                    <p className="font-roboto-medium truncate">{result.name}</p>
                     {result.highlight && (
                       <p className="text-xs text-muted-foreground">SKU: {result.highlight}</p>
                     )}
@@ -211,8 +211,8 @@ export const AdminSearchBar = ({
                     {result.type === 'product'
                       ? 'Produto'
                       : result.type === 'sku'
-                      ? 'SKU'
-                      : 'Categoria'}
+                        ? 'SKU'
+                        : 'Categoria'}
                   </Badge>
                 </button>
               ))}

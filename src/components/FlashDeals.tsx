@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Zap, Clock } from 'lucide-react';
 import { ProductCard } from '@/components/ProductCard';
 import { mockProducts } from '@/lib/mockData';
@@ -10,82 +10,85 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 
+type TimeLeft = { hours: number; minutes: number; seconds: number };
+
+const pad2 = (n: number) => String(n).padStart(2, '0');
+
+function tick(prev: TimeLeft): TimeLeft {
+  if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
+  if (prev.minutes > 0) return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
+  if (prev.hours > 0) return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
+  return { hours: 23, minutes: 59, seconds: 59 };
+}
+
 export const FlashDeals = () => {
-  const [timeLeft, setTimeLeft] = useState({
-    hours: 23,
-    minutes: 59,
-    seconds: 59,
-  });
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>({ hours: 23, minutes: 59, seconds: 59 });
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.seconds > 0) {
-          return { ...prev, seconds: prev.seconds - 1 };
-        } else if (prev.minutes > 0) {
-          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-        } else if (prev.hours > 0) {
-          return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        }
-        return { hours: 23, minutes: 59, seconds: 59 };
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
+    const timer = window.setInterval(() => setTimeLeft(tick), 1000);
+    return () => window.clearInterval(timer);
   }, []);
 
-  const flashProducts = mockProducts.filter((p) => p.isOnSale).slice(0, 8);
+  const flashProducts = useMemo(() => mockProducts.filter((p) => p.isOnSale).slice(0, 8), []);
 
-  const formatNumber = (num: number) => num.toString().padStart(2, '0');
+  const timeLabel = `${pad2(timeLeft.hours)}:${pad2(timeLeft.minutes)}:${pad2(timeLeft.seconds)}`;
 
   return (
-    <section className="py-12 bg-gradient-to-r from-destructive/10 via-destructive/5 to-transparent">
-      <div className="container">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-destructive rounded-lg animate-pulse">
-              <Zap className="h-6 w-6 text-destructive-foreground" />
+    <section className="relative py-6 sm:py-8 md:py-12">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-destructive/8 via-transparent to-transparent" />
+
+      <div className="container relative px-4">
+        <div className="mb-4 md:mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 grid h-10 w-10 place-items-center rounded-2xl bg-destructive/10 ring-1 ring-destructive/15 sm:h-11 sm:w-11">
+              <Zap className="h-5 w-5 text-destructive" />
             </div>
-            <div>
-              <h2 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
+
+            <div className="min-w-0">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-roboto-bold leading-tight">
                 Ofertas Relâmpago
               </h2>
-              <p className="text-muted-foreground text-sm">
-                Aproveite descontos exclusivos por tempo limitado
+              <p className="mt-1 text-sm text-muted-foreground">
+                Descontos exclusivos por tempo limitado
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Clock className="h-5 w-5 text-destructive" />
-            <div className="flex items-center gap-1">
-              <div className="bg-foreground text-background px-3 py-2 rounded-lg font-mono font-bold text-xl min-w-[3rem] text-center">
-                {formatNumber(timeLeft.hours)}
-              </div>
-              <span className="text-2xl font-bold">:</span>
-              <div className="bg-foreground text-background px-3 py-2 rounded-lg font-mono font-bold text-xl min-w-[3rem] text-center">
-                {formatNumber(timeLeft.minutes)}
-              </div>
-              <span className="text-2xl font-bold">:</span>
-              <div className="bg-foreground text-background px-3 py-2 rounded-lg font-mono font-bold text-xl min-w-[3rem] text-center animate-pulse">
-                {formatNumber(timeLeft.seconds)}
-              </div>
+          <div
+            className="flex w-fit items-center gap-2 rounded-2xl border bg-card/70 px-3 py-2 shadow-sm backdrop-blur sm:ml-auto"
+            aria-label={`Tempo restante: ${timeLabel}`}
+          >
+            <Clock className="h-4 w-4 text-destructive" />
+
+            <div className="flex items-center gap-1 font-mono">
+              <span className="rounded-lg bg-foreground px-2 py-1 text-xs font-roboto-semibold text-background sm:text-sm">
+                {pad2(timeLeft.hours)}
+              </span>
+              <span className="px-0.5 text-muted-foreground">:</span>
+              <span className="rounded-lg bg-foreground px-2 py-1 text-xs font-roboto-semibold text-background sm:text-sm">
+                {pad2(timeLeft.minutes)}
+              </span>
+              <span className="px-0.5 text-muted-foreground">:</span>
+              <span className="rounded-lg bg-foreground px-2 py-1 text-xs font-roboto-semibold text-background sm:text-sm">
+                {pad2(timeLeft.seconds)}
+              </span>
             </div>
           </div>
         </div>
 
-        <Carousel
-          opts={{
-            align: 'start',
-            loop: true,
-          }}
-          className="w-full"
-        >
-          <CarouselContent className="-ml-4">
+        <Carousel opts={{ align: 'start', loop: true }} className="w-full">
+          <CarouselContent className="-ml-3 md:-ml-4">
             {flashProducts.map((product) => (
               <CarouselItem
                 key={product.id}
-                className="pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
+                className="
+                  pl-3 md:pl-4
+                  basis-[78%]
+                  xs:basis-[68%]
+                  sm:basis-1/2
+                  md:basis-1/3
+                  lg:basis-1/4
+                "
               >
                 <ProductCard
                   id={product.id}
@@ -102,8 +105,9 @@ export const FlashDeals = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="hidden md:flex -left-4" />
-          <CarouselNext className="hidden md:flex -right-4" />
+
+          <CarouselPrevious className="hidden lg:flex -left-5 top-1/2" />
+          <CarouselNext className="hidden lg:flex -right-5 top-1/2" />
         </Carousel>
       </div>
     </section>

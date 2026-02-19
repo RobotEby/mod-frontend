@@ -7,7 +7,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
-import Autoplay from 'embla-carousel-autoplay';
 
 const rooms = [
   {
@@ -49,38 +48,44 @@ const rooms = [
 
 export const RoomGallery = () => {
   return (
-    <section className="py-16 bg-muted/30">
-      <div className="container">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">Ambientes Inspiradores</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+    <section className="py-6 md:py-16">
+      <div className="container px-4">
+        <div className="text-center mb-4 md:mb-10">
+          <h2 className="text-xl md:text-3xl lg:text-4xl font-roboto-bold mb-1 md:mb-3">
+            Ambientes Inspiradores
+          </h2>
+          <p className="text-xs md:text-base text-muted-foreground max-w-2xl mx-auto hidden sm:block">
             Inspire-se em nossos projetos e encontre o estilo perfeito para sua casa
           </p>
         </div>
 
-        <Carousel
-          opts={{ align: 'start', loop: true }}
-          plugins={[Autoplay({ delay: 5000 })]}
-          className="w-full"
-        >
-          <CarouselContent className="-ml-4">
+        <Carousel opts={{ align: 'start', loop: true }} className="w-full">
+          <CarouselContent className="-ml-2 md:-ml-4">
             {rooms.map((room) => (
-              <CarouselItem key={room.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                <Link to={`/catalogo?categoria=${room.categoryId}`}>
-                  <div className="group relative overflow-hidden rounded-2xl aspect-[4/3] cursor-pointer">
+              <CarouselItem
+                key={room.id}
+                className="pl-2 md:pl-4 basis-[80%] sm:basis-1/2 lg:basis-1/3"
+              >
+                <Link to={`/catalogo?categoria=${room.categoryId}`} className="group block">
+                  <div className="relative overflow-hidden rounded-lg aspect-[4/3]">
                     <img
                       src={room.image}
                       alt={room.name}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      loading="lazy"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                      <h3 className="text-2xl font-bold mb-1">{room.name}</h3>
-                      <p className="text-white/80 text-sm mb-3">{room.description}</p>
-                      <span className="inline-flex items-center gap-2 text-sm font-medium text-white/90 group-hover:gap-3 transition-all">
-                        Explorar
-                        <ArrowRight className="h-4 w-4" />
-                      </span>
+                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
+                      <h3 className="text-base md:text-xl font-roboto-bold text-background">
+                        {room.name}
+                      </h3>
+                      <p className="text-xs text-background/70 hidden sm:block">
+                        {room.description}
+                      </p>
+                      <div className="flex items-center gap-1 text-background/80 mt-1">
+                        <span className="text-xs">Explorar</span>
+                        <ArrowRight className="h-3 w-3" />
+                      </div>
                     </div>
                   </div>
                 </Link>

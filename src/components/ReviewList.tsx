@@ -112,7 +112,7 @@ export const ReviewList = ({ productId }: ReviewListProps) => {
         <div className="flex items-center gap-4 pb-4 border-b">
           <div className="flex items-center gap-2">
             <Star className="h-6 w-6 fill-primary text-primary" />
-            <span className="text-3xl font-bold">{Number(stats.avgRating).toFixed(1)}</span>
+            <span className="text-3xl font-roboto-bold">{Number(stats.avgRating).toFixed(1)}</span>
           </div>
           <div className="text-sm text-muted-foreground">
             Baseado em {stats.count} {stats.count === 1 ? 'avaliação' : 'avaliações'}
@@ -135,7 +135,7 @@ export const ReviewList = ({ productId }: ReviewListProps) => {
                     />
                   ))}
                 </div>
-                <span className="text-sm font-medium">
+                <span className="text-sm font-roboto-medium">
                   {review.profile?.full_name || 'Usuário'}
                 </span>
               </div>
@@ -147,7 +147,7 @@ export const ReviewList = ({ productId }: ReviewListProps) => {
             </div>
           </div>
 
-          {review.title && <h4 className="font-semibold">{review.title}</h4>}
+          {review.title && <h4 className="font-roboto-semibold">{review.title}</h4>}
 
           {review.comment && <p className="text-sm text-muted-foreground">{review.comment}</p>}
 

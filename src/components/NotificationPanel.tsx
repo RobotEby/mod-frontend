@@ -16,7 +16,7 @@ export const NotificationPanel = () => {
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between p-4 border-b">
-        <h3 className="font-semibold">Notificações</h3>
+        <h3 className="font-roboto-semibold">Notificações</h3>
         {unreadCount > 0 && (
           <Button variant="ghost" size="sm" onClick={markAllAsRead} className="gap-2">
             <Check className="h-4 w-4" />
@@ -38,7 +38,7 @@ export const NotificationPanel = () => {
                 <div className="flex-1 space-y-1">
                   <div className="flex items-center gap-2">
                     {!notification.is_read && <div className="h-2 w-2 rounded-full bg-primary" />}
-                    <h4 className="font-medium text-sm">{notification.title}</h4>
+                    <h4 className="font-roboto-medium text-sm">{notification.title}</h4>
                   </div>
                   <p className="text-sm text-muted-foreground">{notification.message}</p>
                   <p className="text-xs text-muted-foreground">

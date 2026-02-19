@@ -89,7 +89,7 @@ export const ProductTable = ({
     return (
       <div className="flex items-center gap-1">
         <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-        <span className="font-medium">{reviewStats.average_rating.toFixed(1)}</span>
+        <span className="font-roboto-medium">{reviewStats.average_rating.toFixed(1)}</span>
         <span className="text-muted-foreground text-sm">({reviewStats.total_reviews})</span>
       </div>
     );
@@ -189,7 +189,7 @@ export const ProductTable = ({
                 </TableCell>
                 <TableCell>
                   <div>
-                    <p className="font-medium text-foreground">{product.name}</p>
+                    <p className="font-roboto-medium text-foreground">{product.name}</p>
                     {product.is_on_sale && (
                       <Badge
                         variant="outline"
@@ -203,19 +203,19 @@ export const ProductTable = ({
                 <TableCell className="text-muted-foreground">
                   {getCategoryName(product.category_id)}
                 </TableCell>
-                <TableCell className="text-right font-medium">
+                <TableCell className="text-right font-roboto-medium">
                   R$ {product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                 </TableCell>
                 <TableCell className="text-center">{renderRating(product.review_stats)}</TableCell>
                 <TableCell className="text-center">
                   <span
                     className={cn(
-                      'font-medium',
+                      'font-roboto-medium',
                       (product.stock_quantity || 0) === 0
                         ? 'text-destructive'
                         : (product.stock_quantity || 0) <= 5
-                        ? 'text-amber-600'
-                        : 'text-foreground',
+                          ? 'text-amber-600'
+                          : 'text-foreground',
                     )}
                   >
                     {product.stock_quantity || 0}

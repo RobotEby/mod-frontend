@@ -15,7 +15,7 @@ export const BestSellers = () => {
               <Flame className="h-6 w-6 text-orange-500" />
             </div>
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold">Mais Vendidos</h2>
+              <h2 className="text-2xl md:text-3xl font-roboto-roboto">Mais Vendidos</h2>
               <p className="text-muted-foreground text-sm flex items-center gap-1">
                 <TrendingUp className="h-4 w-4" />
                 Os favoritos dos nossos clientes

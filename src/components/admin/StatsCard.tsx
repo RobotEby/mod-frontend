@@ -19,12 +19,12 @@ export const StatsCard = ({ title, value, icon: Icon, trend, className }: StatsC
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div className="space-y-2">
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <p className="text-2xl font-bold text-foreground">{value}</p>
+            <p className="text-sm font-roboto-medium text-muted-foreground">{title}</p>
+            <p className="text-2xl font-roboto-bold text-foreground">{value}</p>
             {trend && (
               <p
                 className={cn(
-                  'text-xs font-medium',
+                  'text-xs font-roboto-medium',
                   trend.isPositive ? 'text-emerald-600' : 'text-red-600',
                 )}
               >

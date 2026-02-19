@@ -26,11 +26,12 @@ import { PaymentBenefits } from '@/components/PaymentBenefits';
 import { TrustBadges } from '@/components/TrustBadges';
 import { RoomGallery } from '@/components/RoomGallery';
 import { CustomizationShowcase } from '@/components/CustomizationShowcase';
-import { FeaturedCollections } from '@/components/FeaturedColections';
+import { FeaturedCollections } from '@/components/FeaturedCollections';
 import { ServicesBanner } from '@/components/ServicesBanner';
 import { VideoTestimonials } from '@/components/VideoTestimonials';
 import { FAQPreview } from '@/components/FAQPreview';
 import { SustainabilityBanner } from '@/components/SustainabilityBanner';
+import { cn } from '@/lib/utils';
 
 const Home = () => {
   const { data: products, isLoading } = useQuery({
@@ -47,30 +48,34 @@ const Home = () => {
       <PaymentBenefits />
       <BenefitsBar />
 
-      <section className="relative h-[600px] flex items-center">
+      <section className="relative flex items-center min-h-[460px] sm:min-h-[520px] lg:min-h-[600px]">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroImage})` }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-transparent" />
         </div>
-        <div className="container relative z-10">
-          <div className="max-w-2xl space-y-6">
-            <h1 className="text-5xl md:text-6xl font-bold leading-tight">
+
+        <div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="max-w-2xl space-y-4 sm:space-y-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-roboto-bold leading-tight">
               Móveis de Alta Qualidade <span className="text-primary">Sob Medida</span>
             </h1>
-            <p className="text-xl text-muted-foreground">
+
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground">
               Móveis high-end com a qualidade de marcenaria sob medida. Designs exclusivos,
               fabricados especialmente para você.
             </p>
-            <div className="flex gap-4">
-              <Button size="lg" asChild>
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+              <Button size="lg" className="w-full sm:w-auto" asChild>
                 <Link to="/catalogo">
                   Ver Catálogo
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild>
+
+              <Button size="lg" variant="outline" className="w-full sm:w-auto" asChild>
                 <Link to="/sobre">Saiba Mais</Link>
               </Button>
             </div>
@@ -78,67 +83,85 @@ const Home = () => {
         </div>
       </section>
 
-      <SocialProof />
-      <FlashDeals />
+      <section className="py-6 md:py-12">
+        <div className="container px-4">
+          <div className="mb-4 md:mb-7 flex items-end justify-between gap-3">
+            <div className="space-y-1">
+              <h2 className="text-lg md:text-2xl lg:text-3xl font-roboto-bold tracking-tight">
+                Produtos em Destaque
+              </h2>
 
-      <section className="py-20 bg-gradient-to-b from-background to-muted/30">
-        <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Produtos em Destaque</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Conheça nossa seleção de móveis exclusivos
-            </p>
+              <p className="text-xs md:text-sm text-muted-foreground">
+                Conheça nossa seleção de móveis exclusivos
+              </p>
+            </div>
+
+            <div className="hidden md:flex items-center gap-2"></div>
           </div>
 
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="space-y-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+              {[...Array(18)].map((_, i) => (
+                <div
+                  key={i}
+                  className={cn(
+                    'rounded-2xl border border-border bg-card overflow-hidden',
+                    i >= 4 && 'max-lg:hidden',
+                  )}
+                >
                   <Skeleton className="aspect-square w-full" />
-                  <Skeleton className="h-6 w-3/4" />
-                  <Skeleton className="h-8 w-1/2" />
+                  <div className="p-3 sm:p-4 space-y-2">
+                    <Skeleton className="h-4 w-4/5" />
+                    <Skeleton className="h-4 w-2/5" />
+                    <Skeleton className="h-9 w-full mt-2 rounded-xl" />
+                  </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {products?.map((product) => (
-                <ProductCard
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+              {products?.map((product, i) => (
+                <div
                   key={product.id}
-                  id={product.id}
-                  name={product.name}
-                  price={Number(product.price)}
-                  image={product.main_image_url || ''}
-                  leadTime={product.lead_time || undefined}
-                />
+                  className={cn(i >= 4 && 'max-lg:hidden', i >= 18 && 'lg:hidden')}
+                >
+                  <ProductCard
+                    id={product.id}
+                    name={product.name}
+                    price={Number(product.price)}
+                    image={product.main_image_url || ''}
+                    leadTime={product.lead_time || undefined}
+                  />
+                </div>
               ))}
             </div>
           )}
 
-          <div className="text-center mt-12">
-            <Button size="lg" variant="outline" asChild>
-              <Link to="/catalogo">
+          <div className="mt-5 md:mt-9 text-center">
+            <Button asChild variant="outline" size="lg" className="h-11 min-h-[44px] rounded-xl">
+              <Link to="/catalogo" className="inline-flex items-center gap-1">
                 Ver Todos os Produtos
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
           </div>
         </div>
       </section>
 
-      <HowItWorks />
-      <RoomGallery />
+      <FlashDeals />
 
-      <section className="py-20">
-        <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Explore por Categoria</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+      <section className="py-6 md:py-12">
+        <div className="container px-4">
+          <div className="mb-3 md:mb-6">
+            <h2 className="text-lg md:text-2xl lg:text-3xl font-roboto-medium-bold">
+              Explore por Categoria
+            </h2>
+            <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
               Encontre o móvel perfeito para cada ambiente
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 md:gap-4">
             {mockCategories.map((category) => (
               <CategoryCard
                 key={category.id}
@@ -152,13 +175,17 @@ const Home = () => {
       </section>
 
       <BestSellers />
+
+      <RoomGallery />
+
       <CustomizationShowcase />
+
       <FeaturedCollections />
 
       <section className="py-20 bg-gradient-to-b from-muted/30 to-background">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">O Que Nossos Clientes Dizem</h2>
+            <h2 className="text-4xl font-roboto-bold mb-4">O Que Nossos Clientes Dizem</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Experiências reais de quem transformou seus ambientes
             </p>
@@ -199,10 +226,12 @@ const Home = () => {
                       <p className="text-muted-foreground mb-6">"{testimonial.text}"</p>
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-primary font-semibold">{testimonial.initials}</span>
+                          <span className="text-primary font-roboto-semibold">
+                            {testimonial.initials}
+                          </span>
                         </div>
                         <div>
-                          <p className="font-semibold">{testimonial.name}</p>
+                          <p className="font-roboto-semibold">{testimonial.name}</p>
                           <p className="text-sm text-muted-foreground">{testimonial.location}</p>
                         </div>
                       </div>
@@ -217,17 +246,19 @@ const Home = () => {
         </div>
       </section>
 
-      <VideoTestimonials />
-      <ServicesBanner />
+      <HowItWorks />
+      <SocialProof />
 
+      <ServicesBanner />
+      <VideoTestimonials />
+
+      <SustainabilityBanner />
+      <InstagramFeed />
       <section className="py-12">
         <div className="container">
           <TrustBadges variant="full" />
         </div>
       </section>
-
-      <SustainabilityBanner />
-      <InstagramFeed />
       <FAQPreview />
       <RecentlyViewed />
     </div>

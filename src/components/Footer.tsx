@@ -8,7 +8,7 @@ export const Footer = () => {
       <div className="container py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
-            <h3 className="font-bold mb-4">Institucional</h3>
+            <h3 className="font-roboto-bold mb-4">Institucional</h3>
             <ul className="space-y-2">
               <li>
                 <Link
@@ -38,7 +38,7 @@ export const Footer = () => {
           </div>
 
           <div>
-            <h3 className="font-bold mb-4">Ajuda</h3>
+            <h3 className="font-roboto-bold mb-4">Ajuda</h3>
             <ul className="space-y-2">
               <li>
                 <Link
@@ -76,7 +76,7 @@ export const Footer = () => {
           </div>
 
           <div>
-            <h3 className="font-bold mb-4">Categorias</h3>
+            <h3 className="font-roboto-bold mb-4">Categorias</h3>
             <ul className="space-y-2">
               {mockCategories.slice(0, 5).map((category) => (
                 <li key={category.id}>
@@ -92,7 +92,7 @@ export const Footer = () => {
           </div>
 
           <div>
-            <h3 className="font-bold mb-4">Redes Sociais</h3>
+            <h3 className="font-roboto-bold mb-4">Redes Sociais</h3>
             <div className="flex gap-4 mb-6">
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
                 <Facebook className="h-5 w-5" />

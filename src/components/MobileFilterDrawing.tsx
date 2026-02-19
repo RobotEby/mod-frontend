@@ -57,7 +57,7 @@ export const MobileFilterDrawer = ({
         >
           <SlidersHorizontal className="h-5 w-5" />
           {activeFilterCount > 0 && (
-            <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-xs flex items-center justify-center font-medium">
+            <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-xs flex items-center justify-center font-roboto-medium">
               {activeFilterCount}
             </span>
           )}
@@ -85,7 +85,7 @@ export const MobileFilterDrawer = ({
         <ScrollArea className="flex-1 px-4 py-4">
           <div className="space-y-6">
             <div className="space-y-3">
-              <h3 className="font-semibold text-base">Promoções</h3>
+              <h3 className="font-roboto-semibold text-base">Promoções</h3>
               <Button
                 variant={showOffers ? 'default' : 'outline'}
                 className="w-full justify-start gap-2"
@@ -97,7 +97,7 @@ export const MobileFilterDrawer = ({
             </div>
 
             <div className="space-y-3">
-              <h3 className="font-semibold text-base">Categorias</h3>
+              <h3 className="font-roboto-semibold text-base">Categorias</h3>
               <div className="grid grid-cols-2 gap-2">
                 <Button
                   variant={selectedCategory === null ? 'default' : 'outline'}
@@ -122,7 +122,7 @@ export const MobileFilterDrawer = ({
             </div>
 
             <div className="space-y-3">
-              <h3 className="font-semibold text-base">Faixa de Preço</h3>
+              <h3 className="font-roboto-semibold text-base">Faixa de Preço</h3>
               <div className="px-2">
                 <Slider
                   min={0}
@@ -140,7 +140,7 @@ export const MobileFilterDrawer = ({
             </div>
 
             <div className="space-y-3">
-              <h3 className="font-semibold text-base">Avaliação Mínima</h3>
+              <h3 className="font-roboto-semibold text-base">Avaliação Mínima</h3>
               <div className="grid grid-cols-2 gap-2">
                 {[0, 1, 2, 3, 4].map((rating) => (
                   <Button

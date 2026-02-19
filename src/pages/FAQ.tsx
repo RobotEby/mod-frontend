@@ -78,7 +78,7 @@ const FAQ = () => {
     <div className="min-h-screen py-16">
       <div className="container max-w-4xl">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Perguntas Frequentes</h1>
+          <h1 className="text-4xl font-roboto-bold mb-4">Perguntas Frequentes</h1>
           <p className="text-lg text-muted-foreground">
             Tire suas dúvidas sobre nossos produtos e serviços
           </p>
@@ -87,7 +87,7 @@ const FAQ = () => {
         <div className="space-y-8">
           {faqs.map((section) => (
             <div key={section.category}>
-              <h2 className="text-2xl font-bold mb-4">{section.category}</h2>
+              <h2 className="text-2xl font-roboto-bold mb-4">{section.category}</h2>
               <Accordion type="single" collapsible className="w-full">
                 {section.questions.map((faq, index) => (
                   <AccordionItem key={index} value={`${section.category}-${index}`}>

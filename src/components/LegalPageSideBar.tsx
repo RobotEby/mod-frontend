@@ -56,7 +56,7 @@ export const LegalPageSidebar = ({
             <AccordionTrigger className="px-4 py-3 hover:no-underline">
               <div className="flex items-center gap-2">
                 <List className="h-4 w-4" />
-                <span className="font-medium">Navegação Rápida</span>
+                <span className="font-roboto-medium">Navegação Rápida</span>
               </div>
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-4">
@@ -69,7 +69,7 @@ export const LegalPageSidebar = ({
                       'block w-full text-left px-3 py-2 text-sm rounded-md transition-colors',
                       'hover:bg-muted hover:text-primary',
                       activeSection === link.id
-                        ? 'bg-primary/10 text-primary font-medium'
+                        ? 'bg-primary/10 text-primary font-roboto-medium'
                         : 'text-muted-foreground',
                     )}
                   >
@@ -84,7 +84,7 @@ export const LegalPageSidebar = ({
             <AccordionTrigger className="px-4 py-3 hover:no-underline">
               <div className="flex items-center gap-2">
                 <HelpCircle className="h-4 w-4" />
-                <span className="font-medium">{faqTitle}</span>
+                <span className="font-roboto-medium">{faqTitle}</span>
               </div>
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-4">
@@ -112,7 +112,7 @@ export const LegalPageSidebar = ({
       <aside className="hidden lg:block w-72 shrink-0">
         <div className="sticky top-24 space-y-6">
           <div className="bg-card rounded-xl border p-5">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <h3 className="font-roboto-semibold mb-4 flex items-center gap-2">
               <List className="h-4 w-4" />
               {title}
             </h3>
@@ -125,7 +125,7 @@ export const LegalPageSidebar = ({
                     'flex items-center gap-2 w-full text-left px-3 py-2 text-sm rounded-md transition-colors',
                     'hover:bg-muted hover:text-primary',
                     activeSection === link.id
-                      ? 'bg-primary/10 text-primary font-medium'
+                      ? 'bg-primary/10 text-primary font-roboto-medium'
                       : 'text-muted-foreground',
                   )}
                 >
@@ -137,7 +137,7 @@ export const LegalPageSidebar = ({
           </div>
 
           <div className="bg-card rounded-xl border p-5">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <h3 className="font-roboto-semibold mb-4 flex items-center gap-2">
               <HelpCircle className="h-4 w-4" />
               {faqTitle}
             </h3>

@@ -95,7 +95,9 @@ export const Breadcrumbs = ({ items, className }: BreadcrumbsProps) => {
                 </Link>
               </BreadcrumbLink>
             ) : (
-              <BreadcrumbPage className="text-foreground font-medium">{item.label}</BreadcrumbPage>
+              <BreadcrumbPage className="text-foreground font-roboto-roboto">
+                {item.label}
+              </BreadcrumbPage>
             )}
           </BreadcrumbItem>
         ))}

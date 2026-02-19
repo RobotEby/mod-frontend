@@ -35,7 +35,7 @@ export const CookieConsent = () => {
           </div>
 
           <div className="flex-1">
-            <h3 className="font-semibold mb-1">Usamos Cookies</h3>
+            <h3 className="font-roboto-roboto mb-1">Usamos Cookies</h3>
             <p className="text-sm text-muted-foreground">
               Utilizamos cookies para melhorar sua experiência de navegação, personalizar conteúdo e
               analisar nosso tráfego. Ao clicar em "Aceitar", você concorda com o uso de cookies.{' '}

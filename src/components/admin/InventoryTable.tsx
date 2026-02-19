@@ -113,19 +113,19 @@ export const InventoryTable = ({ products, onUpdateStock }: InventoryTableProps)
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="p-4 bg-card rounded-lg border border-border">
           <p className="text-sm text-muted-foreground">Total de Produtos</p>
-          <p className="text-2xl font-bold text-foreground">{stats.total}</p>
+          <p className="text-2xl font-roboto-bold text-foreground">{stats.total}</p>
         </div>
         <div className="p-4 bg-card rounded-lg border border-border">
           <p className="text-sm text-muted-foreground">Em Estoque</p>
-          <p className="text-2xl font-bold text-emerald-600">{stats.inStock}</p>
+          <p className="text-2xl font-roboto-bold text-emerald-600">{stats.inStock}</p>
         </div>
         <div className="p-4 bg-card rounded-lg border border-border">
           <p className="text-sm text-muted-foreground">Baixo Estoque</p>
-          <p className="text-2xl font-bold text-amber-600">{stats.lowStock}</p>
+          <p className="text-2xl font-roboto-bold text-amber-600">{stats.lowStock}</p>
         </div>
         <div className="p-4 bg-card rounded-lg border border-border">
           <p className="text-sm text-muted-foreground">Sem Estoque</p>
-          <p className="text-2xl font-bold text-red-600">{stats.outOfStock}</p>
+          <p className="text-2xl font-roboto-bold text-red-600">{stats.outOfStock}</p>
         </div>
       </div>
 
@@ -168,13 +168,13 @@ export const InventoryTable = ({ products, onUpdateStock }: InventoryTableProps)
 
               return (
                 <TableRow key={product.id} className="hover:bg-muted/30">
-                  <TableCell className="font-mono text-sm text-muted-foreground">
+                  <TableCell className="font-roboto-mono text-sm text-muted-foreground">
                     {product.sku || '-'}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {getStatusIcon(stockStatus)}
-                      <span className="font-medium text-foreground">{product.name}</span>
+                      <span className="font-roboto-medium text-foreground">{product.name}</span>
                     </div>
                   </TableCell>
                   <TableCell className="text-center">
@@ -197,7 +197,7 @@ export const InventoryTable = ({ products, onUpdateStock }: InventoryTableProps)
                     ) : (
                       <span
                         className={cn(
-                          'font-bold cursor-pointer hover:underline',
+                          'font-roboto-bold cursor-pointer hover:underline',
                           stockStatus === 'out_of_stock' && 'text-red-600',
                           stockStatus === 'low_stock' && 'text-amber-600',
                           stockStatus === 'in_stock' && 'text-foreground',

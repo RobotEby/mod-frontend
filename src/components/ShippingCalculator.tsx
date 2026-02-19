@@ -102,7 +102,7 @@ export const ShippingCalculator = ({ productPrice }: ShippingCalculatorProps) =>
 
   return (
     <div className="bg-muted/50 rounded-lg p-4 space-y-4">
-      <div className="flex items-center gap-2 text-sm font-medium">
+      <div className="flex items-center gap-2 text-sm font-roboto-medium">
         <Truck className="h-4 w-4 text-primary" />
         <span>Calcular Frete</span>
       </div>
@@ -145,7 +145,7 @@ export const ShippingCalculator = ({ productPrice }: ShippingCalculatorProps) =>
             >
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-sm">{option.name}</span>
+                  <span className="font-roboto-medium text-sm">{option.name}</span>
                   {option.price === 0 && (
                     <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full flex items-center gap-1">
                       <Check className="h-3 w-3" />
@@ -158,9 +158,11 @@ export const ShippingCalculator = ({ productPrice }: ShippingCalculatorProps) =>
               </div>
               <div className="text-right">
                 {option.price === 0 ? (
-                  <span className="font-bold text-primary">Grátis</span>
+                  <span className="font-roboto-bold text-primary">Grátis</span>
                 ) : (
-                  <span className="font-bold">R$ {option.price.toFixed(2).replace('.', ',')}</span>
+                  <span className="font-roboto-bold">
+                    R$ {option.price.toFixed(2).replace('.', ',')}
+                  </span>
                 )}
               </div>
             </div>

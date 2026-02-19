@@ -95,7 +95,7 @@ export function BulkActionBar({
     <>
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-card border border-border shadow-lg rounded-lg p-3 flex items-center gap-3 animate-in slide-in-from-bottom-4">
         <div className="flex items-center gap-2 pr-3 border-r border-border">
-          <span className="text-sm font-medium">
+          <span className="text-sm font-roboto-medium">
             {selectedCount} {selectedCount === 1 ? 'item selecionado' : 'itens selecionados'}
           </span>
           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onClearSelection}>
