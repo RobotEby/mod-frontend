@@ -1,7 +1,6 @@
 import { Flame, TrendingUp } from 'lucide-react';
 import { ProductCard } from '@/components/ProductCard';
 import { mockProducts } from '@/lib/mockData';
-import { Badge } from '@/components/ui/badge';
 import {
   Carousel,
   CarouselContent,

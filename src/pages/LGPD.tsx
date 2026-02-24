@@ -9,237 +9,197 @@ const navLinks = [
   { id: 'atuacao', label: 'Nossa Atuação' },
 ];
 
-const faqItems = [
-  {
-    question: 'O que é LGPD?',
-    answer:
-      'A Lei Geral de Proteção de Dados (Lei nº 13.709/2018) é a legislação brasileira que regulamenta o tratamento de dados pessoais por empresas e organizações.',
-  },
-  {
-    question: 'Quais são meus direitos?',
-    answer:
-      'Você tem direito a acessar, corrigir, excluir seus dados, além de revogar consentimento e solicitar portabilidade dos dados.',
-  },
-  {
-    question: 'Como a MOD protege meus dados?',
-    answer:
-      'Utilizamos criptografia, controles de acesso rigorosos, servidores seguros e seguimos as melhores práticas de segurança da informação.',
-  },
-  {
-    question: 'Como solicitar meus dados?',
-    answer:
-      'Entre em contato pelo e-mail privacidade@movelariaondemand.com.br informando seu nome e e-mail cadastrado.',
-  },
-  {
-    question: 'Onde buscar mais informações?',
-    answer:
-      'Consulte nosso Aviso de Privacidade e Termos de Uso, ou entre em contato conosco para esclarecer qualquer dúvida.',
-  },
-];
-
 const LGPD = () => {
   return (
-    <div className="min-h-screen">
-      <section className="bg-gradient-to-br from-primary/10 via-primary/5 to-background py-12 md:py-16 lg:py-20">
-        <div className="container max-w-6xl px-4">
-          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-            <div className="flex-1 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-primary text-sm font-roboto-medium mb-6">
-                <Shield className="h-4 w-4" />
-                <span>Em Conformidade</span>
-              </div>
-              <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-roboto-bold mb-4 md:mb-6">
+    <main className="min-h-screen bg-background">
+      <div className="bg-gradient-to-br from-primary/10 via-background to-primary/5 border-b">
+        <div className="container px-4 py-8 md:py-16">
+          <div className="grid md:grid-cols-2 gap-6 md:gap-12 items-center">
+            <div className="order-2 md:order-1">
+              <span className="inline-flex items-center gap-1.5 text-xs md:text-sm font-roboto-medium text-primary bg-primary/10 px-3 py-1 rounded-full mb-3 md:mb-4">
+                <Shield className="h-3.5 w-3.5" />
+                Em Conformidade
+              </span>
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-roboto-bold text-foreground mb-3 md:mb-4">
                 A Movelaria On Demand está em conformidade com a LGPD
               </h1>
-              <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto lg:mx-0">
+              <p className="text-sm md:text-base lg:text-lg text-muted-foreground mb-4 md:mb-6">
                 Nos tornamos mais simples criar, orçar e produzir os móveis do seu cliente, tudo
                 isso enquanto protegemos os dados pessoais de cada cliente que utiliza nossas
                 plataformas.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center lg:justify-start">
+              <div className="flex flex-col sm:flex-row gap-2 md:gap-3">
                 <Link
                   to="/privacidade"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg font-roboto-medium hover:bg-primary/90 transition-colors"
+                  className="inline-flex items-center gap-2 text-sm font-roboto-medium text-primary hover:underline min-h-[44px]"
                 >
                   <FileText className="h-4 w-4" />
                   Aviso de Privacidade
                 </Link>
                 <Link
                   to="/termos"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-card border rounded-lg font-roboto-medium hover:bg-muted transition-colors"
+                  className="inline-flex items-center gap-2 text-sm font-roboto-medium text-primary hover:underline min-h-[44px]"
                 >
-                  <Eye className="h-4 w-4" />
+                  <FileText className="h-4 w-4" />
                   Termos de Uso
                 </Link>
               </div>
             </div>
-            <div className="flex-shrink-0">
-              <div className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 bg-primary/10 rounded-full flex items-center justify-center">
-                <Shield className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 text-primary" />
+
+            <div className="order-1 md:order-2 flex justify-center">
+              <div className="w-24 h-24 md:w-40 md:h-40 rounded-full bg-primary/10 flex items-center justify-center">
+                <Shield className="h-12 w-12 md:h-20 md:w-20 text-primary" />
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <section className="py-8 md:py-12 lg:py-16">
-        <div className="container max-w-6xl px-4">
-          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-            <LegalPageSidebar
-              title="Lei Geral de Proteção de Dados"
-              navLinks={navLinks}
-              faqItems={faqItems}
-              faqTitle="Perguntas Frequentes"
-            />
+      <div className="container px-4 py-6 md:py-10">
+        <div className="flex flex-col lg:flex-row gap-6 md:gap-10">
+          <LegalPageSidebar navLinks={navLinks} title={''} faqItems={[]} />
 
-            <main className="flex-1 min-w-0">
-              <div className="prose prose-sm md:prose-base max-w-none">
-                <section id="o-que-e" className="scroll-mt-28 mb-10">
-                  <h2 className="text-xl md:text-2xl font-roboto-bold mb-4">O que é LGPD?</h2>
-                  <p className="text-muted-foreground">
-                    A Lei Geral de Proteção de Dados Pessoais (LGPD) entrou em vigor em 2020,
-                    visando regulamentar o tratamento de dados pessoais pelas empresas, uma vez que
-                    os dados pessoais ganharam grande importância na economia moderna, pois permitem
-                    fazer predições, analisar perfis de consumo, opinião, entre outras atividades.
-                  </p>
-                </section>
+          <div className="flex-1 max-w-3xl">
+            <div className="space-y-6 md:space-y-10">
+              <section id="o-que-e">
+                <h2 className="text-lg md:text-2xl font-roboto-bold mb-2 md:mb-3 text-foreground">
+                  O que é LGPD?
+                </h2>
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                  A Lei Geral de Proteção de Dados Pessoais (LGPD) entrou em vigor em 2020, visando
+                  regulamentar o tratamento de dados pessoais pelas empresas, uma vez que os dados
+                  pessoais ganharam grande importância na economia moderna, pois permitem fazer
+                  predições, analisar perfis de consumo, opinião, entre outras atividades.
+                </p>
+              </section>
 
-                <section id="objetivos" className="scroll-mt-28 mb-10">
-                  <h2 className="text-xl md:text-2xl font-roboto-bold mb-6">
-                    Os principais Objetivos da LGPD
-                  </h2>
-                  <div className="grid gap-4 md:gap-6">
-                    <div className="flex items-start gap-4 p-4 md:p-6 bg-card border rounded-xl">
-                      <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <Lock className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+              <section id="objetivos">
+                <h2 className="text-lg md:text-2xl font-roboto-bold mb-3 md:mb-4 text-foreground">
+                  Os principais Objetivos da LGPD
+                </h2>
+                <div className="grid sm:grid-cols-2 gap-3 md:gap-4">
+                  {[
+                    {
+                      icon: Lock,
+                      title: 'Direito à Privacidade',
+                      description:
+                        'Assegurar o direito à privacidade e à proteção de dados pessoais dos usuários.',
+                    },
+                    {
+                      icon: FileText,
+                      title: 'Regras Claras',
+                      description:
+                        'Estabelecer regras claras sobre o tratamento de dados pessoais.',
+                    },
+                    {
+                      icon: Shield,
+                      title: 'Segurança e Confiança',
+                      description:
+                        'Fortalecer a segurança e a confiança do titular no tratamento de dados pessoais, garantindo a defesa das relações comerciais e de consumo.',
+                    },
+                    {
+                      icon: Users,
+                      title: 'Desenvolvimento Econômico',
+                      description:
+                        'Desenvolvimento econômico, tecnológico e inovação, bem como livre iniciativa, livre concorrência e a defesa do consumidor.',
+                    },
+                  ].map((item) => (
+                    <div
+                      key={item.title}
+                      className="flex items-start gap-3 p-3 md:p-4 rounded-xl bg-card border"
+                    >
+                      <div className="flex-shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <item.icon className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-roboto-semibold mb-2">Direito à Privacidade</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Assegurar o direito à privacidade e à proteção de dados pessoais dos
-                          usuários.
+                        <h3 className="text-sm md:text-base font-roboto-semibold mb-0.5 text-foreground">
+                          {item.title}
+                        </h3>
+                        <p className="text-xs md:text-sm text-muted-foreground">
+                          {item.description}
                         </p>
                       </div>
                     </div>
-
-                    <div className="flex items-start gap-4 p-4 md:p-6 bg-card border rounded-xl">
-                      <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <FileText className="w-5 h-5 md:w-6 md:h-6 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-roboto-semibold mb-2">Regras Claras</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Estabelecer regras claras sobre o tratamento de dados pessoais.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-4 p-4 md:p-6 bg-card border rounded-xl">
-                      <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <Shield className="w-5 h-5 md:w-6 md:h-6 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-roboto-semibold mb-2">Segurança e Confiança</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Fortalecer a segurança e a confiança do titular no tratamento de dados
-                          pessoais, garantindo a defesa das relações comerciais e de consumo.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-4 p-4 md:p-6 bg-card border rounded-xl">
-                      <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <Users className="w-5 h-5 md:w-6 md:h-6 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-roboto-semibold mb-2">Desenvolvimento Econômico</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Desenvolvimento econômico, tecnológico e inovação, bem como livre
-                          iniciativa, livre concorrência e a defesa do consumidor.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                <section id="conformidade" className="scroll-mt-28 mb-10">
-                  <h2 className="text-xl md:text-2xl font-roboto-bold mb-4">
-                    A Movelaria On Demand e a LGPD
-                  </h2>
-                  <p className="text-muted-foreground">
-                    A LGPD entrou em vigor em setembro de 2020, com isso foram realizadas melhorias
-                    nos processos de coleta e tratamento dos dados. Além disso, atualizamos nossas
-                    políticas, normas e contratos para se adequar à nova lei e fornecer maior
-                    segurança na proteção dos dados de clientes.
-                  </p>
-                </section>
-
-                <section id="atuacao" className="scroll-mt-28 mb-10">
-                  <h2 className="text-xl md:text-2xl font-roboto-bold mb-4">
-                    Atuação da Movelaria On Demand
-                  </h2>
-                  <p className="text-muted-foreground mb-6">
-                    A MOD já aderiu ao LGPD, promovendo avanços nos sistemas, elaborando um plano de
-                    orientações de como nossos colaboradores devem agir em conformidade e está
-                    capacitando parceiros no tema da privacidade de dados.
-                  </p>
-
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl">
-                      <h4 className="font-roboto-semibold mb-2">Políticas Atualizadas</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Termos de uso e avisos de privacidade em conformidade com a legislação.
-                      </p>
-                    </div>
-                    <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl">
-                      <h4 className="font-roboto-semibold mb-2">Segurança de Dados</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Criptografia e controles de acesso para proteger suas informações.
-                      </p>
-                    </div>
-                    <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl">
-                      <h4 className="font-roboto-semibold mb-2">Treinamento Contínuo</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Equipe capacitada em privacidade e proteção de dados.
-                      </p>
-                    </div>
-                    <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl">
-                      <h4 className="font-roboto-semibold mb-2">Canal de Atendimento</h4>
-                      <p className="text-sm text-muted-foreground">
-                        E-mail dedicado para solicitações relacionadas à LGPD.
-                      </p>
-                    </div>
-                  </div>
-                </section>
-
-                <div className="mt-12 p-6 md:p-8 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/20">
-                  <h3 className="text-lg md:text-xl font-roboto-bold mb-4">
-                    Precisa exercer seus direitos?
-                  </h3>
-                  <p className="text-muted-foreground mb-6">
-                    Entre em contato conosco para qualquer solicitação relacionada aos seus dados
-                    pessoais.
-                  </p>
-                  <a
-                    href="mailto:privacidade@movelariaondemand.com.br"
-                    className="inline-flex items-center gap-2 text-primary font-roboto-medium hover:underline"
-                  >
-                    privacidade@movelariaondemand.com.br
-                    <ChevronRight className="h-4 w-4" />
-                  </a>
+                  ))}
                 </div>
+              </section>
 
-                <div className="mt-8 p-4 bg-muted/50 rounded-xl border">
-                  <p className="text-sm text-muted-foreground m-0">
-                    <strong>Última atualização:</strong> 12 de Janeiro de 2026
-                  </p>
+              <section id="conformidade">
+                <h2 className="text-lg md:text-2xl font-roboto-bold mb-2 md:mb-3 text-foreground">
+                  A Movelaria On Demand e a LGPD
+                </h2>
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                  A LGPD entrou em vigor em setembro de 2020, com isso foram realizadas melhorias
+                  nos processos de coleta e tratamento dos dados. Além disso, atualizamos nossas
+                  políticas, normas e contratos para se adequar à nova lei e fornecer maior
+                  segurança na proteção dos dados de clientes.
+                </p>
+              </section>
+
+              <section id="atuacao">
+                <h2 className="text-lg md:text-2xl font-roboto-bold mb-2 md:mb-3 text-foreground">
+                  Atuação da Movelaria On Demand
+                </h2>
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed mb-4">
+                  A MOD já aderiu ao LGPD, promovendo avanços nos sistemas, elaborando um plano de
+                  orientações de como nossos colaboradores devem agir em conformidade e está
+                  capacitando parceiros no tema da privacidade de dados.
+                </p>
+
+                <div className="grid sm:grid-cols-2 gap-3 md:gap-4">
+                  {[
+                    {
+                      title: 'Políticas Atualizadas',
+                      desc: 'Termos de uso e avisos de privacidade em conformidade com a legislação.',
+                    },
+                    {
+                      title: 'Segurança de Dados',
+                      desc: 'Criptografia e controles de acesso para proteger suas informações.',
+                    },
+                    {
+                      title: 'Treinamento Contínuo',
+                      desc: 'Equipe capacitada em privacidade e proteção de dados.',
+                    },
+                    {
+                      title: 'Canal de Atendimento',
+                      desc: 'E-mail dedicado para solicitações relacionadas à LGPD.',
+                    },
+                  ].map((item) => (
+                    <div key={item.title} className="p-3 md:p-4 rounded-xl bg-muted/50 border">
+                      <h3 className="text-sm md:text-base font-roboto-semibold mb-1 text-foreground">
+                        {item.title}
+                      </h3>
+                      <p className="text-xs md:text-sm text-muted-foreground">{item.desc}</p>
+                    </div>
+                  ))}
                 </div>
+              </section>
+
+              <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 md:p-6">
+                <h3 className="text-base md:text-lg font-roboto-bold mb-2 text-foreground">
+                  Precisa exercer seus direitos?
+                </h3>
+                <p className="text-sm md:text-base text-muted-foreground mb-3">
+                  Entre em contato conosco para qualquer solicitação relacionada aos seus dados
+                  pessoais.
+                </p>
+                <a
+                  href="mailto:privacidade@movelariaondemand.com.br"
+                  className="inline-flex items-center gap-2 text-primary font-roboto-medium text-sm hover:underline min-h-[44px]"
+                >
+                  privacidade@movelariaondemand.com.br
+                  <ChevronRight className="h-4 w-4" />
+                </a>
               </div>
-            </main>
+
+              <div className="text-xs md:text-sm text-muted-foreground">
+                Última atualização: 12 de Janeiro de 2026
+              </div>
+            </div>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </main>
   );
 };
 

@@ -532,7 +532,6 @@ const Catalog = () => {
                         stockQuantity={product.stock_quantity ?? undefined}
                         lowStockThreshold={product.low_stock_threshold ?? undefined}
                         description={product.description}
-                        galleryImages={product.gallery_images ?? undefined}
                         onQuickView={() => handleQuickView(product as Product)}
                       />
                     </div>
@@ -587,7 +586,6 @@ const Catalog = () => {
                 leadTime: quickViewProduct.lead_time ?? undefined,
                 stockQuantity: quickViewProduct.stock_quantity ?? undefined,
                 lowStockThreshold: quickViewProduct.low_stock_threshold ?? undefined,
-                galleryImages: quickViewProduct.gallery_images ?? undefined,
               }
             : null
         }
