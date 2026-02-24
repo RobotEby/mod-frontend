@@ -110,7 +110,7 @@ export const LegalPageSidebar = ({
       </div>
 
       <aside className="hidden lg:block w-72 shrink-0">
-        <div className="sticky top-24 space-y-6">
+        <div className="top-24 space-y-6">
           <div className="bg-card rounded-xl border p-5">
             <h3 className="font-roboto-semibold mb-4 flex items-center gap-2">
               <List className="h-4 w-4" />

@@ -1,71 +1,21 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 export const WhatsAppButton = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [bottomPx, setBottomPx] = useState<number | null>(null);
-
-  const getBaseBottom = useCallback(() => {
-    const mdBreakpoint = 768;
-    return window.innerWidth >= mdBreakpoint ? 24 : 80;
-  }, []);
-
-  const updateStackOffset = useCallback(() => {
-    const base = getBaseBottom();
-    const scrollBtn = document.getElementById('scroll-to-top');
-
-    if (!scrollBtn) {
-      setBottomPx(base);
-      return;
-    }
-
-    const style = window.getComputedStyle(scrollBtn);
-    const isScrollVisible = style.opacity !== '0' && style.pointerEvents !== 'none';
-
-    if (isScrollVisible) {
-      const rect = scrollBtn.getBoundingClientRect();
-      const gap = 12;
-      setBottomPx(base + rect.height + gap);
-    } else {
-      setBottomPx(base);
-    }
-  }, [getBaseBottom]);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 200) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
+      if (currentScrollY > lastScrollY && currentScrollY > 200) setIsVisible(false);
+      else setIsVisible(true);
       setLastScrollY(currentScrollY);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('scroll', updateStackOffset, { passive: true });
-    window.addEventListener('resize', updateStackOffset);
-    const scrollBtn = document.getElementById('scroll-to-top');
-    let mo: MutationObserver | null = null;
-    if (scrollBtn) {
-      mo = new MutationObserver(updateStackOffset);
-      mo.observe(scrollBtn, {
-        attributes: true,
-        attributeFilter: ['class', 'style'],
-        childList: false,
-      });
-    }
-
-    updateStackOffset();
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('scroll', updateStackOffset);
-      window.removeEventListener('resize', updateStackOffset);
-      if (mo) mo.disconnect();
-    };
-  }, [lastScrollY, updateStackOffset]);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
 
   const handleClick = () => {
     const message = encodeURIComponent('Olá! Gostaria de saber mais sobre os móveis.');
@@ -74,14 +24,17 @@ export const WhatsAppButton = () => {
     if (newWindow) newWindow.opener = null;
   };
 
-  const bottomStyle = bottomPx != null ? { bottom: `${bottomPx}px` } : undefined;
-
   return (
     <button
       onClick={handleClick}
-      style={bottomStyle}
+      style={{
+        right: 'var(--fab-base)',
+        bottom:
+          'calc(var(--fab-base) + var(--bottom-nav-offset) + var(--scrolltop-offset) + var(--fab-gap))',
+      }}
       className={cn(
-        'fixed right-6 z-50 flex items-center justify-center rounded-full bg-[#25D366] text-white p-3 md:p-4 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl',
+        'fixed z-[55] flex items-center justify-center rounded-full bg-[#25D366] text-white p-3 md:p-4 shadow-lg',
+        'transition-all duration-300 hover:scale-105 hover:shadow-xl',
         isVisible
           ? 'translate-y-0 opacity-100 pointer-events-auto'
           : 'translate-y-20 opacity-0 pointer-events-none',

@@ -31,20 +31,21 @@ export const ScrollToTop = () => {
   }, [pathname, hash, search]);
 
   useEffect(() => {
-    const toggleVisibility = () => {
-      setIsVisible(window.scrollY > 300);
-    };
-
+    const toggleVisibility = () => setIsVisible(window.scrollY > 300);
     window.addEventListener('scroll', toggleVisibility, { passive: true });
+    toggleVisibility();
     return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
 
+  // 👇 publica altura do scroll-to-top pro WhatsApp “empilhar”
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--scrolltop-offset', isVisible ? '60px' : '0px');
+    return () => root.style.setProperty('--scrolltop-offset', '0px');
+  }, [isVisible]);
+
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    });
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
 
   return (
@@ -52,8 +53,13 @@ export const ScrollToTop = () => {
       id="scroll-to-top"
       onClick={scrollToTop}
       size="icon"
+      style={{
+        // base (24px) + altura do bottom nav (quando visível)
+        bottom: 'calc(var(--fab-base) + var(--bottom-nav-offset))',
+        right: 'var(--fab-base)',
+      }}
       className={cn(
-        'fixed bottom-20 lg:bottom-6 right-6 z-[9999] h-12 w-12 rounded-full shadow-xl transition-all duration-300 pointer-events-auto',
+        'fixed z-[60] h-12 w-12 rounded-full shadow-xl transition-all duration-300 pointer-events-auto',
         'bg-primary hover:bg-primary/90 text-primary-foreground',
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none',
       )}

@@ -82,6 +82,10 @@ export const Footer = () => {
                 <li key={category.id}>
                   <Link
                     to={`/catalogo?categoria=${category.slug}`}
+
+
+
+                    
                     className="text-sm text-muted-foreground hover:text-primary transition-colors"
                   >
                     {category.name}
@@ -126,8 +130,9 @@ export const Footer = () => {
         </div>
 
         <div className="border-t border-border mt-8 pt-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            © CopyRight {new Date().getFullYear()} Movelaria on Demand LTDA. Todos os direitos
+          <p className="text-xs md:text-sm text-muted-foreground text-center">
+            © {new Date().getFullYear()} Movelaria on Demand LTDA. Todos os direitos reservados. ©
+            CopyRight {new Date().getFullYear()} Movelaria on Demand LTDA. Todos os direitos
             reservados.
           </p>
         </div>

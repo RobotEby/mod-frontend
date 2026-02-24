@@ -6,6 +6,11 @@
 
 @layer base {
   :root {
+    --bottom-nav-offset: 0px;
+    --scrolltop-stack: 0px;
+    --fab-gap: 10px;
+    --fab-base: 14px;
+
     --background: 30 20% 98%;
     --foreground: 30 10% 10%;
 
@@ -51,6 +56,10 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   .dark {
@@ -103,5 +112,12 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --fab-base: 24px;
+    --fab-gap: 12px;
   }
 }
