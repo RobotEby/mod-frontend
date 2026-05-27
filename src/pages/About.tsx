@@ -12,9 +12,9 @@ const About = () => {
       <div className="container px-4 py-6 md:py-12">
         <div className="max-w-3xl space-y-6 md:space-y-8">
           <p className="text-base md:text-xl text-muted-foreground leading-relaxed">
-            Somos uma empresa dedicada a oferecer móveis de alta qualidade com a elegância e o
-            acabamento de uma marcenaria sob medida, mas com a praticidade e agilidade do e-commerce
-            moderno.
+            Somos uma marca dedicada a transformar a compra de móveis em uma experiência mais
+            simples, segura e personalizada, unindo qualidade, bom acabamento e a praticidade do
+            atendimento digital.
           </p>
 
           <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-4 md:p-8 rounded-2xl">
@@ -22,9 +22,9 @@ const About = () => {
               Nossa Missão
             </h2>
             <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-              Democratizar o acesso a móveis de alta qualidade, oferecendo designs exclusivos e
-              acabamento impecável através de nossa parceria com a Marcenaria Diferente, garantindo
-              qualidade artesanal em cada peça.
+              Facilitar o acesso a móveis bem planejados, com design funcional, acabamento de
+              qualidade e uma jornada de compra clara do início ao fim, valorizando cada detalhe da
+              escolha até a entrega.
             </p>
           </div>
 
@@ -33,13 +33,13 @@ const About = () => {
               Como Trabalhamos
             </h2>
             <p className="text-sm md:text-base text-muted-foreground leading-relaxed mb-3 md:mb-4">
-              Cada móvel do nosso catálogo é cuidadosamente projetado por designers especializados.
-              Quando você faz seu pedido, ele é enviado diretamente para nossa parceira, a
-              Marcenaria Diferente, onde artesãos experientes começam a produção da sua peça.
+              Cada móvel do nosso catálogo é pensado para unir estética, funcionalidade e
+              durabilidade. Após a confirmação do pedido, acompanhamos as etapas necessárias para
+              que sua peça seja produzida com cuidado e atenção aos detalhes.
             </p>
             <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
               Todo o processo é transparente: você pode acompanhar o status do seu pedido em tempo
-              real, desde o envio à marcenaria até a entrega na sua casa.
+              real, desde a preparação da produção até a entrega na sua casa.
             </p>
           </div>
 
@@ -49,9 +49,9 @@ const About = () => {
             </h2>
             <ul className="space-y-2 md:space-y-3 text-sm md:text-base text-muted-foreground">
               {[
-                'Qualidade de marcenaria sob medida com a conveniência do e-commerce',
-                'Designs exclusivos desenvolvidos por profissionais especializados',
-                'Parceria com a renomada Marcenaria Diferente',
+                'Qualidade, acabamento e praticidade em uma experiência de compra digital',
+                'Designs funcionais desenvolvidos para diferentes estilos de ambiente',
+                'Produção cuidadosa com atenção aos detalhes de cada peça',
                 'Acompanhamento completo do seu pedido',
                 'Garantia de satisfação e suporte dedicado',
               ].map((item, i) => (
