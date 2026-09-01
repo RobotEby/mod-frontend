@@ -3,6 +3,7 @@ import { InventoryTable } from '@/components/admin/InventoryTable';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import apiClient from '@/lib/api-client';
+import { getErrorMessage } from '@/lib/errors';
 
 interface ProductInventory {
   id: string;
@@ -43,10 +44,10 @@ export default function AdminInventory() {
       queryClient.invalidateQueries({ queryKey: ['admin-inventory'] });
       toast({ title: 'Estoque atualizado!' });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       toast({
         title: 'Erro ao atualizar estoque',
-        description: error.response?.data?.message || error.message,
+        description: getErrorMessage(error),
         variant: 'destructive',
       });
     },

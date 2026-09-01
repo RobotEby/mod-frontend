@@ -20,25 +20,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
-
-interface ProductReviewStats {
-  total_reviews: number;
-  average_rating: number;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  category_id: string | null;
-  stock_quantity?: number;
-  is_on_sale?: boolean;
-  discount_percent?: number;
-  main_image_url?: string | null;
-  review_stats?: ProductReviewStats;
-  dimensions?: string;
-  lead_time?: string;
-}
+import type { Product, ProductReviewStats } from '@/services/productService';
 
 interface ProductTableProps {
   products: Product[];
@@ -137,12 +119,7 @@ export const ProductTable = ({
             <TableRow className="bg-muted/50">
               <TableHead className="w-[50px]">
                 <Checkbox
-                  checked={isAllSelected}
-                  ref={(el) => {
-                    if (el) {
-                      (el as any).indeterminate = isSomeSelected;
-                    }
-                  }}
+                  checked={isAllSelected ? true : isSomeSelected ? 'indeterminate' : false}
                   onCheckedChange={handleSelectAll}
                   aria-label="Selecionar todos"
                 />

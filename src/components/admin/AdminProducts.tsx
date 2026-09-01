@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Plus, RefreshCw, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ProductTable } from '@/components/admin/ProductTable';
-import { ProductForm } from '@/components/admin/ProductForm';
+import { ProductForm, ProductFormData } from '@/components/admin/ProductForm';
 import { BulkActionBar } from '@/components/admin/BulkActionBar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { productService, Product, Category } from '@/services/productService';
+import { getErrorMessage } from '@/lib/errors';
 import { useNavigate } from 'react-router-dom';
 import {
   Select,
@@ -29,7 +30,7 @@ export default function AdminProducts() {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const [productsData, categoriesData] = await Promise.all([
@@ -51,13 +52,13 @@ export default function AdminProducts() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [categoryFilter, sortBy, sortOrder, toast]);
 
   useEffect(() => {
     fetchData();
-  }, [categoryFilter, sortBy, sortOrder]);
+  }, [fetchData]);
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: ProductFormData) => {
     try {
       if (editingProduct) {
         await productService.updateProduct(editingProduct.id, {
@@ -71,16 +72,18 @@ export default function AdminProducts() {
           gallery_images: data.gallery_images || [],
           dimensions: data.dimensions || '',
           lead_time: data.lead_time || '15-20 dias úteis',
+          description: data.description || '',
+          main_image_url: data.main_image_url || '',
         });
         toast({ title: 'Produto criado com sucesso!' });
       }
       setEditingProduct(null);
       setFormOpen(false);
       fetchData();
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: 'Erro ao salvar produto',
-        description: error.message,
+        description: getErrorMessage(error),
         variant: 'destructive',
       });
     }
@@ -97,10 +100,10 @@ export default function AdminProducts() {
         await productService.deleteProduct(productId);
         toast({ title: 'Produto excluído com sucesso!' });
         fetchData();
-      } catch (error: any) {
+      } catch (error: unknown) {
         toast({
           title: 'Erro ao excluir produto',
-          description: error.message,
+          description: getErrorMessage(error),
           variant: 'destructive',
         });
       }
@@ -116,10 +119,10 @@ export default function AdminProducts() {
       await productService.duplicateProduct(productId);
       toast({ title: 'Produto duplicado com sucesso!' });
       fetchData();
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: 'Erro ao duplicar produto',
-        description: error.message,
+        description: getErrorMessage(error),
         variant: 'destructive',
       });
     }
@@ -136,10 +139,10 @@ export default function AdminProducts() {
       toast({ title: `${count} produto(s) excluído(s) com sucesso!` });
       setSelectedIds([]);
       fetchData();
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: 'Erro ao excluir produtos',
-        description: error.message,
+        description: getErrorMessage(error),
         variant: 'destructive',
       });
     }
@@ -151,10 +154,10 @@ export default function AdminProducts() {
       toast({ title: `Categoria atualizada em ${count} produto(s)!` });
       setSelectedIds([]);
       fetchData();
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: 'Erro ao atualizar categoria',
-        description: error.message,
+        description: getErrorMessage(error),
         variant: 'destructive',
       });
     }
@@ -166,10 +169,10 @@ export default function AdminProducts() {
       toast({ title: `Estoque atualizado em ${count} produto(s)!` });
       setSelectedIds([]);
       fetchData();
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: 'Erro ao atualizar estoque',
-        description: error.message,
+        description: getErrorMessage(error),
         variant: 'destructive',
       });
     }
@@ -231,7 +234,7 @@ export default function AdminProducts() {
           </SelectContent>
         </Select>
 
-        <Select value={sortBy} onValueChange={(v) => setSortBy(v as any)}>
+        <Select value={sortBy} onValueChange={(v) => setSortBy(v as 'name' | 'price' | 'date')}>
           <SelectTrigger className="w-[150px]">
             <SelectValue placeholder="Ordenar por" />
           </SelectTrigger>
@@ -242,7 +245,7 @@ export default function AdminProducts() {
           </SelectContent>
         </Select>
 
-        <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as any)}>
+        <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as 'asc' | 'desc')}>
           <SelectTrigger className="w-[130px]">
             <SelectValue placeholder="Ordem" />
           </SelectTrigger>

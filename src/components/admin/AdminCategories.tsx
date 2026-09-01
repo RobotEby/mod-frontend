@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import apiClient from '@/lib/api-client';
+import { getErrorMessage } from '@/lib/errors';
 
 interface Category {
   id: string;
@@ -61,10 +62,10 @@ export default function AdminCategories() {
       setFormOpen(false);
       resetForm();
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       toast({
         title: 'Erro ao criar categoria',
-        description: error.response?.data?.message || error.message,
+        description: getErrorMessage(error),
         variant: 'destructive',
       });
     },
@@ -90,10 +91,10 @@ export default function AdminCategories() {
       setFormOpen(false);
       resetForm();
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       toast({
         title: 'Erro ao atualizar categoria',
-        description: error.response?.data?.message || error.message,
+        description: getErrorMessage(error),
         variant: 'destructive',
       });
     },
@@ -107,10 +108,10 @@ export default function AdminCategories() {
       queryClient.invalidateQueries({ queryKey: ['admin-categories'] });
       toast({ title: 'Categoria excluída com sucesso!' });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       toast({
         title: 'Erro ao excluir categoria',
-        description: error.response?.data?.message || error.message,
+        description: getErrorMessage(error),
         variant: 'destructive',
       });
     },

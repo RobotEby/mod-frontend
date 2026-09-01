@@ -39,7 +39,7 @@ export const SalesTrendsChart = () => {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-lg font-roboto-semibold">Tendência de Vendas</CardTitle>
-        <Tabs value={period} onValueChange={(v) => setPeriod(v as any)}>
+        <Tabs value={period} onValueChange={(v) => setPeriod(v as '7' | '30' | '90')}>
           <TabsList className="h-8">
             <TabsTrigger value="7" className="text-xs px-2">
               7 dias
