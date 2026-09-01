@@ -17,7 +17,7 @@ interface ProductCardListProps {
   leadTime?: string;
   stockQuantity?: number;
   lowStockThreshold?: number;
-  description?: string;
+  description?: string | null;
   onQuickView?: () => void;
 }
 

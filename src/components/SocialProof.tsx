@@ -45,23 +45,29 @@ export const SocialProof = () => {
     <section className="py-6 md:py-12 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent">
       <div className="container px-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-          {stats.map((stat) => {
-            const { count, ref } = useCountUp(stat.value, 2000, stat.decimals || 0);
-            return (
-              <div key={stat.label} ref={ref} className="text-center group">
-                <div className="inline-flex items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full bg-primary/10 mb-2 md:mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <stat.icon className="h-5 w-5 md:h-8 md:w-8 text-primary" />
-                </div>
-                <div className="text-xl md:text-3xl lg:text-4xl font-roboto-bold text-foreground mb-0.5 md:mb-1">
-                  {stat.decimals ? count.toFixed(stat.decimals) : Math.round(count)}
-                  {stat.suffix}
-                </div>
-                <p className="text-[10px] md:text-sm text-muted-foreground">{stat.label}</p>
-              </div>
-            );
-          })}
+          {stats.map((stat) => (
+            <StatCounter key={stat.label} stat={stat} />
+          ))}
         </div>
       </div>
     </section>
+  );
+};
+
+type Stat = (typeof stats)[number];
+
+const StatCounter = ({ stat }: { stat: Stat }) => {
+  const { count, ref } = useCountUp(stat.value, 2000, stat.decimals || 0);
+  return (
+    <div ref={ref} className="text-center group">
+      <div className="inline-flex items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full bg-primary/10 mb-2 md:mb-4 group-hover:scale-110 transition-transform duration-300">
+        <stat.icon className="h-5 w-5 md:h-8 md:w-8 text-primary" />
+      </div>
+      <div className="text-xl md:text-3xl lg:text-4xl font-roboto-bold text-foreground mb-0.5 md:mb-1">
+        {stat.decimals ? count.toFixed(stat.decimals) : Math.round(count)}
+        {stat.suffix}
+      </div>
+      <p className="text-[10px] md:text-sm text-muted-foreground">{stat.label}</p>
+    </div>
   );
 };

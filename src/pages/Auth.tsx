@@ -35,9 +35,8 @@ const Auth = () => {
       await dispatch(signUp({ email, password, full_name: fullName })).unwrap();
       toast.success('Conta criada com sucesso!');
       navigate('/conta');
-    } catch (error: any) {
-      const errorMessage =
-        typeof error === 'string' ? error : error?.message || 'Erro ao criar conta';
+    } catch (error: unknown) {
+      const errorMessage = typeof error === 'string' ? error : 'Erro ao criar conta';
       toast.error(errorMessage);
     }
   };
@@ -53,9 +52,8 @@ const Auth = () => {
       await dispatch(signIn({ email, password })).unwrap();
       toast.success('Login realizado com sucesso!');
       navigate('/conta');
-    } catch (error: any) {
-      const errorMessage =
-        typeof error === 'string' ? error : error?.message || 'Erro ao fazer login';
+    } catch (error: unknown) {
+      const errorMessage = typeof error === 'string' ? error : 'Erro ao fazer login';
       toast.error(errorMessage);
     }
   };

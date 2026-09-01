@@ -14,10 +14,10 @@ interface ProductCardProps {
   discountPercent?: number;
   isOnSale?: boolean;
   image: string;
-  leadTime?: string;
+  leadTime?: string | null;
   stockQuantity?: number;
   lowStockThreshold?: number;
-  description?: string;
+  description?: string | null;
   onQuickView?: () => void;
 }
 
