@@ -26,7 +26,14 @@ const getTokenFromStore = (): string | null => {
 };
 
 const getApiBaseUrl = () => {
-  return `${import.meta.env.VITE_API_BASE_URL}/api/v1`;
+  const base = import.meta.env.VITE_API_BASE_URL;
+  if (!base) {
+    console.warn(
+      '[api-client] VITE_API_BASE_URL is not set. Copy .env.example to .env and set it, ' +
+        'otherwise API requests will fail. Falling back to http://localhost:3000 for now.',
+    );
+  }
+  return `${base || 'http://localhost:3000'}/api/v1`;
 };
 
 const API_BASE_URL = getApiBaseUrl();

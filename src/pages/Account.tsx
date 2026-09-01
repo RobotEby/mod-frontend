@@ -18,6 +18,9 @@ import { User, Package, ShoppingBag, CheckCircle, MapPin, CreditCard, Trash2 } f
 import { AddressForm } from '@/components/AddressForm';
 import { PaymentMethodForm } from '@/components/PaymentMethodForm';
 import { AddressFormData, PaymentMethodFormData } from '@/lib/validationSchemas';
+import apiClient from '@/lib/api-client';
+import { getErrorMessage } from '@/lib/errors';
+import type { UserAddress, UserPaymentMethod } from '@/types/types';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,8 +33,6 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-const API_BASE_URL = 'http://localhost:3000/api';
-
 const orderStatusMap = {
   pending_payment: { label: 'Aguardando Pagamento', variant: 'secondary' as const },
   sent_to_factory: { label: 'Enviado à Marcenaria', variant: 'default' as const },
@@ -39,24 +40,6 @@ const orderStatusMap = {
   shipped: { label: 'Enviado', variant: 'default' as const },
   delivered: { label: 'Entregue', variant: 'default' as const },
 };
-
-async function apiRequest(endpoint: string, options: RequestInit = {}) {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    ...options,
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || `Erro na requisição: ${response.statusText}`);
-  }
-
-  if (response.status === 204) return null;
-
-  return response.json();
-}
 
 const Account = () => {
   const dispatch = useAppDispatch();
@@ -88,9 +71,11 @@ const Account = () => {
     queryFn: async () => {
       if (!user) return [];
 
-      const data = await apiRequest(`/user_addresses?user_id=${user.id}`);
+      const { data } = await apiClient.get<UserAddress[]>(
+        `/user_addresses?user_id=${user.id}`,
+      );
 
-      return data.sort((a: any, b: any) => {
+      return [...data].sort((a, b) => {
         if (a.is_default !== b.is_default) return b.is_default ? 1 : -1;
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       });
@@ -103,9 +88,11 @@ const Account = () => {
     queryFn: async () => {
       if (!user) return [];
 
-      const data = await apiRequest(`/user_payment_methods?user_id=${user.id}`);
+      const { data } = await apiClient.get<UserPaymentMethod[]>(
+        `/user_payment_methods?user_id=${user.id}`,
+      );
 
-      return data.sort((a: any, b: any) => {
+      return [...data].sort((a, b) => {
         if (a.is_default !== b.is_default) return b.is_default ? 1 : -1;
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       });
@@ -137,21 +124,18 @@ const Account = () => {
     mutationFn: async (data: AddressFormData) => {
       if (!user) throw new Error('User not found');
 
-      await apiRequest('/user_addresses', {
-        method: 'POST',
-        body: JSON.stringify({
-          user_id: user.id,
-          nickname: data.nickname || null,
-          street: data.street,
-          number: data.number,
-          complement: data.complement || null,
-          neighborhood: data.neighborhood,
-          city: data.city,
-          state: data.state,
-          zip_code: data.zip_code,
-          reference: data.reference || null,
-          is_default: data.is_default,
-        }),
+      await apiClient.post('/user_addresses', {
+        user_id: user.id,
+        nickname: data.nickname || null,
+        street: data.street,
+        number: data.number,
+        complement: data.complement || null,
+        neighborhood: data.neighborhood,
+        city: data.city,
+        state: data.state,
+        zip_code: data.zip_code,
+        reference: data.reference || null,
+        is_default: data.is_default,
       });
     },
     onSuccess: () => {
@@ -159,39 +143,34 @@ const Account = () => {
       toast.success('Endereço adicionado com sucesso!');
       setShowAddressForm(false);
     },
-    onError: (error: any) => {
-      toast.error(error.message || 'Erro ao adicionar endereço');
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, 'Erro ao adicionar endereço'));
     },
   });
 
   const deleteAddressMutation = useMutation({
     mutationFn: async (addressId: string) => {
-      await apiRequest(`/user_addresses/${addressId}`, {
-        method: 'DELETE',
-      });
+      await apiClient.delete(`/user_addresses/${addressId}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-addresses'] });
       toast.success('Endereço removido com sucesso!');
     },
-    onError: (error: any) => {
-      toast.error(error.message || 'Erro ao remover endereço');
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, 'Erro ao remover endereço'));
     },
   });
 
   const setDefaultAddressMutation = useMutation({
     mutationFn: async (addressId: string) => {
-      await apiRequest(`/user_addresses/${addressId}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ is_default: true }),
-      });
+      await apiClient.patch(`/user_addresses/${addressId}`, { is_default: true });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-addresses'] });
       toast.success('Endereço padrão atualizado!');
     },
-    onError: (error: any) => {
-      toast.error(error.message || 'Erro ao atualizar endereço padrão');
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, 'Erro ao atualizar endereço padrão'));
     },
   });
 
@@ -205,56 +184,48 @@ const Account = () => {
       else if (firstDigit === '5') card_type = 'Mastercard';
       else if (firstDigit === '3') card_type = 'Amex';
 
-      await apiRequest('/user_payment_methods', {
-        method: 'POST',
-        body: JSON.stringify({
-          user_id: user.id,
-          card_type,
-          last4: data.card_number.slice(-4),
-          cardholder_name: data.cardholder_name,
-          expiry_month: data.expiry_month,
-          expiry_year: data.expiry_year,
-          is_default: data.is_default,
-        }),
+      await apiClient.post('/user_payment_methods', {
+        user_id: user.id,
+        card_type,
+        last4: data.card_number.slice(-4),
+        cardholder_name: data.cardholder_name,
+        expiry_month: data.expiry_month,
+        expiry_year: data.expiry_year,
+        is_default: data.is_default,
       });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-payment-methods'] });
       toast.success('Cartão adicionado com sucesso!');
     },
-    onError: (error: any) => {
-      toast.error(error.message || 'Erro ao adicionar cartão');
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, 'Erro ao adicionar cartão'));
     },
   });
 
   const deletePaymentMethodMutation = useMutation({
     mutationFn: async (paymentId: string) => {
-      await apiRequest(`/user_payment_methods/${paymentId}`, {
-        method: 'DELETE',
-      });
+      await apiClient.delete(`/user_payment_methods/${paymentId}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-payment-methods'] });
       toast.success('Cartão removido com sucesso!');
     },
-    onError: (error: any) => {
-      toast.error(error.message || 'Erro ao remover cartão');
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, 'Erro ao remover cartão'));
     },
   });
 
   const setDefaultPaymentMutation = useMutation({
     mutationFn: async (paymentId: string) => {
-      await apiRequest(`/user_payment_methods/${paymentId}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ is_default: true }),
-      });
+      await apiClient.patch(`/user_payment_methods/${paymentId}`, { is_default: true });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-payment-methods'] });
       toast.success('Cartão padrão atualizado!');
     },
-    onError: (error: any) => {
-      toast.error(error.message || 'Erro ao atualizar cartão padrão');
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, 'Erro ao atualizar cartão padrão'));
     },
   });
 
@@ -263,17 +234,14 @@ const Account = () => {
     setSaving(true);
 
     try {
-      await apiRequest(`/profiles/${user!.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          full_name: fullName,
-          phone,
-        }),
+      await apiClient.patch(`/profiles/${user!.id}`, {
+        full_name: fullName,
+        phone,
       });
 
       toast.success('Perfil atualizado com sucesso!');
-    } catch (error: any) {
-      toast.error(error.message || 'Erro ao atualizar perfil');
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error, 'Erro ao atualizar perfil'));
     } finally {
       setSaving(false);
     }
@@ -286,7 +254,7 @@ const Account = () => {
   const activeOrders = orders?.filter((order) => order.status !== 'delivered') || [];
   const deliveredOrders = orders?.filter((order) => order.status === 'delivered') || [];
 
-  const renderOrderCard = (order: any) => (
+  const renderOrderCard = (order: ReturnType<typeof getMockOrderWithItems>[number]) => (
     <Card key={order.id}>
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-4">
@@ -306,7 +274,7 @@ const Account = () => {
         </div>
 
         <div className="space-y-2">
-          {order.order_items?.map((item: any) => (
+          {order.order_items?.map((item) => (
             <div key={item.id} className="flex items-center gap-4">
               <div className="w-16 h-16 flex-shrink-0 overflow-hidden rounded bg-muted">
                 <img
@@ -555,7 +523,7 @@ const Account = () => {
                           ))}
                         </div>
                       ) : addresses && addresses.length > 0 ? (
-                        addresses.map((address: any) => (
+                        addresses.map((address) => (
                           <Card key={address.id}>
                             <CardContent className="p-4">
                               <div className="flex justify-between items-start">
@@ -666,7 +634,7 @@ const Account = () => {
                         </div>
                       ) : paymentMethods && paymentMethods.length > 0 ? (
                         <div className="space-y-4">
-                          {paymentMethods.map((payment: any) => (
+                          {paymentMethods.map((payment) => (
                             <Card key={payment.id}>
                               <CardContent className="p-4">
                                 <div className="flex justify-between items-start">
