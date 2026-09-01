@@ -1,10 +1,11 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import apiClient from '@/lib/api-client';
-import { useAuth } from './AuthContext';
+import { useAppSelector } from '@/app/hooks';
+import { selectUser } from '@/features/user/userSelectors';
 import { toast } from 'sonner';
 
 interface WishlistItem {
-  id: string; // é aqui que nós vai botar os ID do produto meu fi
+  id: string;
   product_id: string;
   added_at: string;
 }
@@ -22,10 +23,10 @@ interface WishlistContextType {
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
 export const WishlistProvider = ({ children }: { children: ReactNode }) => {
-  const { user } = useAuth();
+  const user = useAppSelector(selectUser);
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
 
-  const fetchWishlistItems = async () => {
+  const fetchWishlistItems = useCallback(async () => {
     if (!user) {
       setWishlistItems([]);
       return;
@@ -37,11 +38,11 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('Error fetching wishlist items:', error);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchWishlistItems();
-  }, [user]);
+  }, [fetchWishlistItems]);
 
   const isInWishlist = (productId: string) => {
     return wishlistItems.some((item) => item.product_id === productId);
@@ -57,7 +58,7 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
       await apiClient.post('/wishlist', { product_id: productId });
       toast.success('Adicionado à lista de desejos');
       await fetchWishlistItems();
-    } catch (error: any) {
+    } catch {
       toast.error('Erro ao adicionar à lista de desejos');
     }
   };
