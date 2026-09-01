@@ -122,13 +122,15 @@ const ProductDetail = () => {
   }
 
   const handleAddToCart = () => {
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: Number(product.price),
-      image: product.main_image_url || '',
+    addItem(
+      {
+        id: product.id,
+        name: product.name,
+        price: Number(product.price),
+        image: product.main_image_url || '',
+      },
       quantity,
-    });
+    );
   };
 
   const allImages = [product.main_image_url, ...(product.gallery_images || [])].filter(
