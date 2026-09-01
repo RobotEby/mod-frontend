@@ -24,7 +24,7 @@ import Cart from '@/pages/Cart';
 import Checkout from '@/pages/Checkout';
 import Auth from '@/pages/Auth';
 import Account from '@/pages/Account';
-// import useWishlist
+import Wishlist from '@/pages/Wishlist';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
 import Blog from '@/pages/Blog';
@@ -91,7 +91,7 @@ const App = () => (
                               <Route path="/checkout" element={<Checkout />} />
                               <Route path="/auth" element={<Auth />} />
                               <Route path="/conta" element={<Account />} />
-                              {/* <Route path="/lista-desejos" element={<Wishlist />} /> */}
+                              <Route path="/lista-desejos" element={<Wishlist />} />
                               <Route path="/sobre" element={<About />} />
                               <Route path="/contato" element={<Contact />} />
                               <Route path="/blog" element={<Blog />} />
