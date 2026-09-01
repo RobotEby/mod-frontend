@@ -7,7 +7,7 @@ const videos = [
   {
     id: '1',
     videoUrl: '/3773487-hd_1920_1080_30fps.mp4',
-    thumbnail: '/3773487-hd_1920_1080_30fps.png',
+    thumbnail: '/3773487-hd_1920_1080_30fps.webp',
     title: 'Tour pelo Projeto - Sala de Estar Completa',
     duration: '0:06',
     customer: 'Luana Martins',
@@ -15,7 +15,7 @@ const videos = [
   {
     id: '2',
     videoUrl: '/15887133-uhd_3840_2160_30fps.mp4',
-    thumbnail: '/15887133-uhd_3840_2160_30fps.png',
+    thumbnail: '/15887133-uhd_3840_2160_30fps.webp',
     title: 'Unboxing do Quarto dos Sonhos',
     duration: '0:19',
     customer: 'João Pedro',
@@ -23,7 +23,7 @@ const videos = [
   {
     id: '3',
     videoUrl: '/6998652-hd_1080_1920_25fps.mp4',
-    thumbnail: '/6998652-hd_1080_1920_25fps.png',
+    thumbnail: '/6998652-hd_1080_1920_25fps.webp',
     title: 'Escritório Home Office Premium',
     duration: '0:35',
     customer: 'Gabriel Souza',
@@ -31,7 +31,7 @@ const videos = [
   {
     id: '4',
     videoUrl: '/3773486-hd_1920_1080_30fps.mp4',
-    thumbnail: '/3773486-hd_1920_1080_30fps.png',
+    thumbnail: '/3773486-hd_1920_1080_30fps.webp',
     title: 'Sala de Jantar para 8 Pessoas',
     duration: '0:10',
     customer: 'Fernando Costa',
@@ -39,7 +39,7 @@ const videos = [
   {
     id: '5',
     videoUrl: '/3555398-hd_1920_1080_30fps.mp4',
-    thumbnail: '/3555398-hd_1920_1080_30fps.png',
+    thumbnail: '/3555398-hd_1920_1080_30fps.webp',
     title: 'Varanda Gourmet Completa',
     duration: '0:40',
     customer: 'Juliana Lima',
