@@ -35,7 +35,7 @@ const mockCategories: Category[] = [
   { id: 'cat5', name: 'Camas', slug: 'camas' },
 ];
 
-let mockProducts: Product[] = [
+const mockProducts: Product[] = [
   {
     id: 'prod1',
     category_id: 'cat1',

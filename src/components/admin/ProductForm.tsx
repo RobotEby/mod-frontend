@@ -43,7 +43,7 @@ const productSchema = z.object({
   gallery_images: z.array(z.string()).optional(),
 });
 
-type ProductFormData = z.infer<typeof productSchema>;
+export type ProductFormData = z.infer<typeof productSchema>;
 
 interface Category {
   id: string;

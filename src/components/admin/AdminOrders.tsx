@@ -21,13 +21,8 @@ import {
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import apiClient from '@/lib/api-client';
-
-type OrderStatus =
-  | 'pending_payment'
-  | 'sent_to_factory'
-  | 'in_production'
-  | 'shipped'
-  | 'delivered';
+import { getErrorMessage } from '@/lib/errors';
+import type { OrderStatus } from '@/types/types';
 
 const statusLabels: Record<OrderStatus, string> = {
   pending_payment: 'Aguardando Pagamento',
@@ -43,7 +38,7 @@ interface Order {
   status: OrderStatus;
   created_at: string;
   user_id: string;
-  shipping_address?: any;
+  shipping_address?: string | null;
   items_count?: number;
   customer_name?: string;
 }
@@ -97,10 +92,10 @@ export default function AdminOrders() {
       queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
       toast({ title: 'Status atualizado com sucesso!' });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       toast({
         title: 'Erro ao atualizar status',
-        description: error.response?.data?.message || error.message,
+        description: getErrorMessage(error),
         variant: 'destructive',
       });
     },

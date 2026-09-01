@@ -1,108 +1,67 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import apiClient from '@/lib/api-client';
-import { useAuth } from '@/contexts/AuthContext';
-import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
+import { Heart } from 'lucide-react';
+import { useWishlist } from '@/contexts/WishlistContext';
+import { ProductCard } from '@/components/ProductCard';
+import { Button } from '@/components/ui/button';
+import { mockProducts } from '@/lib/mockData';
 
-interface WishlistItem {
-  id: string; // ID do item ou do produto, dependendo da API
-  product_id: string;
-  added_at: string;
-}
+const Wishlist = () => {
+  const { wishlistItems } = useWishlist();
 
-interface WishlistContextType {
-  wishlistItems: WishlistItem[];
-  wishlistCount: number;
-  isInWishlist: (productId: string) => boolean;
-  addToWishlist: (productId: string) => Promise<void>;
-  removeFromWishlist: (productId: string) => Promise<void>;
-  toggleWishlist: (productId: string) => Promise<void>;
-  refreshWishlist: () => Promise<void>;
-}
+  const products = wishlistItems
+    .map((item) => mockProducts.find((product) => product.id === item.product_id))
+    .filter((product): product is (typeof mockProducts)[number] => Boolean(product));
 
-const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
-
-export const WishlistProvider = ({ children }: { children: ReactNode }) => {
-  const { user } = useAuth();
-  const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
-
-  const fetchWishlistItems = async () => {
-    if (!user) {
-      setWishlistItems([]);
-      return;
-    }
-
-    try {
-      const { data } = await apiClient.get<WishlistItem[]>('/wishlist');
-      setWishlistItems(data || []);
-    } catch (error) {
-      console.error('Error fetching wishlist items:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchWishlistItems();
-  }, [user]);
-
-  const isInWishlist = (productId: string) => {
-    return wishlistItems.some((item) => item.product_id === productId);
-  };
-
-  const addToWishlist = async (productId: string) => {
-    if (!user) {
-      toast.error('Faça login para adicionar à lista de desejos');
-      return;
-    }
-
-    try {
-      await apiClient.post('/wishlist', { product_id: productId });
-      toast.success('Adicionado à lista de desejos');
-      await fetchWishlistItems();
-    } catch (error: any) {
-      toast.error('Erro ao adicionar à lista de desejos');
-    }
-  };
-
-  const removeFromWishlist = async (productId: string) => {
-    try {
-      await apiClient.delete(`/wishlist/${productId}`);
-      toast.success('Removido da lista de desejos');
-
-      setWishlistItems((prev) => prev.filter((item) => item.product_id !== productId));
-    } catch (error) {
-      toast.error('Erro ao remover da lista de desejos');
-      await fetchWishlistItems();
-    }
-  };
-
-  const toggleWishlist = async (productId: string) => {
-    if (isInWishlist(productId)) {
-      await removeFromWishlist(productId);
-    } else {
-      await addToWishlist(productId);
-    }
-  };
+  if (wishlistItems.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-6 px-4">
+          <Heart className="h-24 w-24 mx-auto text-muted-foreground" />
+          <h2 className="text-3xl font-roboto-bold">Sua lista de desejos está vazia</h2>
+          <p className="text-muted-foreground">
+            Toque no coração de um produto para salvá-lo aqui.
+          </p>
+          <Button asChild size="lg">
+            <Link to="/catalogo">Ver Catálogo</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <WishlistContext.Provider
-      value={{
-        wishlistItems,
-        wishlistCount: wishlistItems.length,
-        isInWishlist,
-        addToWishlist,
-        removeFromWishlist,
-        toggleWishlist,
-        refreshWishlist: fetchWishlistItems,
-      }}
-    >
-      {children}
-    </WishlistContext.Provider>
+    <div className="min-h-screen py-12">
+      <div className="container">
+        <h1 className="text-4xl font-roboto-bold mb-8">Lista de Desejos</h1>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              id={product.id}
+              name={product.name}
+              price={product.price}
+              originalPrice={product.originalPrice}
+              discountPercent={product.discountPercent}
+              isOnSale={product.isOnSale}
+              image={product.main_image_url || ''}
+              leadTime={product.lead_time || undefined}
+              stockQuantity={product.stock_quantity ?? undefined}
+              lowStockThreshold={product.low_stock_threshold ?? undefined}
+              description={product.description}
+            />
+          ))}
+        </div>
+
+        {products.length < wishlistItems.length && (
+          <p className="text-sm text-muted-foreground mt-6">
+            {wishlistItems.length - products.length} item(ns) da sua lista não está(ão) mais
+            disponível(is) no catálogo.
+          </p>
+        )}
+      </div>
+    </div>
   );
 };
 
-export const useWishlist = () => {
-  const context = useContext(WishlistContext);
-  if (!context) {
-    throw new Error('useWishlist must be used within WishlistProvider');
-  }
-  return context;
-};
+export default Wishlist;

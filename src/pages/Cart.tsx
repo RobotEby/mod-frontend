@@ -7,7 +7,7 @@ import { useAppSelector } from '@/app/hooks';
 import { selectUser } from '@/features/user/userSelectors';
 
 const Cart = () => {
-  const { items, removeItem, updateQuantity, total } = useCart();
+  const { items, removeItem, updateQuantity, totalPrice } = useCart();
   const user = useAppSelector(selectUser);
   const navigate = useNavigate();
 
@@ -98,11 +98,11 @@ const Cart = () => {
           <CardContent className="p-6 space-y-4">
             <div className="flex justify-between items-center text-lg">
               <span className="font-roboto-semibold">Subtotal</span>
-              <span>R$ {total.toFixed(2).replace('.', ',')}</span>
+              <span>R$ {totalPrice.toFixed(2).replace('.', ',')}</span>
             </div>
             <div className="flex justify-between items-center text-2xl font-roboto-bold">
               <span>Total</span>
-              <span className="text-primary">R$ {total.toFixed(2).replace('.', ',')}</span>
+              <span className="text-primary">R$ {totalPrice.toFixed(2).replace('.', ',')}</span>
             </div>
             <Button size="lg" className="w-full" onClick={handleCheckout}>
               Finalizar Compra

@@ -12,7 +12,9 @@ export const ScrollToTop = () => {
     if ('scrollRestoration' in history) {
       try {
         history.scrollRestoration = 'manual';
-      } catch {}
+      } catch {
+        // Some browsers (e.g. older Safari) don't allow setting scrollRestoration; safe to ignore.
+      }
     }
   }, []);
 

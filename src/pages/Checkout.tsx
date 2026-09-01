@@ -9,9 +9,10 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { createMockOrder } from '@/lib/mockData';
+import { getErrorMessage } from '@/lib/errors';
 
 const Checkout = () => {
-  const { items, total, clearCart } = useCart();
+  const { items, totalPrice, clearCart } = useCart();
   const user = useAppSelector(selectUser);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -35,13 +36,13 @@ const Checkout = () => {
         price_at_purchase: item.price,
       }));
 
-      createMockOrder(user.id, total, address, phone, orderItems);
+      createMockOrder(user.id, totalPrice, address, phone, orderItems);
 
       toast.success('Pedido realizado com sucesso!');
       clearCart();
       navigate('/conta');
-    } catch (error: any) {
-      toast.error(error.message || 'Erro ao processar pedido');
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error, 'Erro ao processar pedido'));
     } finally {
       setLoading(false);
     }
@@ -92,7 +93,7 @@ const Checkout = () => {
               <div className="border-t pt-4">
                 <div className="flex justify-between text-xl font-roboto-bold">
                   <span>Total</span>
-                  <span className="text-primary">R$ {total.toFixed(2).replace('.', ',')}</span>
+                  <span className="text-primary">R$ {totalPrice.toFixed(2).replace('.', ',')}</span>
                 </div>
               </div>
             </CardContent>

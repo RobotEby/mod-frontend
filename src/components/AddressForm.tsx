@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { addressSchema, AddressFormData } from '@/lib/validationSchemas';
 import {
   Form,
@@ -30,8 +31,8 @@ export const AddressForm = ({
 }: AddressFormProps) => {
   const [isLoadingZipCode, setIsLoadingZipCode] = useState(false);
 
-  const form = useForm<AddressFormData>({
-    resolver: zodResolver(addressSchema) as any,
+  const form = useForm<z.input<typeof addressSchema>, unknown, AddressFormData>({
+    resolver: zodResolver(addressSchema),
     mode: 'onBlur',
     defaultValues: {
       nickname: '',

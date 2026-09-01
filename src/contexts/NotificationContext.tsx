@@ -1,13 +1,15 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import apiClient from '@/lib/api-client';
-import { useAuth } from './AuthContext';
+import { useAppSelector } from '@/app/hooks';
+import { selectUser } from '@/features/user/userSelectors';
+import type { Json } from '@/types/types';
 
 interface Notification {
   id: string;
   type: string;
   title: string;
   message: string;
-  metadata: any;
+  metadata: Json | null;
   is_read: boolean;
   created_at: string;
 }
@@ -24,10 +26,10 @@ interface NotificationContextType {
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
 export const NotificationProvider = ({ children }: { children: ReactNode }) => {
-  const { user } = useAuth();
+  const user = useAppSelector(selectUser);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -36,7 +38,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('Error fetching notifications:', error);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     if (user) {
@@ -46,7 +48,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     } else {
       setNotifications([]);
     }
-  }, [user]);
+  }, [user, fetchNotifications]);
 
   const markAsRead = async (id: string) => {
     try {

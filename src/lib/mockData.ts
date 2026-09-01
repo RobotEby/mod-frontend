@@ -450,7 +450,7 @@ export const mockProducts: Product[] = [
   },
 ];
 
-let mockOrders: Order[] = [
+const mockOrders: Order[] = [
   {
     id: 'order-1',
     user_id: 'user-1',
@@ -498,7 +498,7 @@ let mockOrders: Order[] = [
   },
 ];
 
-let mockOrderItems: OrderItem[] = [
+const mockOrderItems: OrderItem[] = [
   {
     id: 'item-1',
     order_id: 'order-1',

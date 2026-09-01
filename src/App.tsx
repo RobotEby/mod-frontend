@@ -1,21 +1,16 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import { ThemeProvider } from 'next-themes';
-import { Navbar } from '@/components/Navbar';
 import { CartProvider } from '@/contexts/CartContext';
 import { WishlistProvider } from '@/contexts/WishlistContext';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from '@/components/ui/toaster';
 import { Sonner } from '@/components/ui/sonner';
-import { Footer } from '@/components/Footer';
-import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { ScrollToTop } from '@/components/ScrollToTop';
+import { PublicLayout } from '@/components/PublicLayout';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { AdminGuard } from '@/components/admin/AdminGuard';
-import { WhatsAppButton } from '@/components/WhatsAppButton';
-import { CookieConsent } from '@/components/CookieConsent';
-import { ExitIntentPopup } from '@/components/ExitIntentPopup';
 
 import Home from '@/pages/Home';
 import Catalog from '@/pages/Catalog';
@@ -24,7 +19,7 @@ import Cart from '@/pages/Cart';
 import Checkout from '@/pages/Checkout';
 import Auth from '@/pages/Auth';
 import Account from '@/pages/Account';
-// import useWishlist
+import Wishlist from '@/pages/Wishlist';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
 import Blog from '@/pages/Blog';
@@ -42,6 +37,17 @@ import AdminCategories from './components/admin/AdminCategories';
 import AdminInventory from './components/admin/AdminInventory';
 
 const queryClient = new QueryClient();
+
+// Thin wrapper so AdminGuard + AdminLayout (which both take `children`) can
+// be used as a single React Router layout route via <Outlet />, matching
+// the pattern used by PublicLayout.
+const AdminRouteLayout = () => (
+  <AdminGuard>
+    <AdminLayout>
+      <Outlet />
+    </AdminLayout>
+  </AdminGuard>
+);
 
 const App = () => (
   <ThemeProvider
@@ -61,56 +67,34 @@ const App = () => (
                 <ScrollToTop />
                 <div className="min-h-screen flex flex-col">
                   <Routes>
-                    <Route
-                      path="/admin/*"
-                      element={
-                        <AdminGuard>
-                          <AdminLayout>
-                            <Routes>
-                              <Route path="/" element={<AdminDashboard />} />
-                              <Route path="/produtos" element={<AdminProducts />} />
-                              <Route path="/pedidos" element={<AdminOrders />} />
-                              <Route path="/categorias" element={<AdminCategories />} />
-                              <Route path="/estoque" element={<AdminInventory />} />
-                            </Routes>
-                          </AdminLayout>
-                        </AdminGuard>
-                      }
-                    />
-                    <Route
-                      path="*"
-                      element={
-                        <>
-                          <Navbar />
-                          <main className="flex-1">
-                            <Routes>
-                              <Route path="/" element={<Home />} />
-                              <Route path="/catalogo" element={<Catalog />} />
-                              <Route path="/produto/:id" element={<ProductDetail />} />
-                              <Route path="/carrinho" element={<Cart />} />
-                              <Route path="/checkout" element={<Checkout />} />
-                              <Route path="/auth" element={<Auth />} />
-                              <Route path="/conta" element={<Account />} />
-                              {/* <Route path="/lista-desejos" element={<Wishlist />} /> */}
-                              <Route path="/sobre" element={<About />} />
-                              <Route path="/contato" element={<Contact />} />
-                              <Route path="/blog" element={<Blog />} />
-                              <Route path="/blog/:slug" element={<BlogPost />} />
-                              <Route path="/faq" element={<FAQ />} />
-                              <Route path="/termos" element={<Terms />} />
-                              <Route path="/privacidade" element={<Privacy />} />
-                              <Route path="/LGPD" element={<LGPD />} />
-                              <Route path="*" element={<NotFound />} />
-                            </Routes>
-                          </main>
-                          <Footer />
-                          <MobileBottomNav />
-                          <WhatsAppButton />
-                          <CookieConsent />
-                          <ExitIntentPopup />
-                        </>
-                      }
-                    />
+                    <Route path="/admin" element={<AdminRouteLayout />}>
+                      <Route index element={<AdminDashboard />} />
+                      <Route path="produtos" element={<AdminProducts />} />
+                      <Route path="pedidos" element={<AdminOrders />} />
+                      <Route path="categorias" element={<AdminCategories />} />
+                      <Route path="estoque" element={<AdminInventory />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Route>
+
+                    <Route element={<PublicLayout />}>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/catalogo" element={<Catalog />} />
+                      <Route path="/produto/:id" element={<ProductDetail />} />
+                      <Route path="/carrinho" element={<Cart />} />
+                      <Route path="/checkout" element={<Checkout />} />
+                      <Route path="/auth" element={<Auth />} />
+                      <Route path="/conta" element={<Account />} />
+                      <Route path="/lista-desejos" element={<Wishlist />} />
+                      <Route path="/sobre" element={<About />} />
+                      <Route path="/contato" element={<Contact />} />
+                      <Route path="/blog" element={<Blog />} />
+                      <Route path="/blog/:slug" element={<BlogPost />} />
+                      <Route path="/faq" element={<FAQ />} />
+                      <Route path="/termos" element={<Terms />} />
+                      <Route path="/privacidade" element={<Privacy />} />
+                      <Route path="/LGPD" element={<LGPD />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Route>
                   </Routes>
                 </div>
               </BrowserRouter>
